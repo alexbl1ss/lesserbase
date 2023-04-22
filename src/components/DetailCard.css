@@ -1,0 +1,30 @@
+.detail-card {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 1rem;
+    background-color: #cdeccd;
+
+  }
+  
+  .text {
+    text-align: left;
+  }
+    .left-column {
+    width: 50%;
+    align-items: flex-start;
+  }
+  
+  .right-column {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .detail-card-container {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  
