@@ -4,6 +4,7 @@ import SearchList from './SearchList';
 import DetailCard from './DetailCard';
 import BookingCard from './BookingCard';
 import AgentsCard from './AgentsCard';
+import PaymentsCard from './PaymentsCard';
 import { SERVER_URL } from '../constants.js'
 
 
@@ -76,6 +77,7 @@ function Search() {
         <DetailCard person={selectedPerson} onClose={handleClose} />
         <BookingCard person={selectedPerson} />
         <AgentsCard person={selectedPerson} />
+        <PaymentsCard person={selectedPerson} />
       </div>
     );
   }

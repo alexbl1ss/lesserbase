@@ -1,6 +1,7 @@
 import React from 'react';
 import './DetailCard.css';
 import AddPayment from './AddPayment';
+import  { SERVER_URL } from '../constants.js'
 
 function DetailCard({ person, onClose }) {
 
@@ -22,12 +23,25 @@ function DetailCard({ person, onClose }) {
     imgPath = process.env.PUBLIC_URL + femaleImgPaths[Math.floor(Math.random() * femaleImgPaths.length)];
   }
 
-  const addPayment = (payment) => {
-    console.log("doing nothing for now")
-    console.log(payment.studentid)
-    console.log(payment.paymentamount)
-    console.log(payment.paymentaccount)
-  }
+  const addPayment = async (payment) => {
+    try {
+      const token = sessionStorage.getItem('bearer');
+      const response = await fetch(`${SERVER_URL}api/payments/${person.id}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(payment),
+      });
+      if (!response.ok) {
+        throw new Error('Failed to add payment');
+      }
+      console.log('Payment added successfully');
+    } catch (err) {
+      console.error(err);
+    }
+  };  
   const { id, studentName, studentSurname, dateAdded, mtRef, studentDob, studentGender, studentNationality, englishLevel, roomRequirements, photoPermissions, classRequirements, allergies, notes, arrivalDate, departureDate } = person;
 
   return (
