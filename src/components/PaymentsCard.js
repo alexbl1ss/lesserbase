@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { SERVER_URL } from '../constants.js'
 
-
-function PaymentsCard({ person, onClose }) {
- 
+function PaymentsCard({ person, onClose, paymentAdded }) { // <-- add paymentAdded as a prop
   const [payments, setPayments] = useState([]);
 
   useEffect(() => {
+    console.log("anything happen here? 2")
     fetchPayments();
-  }, []);
+  }, [person, paymentAdded]);
 
   const fetchPayments = () => {
     const token = sessionStorage.getItem('bearer');
@@ -22,8 +21,8 @@ function PaymentsCard({ person, onClose }) {
 
   return (
     <div className="detail-card payments-card">
-        <h2>Payments</h2>
-     <table>
+      <h2>Payments</h2>
+      <table>
         <thead>
           <tr>
             <th>ID</th>

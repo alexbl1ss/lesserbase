@@ -25,10 +25,18 @@ function AddPayment(props) {
         setOpen(false);
     };
 
-    // Save car and close modal form 
     const handleSave = () => {
-        props.addPayment(payment);
-        handleClose();
+        props.addPayment(payment)
+        .then(() => {
+            console.log("anything happen here? 3")
+
+            props.handlePaymentAdded(); // <-- call the function to refresh PaymentsCard
+            handleClose();
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      
     }
 
     const handleChange = (event) => {

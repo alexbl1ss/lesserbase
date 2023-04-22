@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './DetailCard.css';
 import AddPayment from './AddPayment';
 import  { SERVER_URL } from '../constants.js'
 
-function DetailCard({ person, onClose }) {
+function DetailCard({ person, onClose, handlePaymentAdded }) {
 
   let imgPath;
   if (person.studentGender === 'male') {
@@ -46,8 +46,8 @@ function DetailCard({ person, onClose }) {
 
   return (
     <React.Fragment>
-    <AddPayment addPayment={addPayment} studentId={person.id}/>
-    <div className="detail-card">
+<AddPayment addPayment={addPayment} studentId={person.id} handlePaymentAdded={handlePaymentAdded} /> 
+          <div className="detail-card">
       <button className="close-btn" onClick={onClose}>X</button>
       <div className="left-column">
       <img className="br-100 h3 w3 dib" alt={person.id} src={imgPath} />

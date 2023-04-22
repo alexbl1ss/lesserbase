@@ -13,6 +13,12 @@ function Search() {
   const [searchShow, setSearchShow] = useState(false);
   const [selectedPerson, setSelectedPerson] = useState(null);
   const [students, setStudents] = useState([]);
+  const [paymentAdded, setPaymentAdded] = useState(false); // <-- new state variable
+
+  const handlePaymentAdded = () => { // <-- new function
+    setPaymentAdded(true)
+    console.log("anything happen here? 1")
+  };
 
   useEffect(() => {
     fetchStudents();
@@ -71,18 +77,23 @@ function Search() {
   };
 
   const detailCard = () => {
-  if (selectedPerson) {
-    return (
-      <div className="detail-card-container">
-        <DetailCard person={selectedPerson} onClose={handleClose} />
-        <BookingCard person={selectedPerson} />
-        <AgentsCard person={selectedPerson} />
-        <PaymentsCard person={selectedPerson} />
-      </div>
-    );
-  }
-};
-   return (
+    if (selectedPerson) {
+      return (
+        <div className="detail-card-container">
+          <DetailCard
+            person={selectedPerson}
+            onClose={handleClose}
+            handlePaymentAdded={handlePaymentAdded} // <-- pass the function to DetailCard
+          />
+          <BookingCard person={selectedPerson} />
+          <AgentsCard person={selectedPerson} />
+          <PaymentsCard person={selectedPerson} paymentAdded={paymentAdded} />
+        </div>
+      );
+    }
+  };
+
+  return (
     <section className="garamond">
       <div className="navy georgia ma0 grow">
         <h2 className="f2">Search for Students</h2>
