@@ -37,7 +37,6 @@ function DetailCard({ person, onClose, handlePaymentAdded }) {
       if (!response.ok) {
         throw new Error('Failed to add payment');
       }
-      console.log('Payment added successfully');
     } catch (err) {
       console.error(err);
     }

@@ -5,7 +5,6 @@ function PaymentsCard({ person, onClose, paymentAdded }) { // <-- add paymentAdd
   const [payments, setPayments] = useState([]);
 
   useEffect(() => {
-    console.log("anything happen here? 2")
     fetchPayments();
   }, [person, paymentAdded]);
 
@@ -26,6 +25,7 @@ function PaymentsCard({ person, onClose, paymentAdded }) { // <-- add paymentAdd
         <thead>
           <tr>
             <th>ID</th>
+            <th>Payment Date</th>
             <th>Payment Amount</th>
             <th>Payment Account</th>
           </tr>
@@ -34,6 +34,7 @@ function PaymentsCard({ person, onClose, paymentAdded }) { // <-- add paymentAdd
           {payments.map((payment) => (
             <tr key={payment.id}>
               <td>{payment.id}</td>
+              <td>{payment.paymentdate}</td>
               <td>{payment.paymentamount}</td>
               <td>{payment.paymentaccount}</td>
             </tr>

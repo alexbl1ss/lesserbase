@@ -17,7 +17,6 @@ function Search() {
 
   const handlePaymentAdded = () => { // <-- new function
     setPaymentAdded(true)
-    console.log("anything happen here? 1")
   };
 
   useEffect(() => {

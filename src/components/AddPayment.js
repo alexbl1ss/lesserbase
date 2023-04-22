@@ -12,7 +12,8 @@ function AddPayment(props) {
     const [payment, setPayment] = useState({
         studentid: props.studentId,
         paymentamount: '',
-        paymentaccount: ''
+        paymentaccount: '',
+        paymentdate: ''
     });
 
     // Open the modal form
@@ -28,8 +29,6 @@ function AddPayment(props) {
     const handleSave = () => {
         props.addPayment(payment)
         .then(() => {
-            console.log("anything happen here? 3")
-
             props.handlePaymentAdded(); // <-- call the function to refresh PaymentsCard
             handleClose();
           })
@@ -56,6 +55,9 @@ function AddPayment(props) {
                             InputProps={{
                                 readOnly: true,
                             }} />
+                        <TextField label="Payment Date 2023-04-05" name="paymentdate" 
+                            variant="standard" value={payment.paymentdate} 
+                            onChange={handleChange}/> 
                         <TextField label="Payment Amount" name="paymentamount" 
                             variant="standard" value={payment.paymentamount} 
                             onChange={handleChange}/> 
