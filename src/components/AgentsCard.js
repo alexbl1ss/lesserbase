@@ -4,8 +4,6 @@ import './AgentsCard.css';
 
 
 function AgentsCard({ person, onClose, isAuthenticated }) {
-  console.log("agents card isauthenticated")
-  console.log(isAuthenticated)
  
   const [agents, setAgents] = useState([]);
 
@@ -19,7 +17,9 @@ function AgentsCard({ person, onClose, isAuthenticated }) {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((response) => response.json())
-      .then((data) => setAgents(data))
+      .then((data) => {
+        sessionStorage.setItem('agents', JSON.stringify(data));
+        setAgents(data);})
       .catch((err) => console.error(err));
   };
 

@@ -15,7 +15,7 @@ function Search({ accessToken, isAuthenticated, setAccessToken, setAuth }) {
   const [selectedPerson, setSelectedPerson] = useState(null);
   const [students, setStudents] = useState([]);
   const [paymentAdded, setPaymentAdded] = useState(false); // <-- new state variable
-
+ 
   const handlePaymentAdded = () => { // <-- new function
     console.log("in handle payment method in search.js - setting payment added to true")
     setPaymentAdded(true)
@@ -81,8 +81,6 @@ function Search({ accessToken, isAuthenticated, setAccessToken, setAuth }) {
 
   const detailCard = () => {
     if (selectedPerson) {
-      console.log("isauthenticated")
-      console.log(isAuthenticated)
       return (
         <div className="detail-card-container">
 <DetailCard

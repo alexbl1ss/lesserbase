@@ -1,0 +1,14 @@
+.payments-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .payments-card button {
+    margin-top: 20px;
+  }
+  
+  .invoice-page {
+    margin-top: 20px;
+  }
+  

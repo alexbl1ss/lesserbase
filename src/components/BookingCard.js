@@ -5,9 +5,6 @@ import './BookingCard.css';
 
 function BookingCard({ person, onClose, isAuthenticated}) {
  
-  console.log("booking card isauthenticated")
-  console.log(isAuthenticated)
-
   const [bookings, setBookings] = useState([]);
 
   useEffect(() => {
@@ -20,7 +17,9 @@ function BookingCard({ person, onClose, isAuthenticated}) {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((response) => response.json())
-      .then((data) => setBookings(data))
+      .then((data) => {
+        sessionStorage.setItem('bookings', JSON.stringify(data));
+        setBookings(data);})
       .catch((err) => console.error(err));
   };
 
