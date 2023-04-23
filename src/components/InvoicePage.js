@@ -123,7 +123,7 @@ function InvoicePage() {
                   <td></td>
                   <td></td>
                   <td><strong>Balance Due:</strong></td>
-                  <td>£ {totalActualCharge} GBP</td>
+                  <td>£ {outstandingBalance} GBP</td>
                 </tr>
               </tbody>
             </table>
