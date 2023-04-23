@@ -8,7 +8,8 @@ import PaymentsCard from './PaymentsCard';
 import { SERVER_URL } from '../constants.js'
 
 
-function Search() {
+function Search({ accessToken, isAuthenticated, setAccessToken, setAuth }) {
+  
   const [searchField, setSearchField] = useState("");
   const [searchShow, setSearchShow] = useState(false);
   const [selectedPerson, setSelectedPerson] = useState(null);
@@ -16,12 +17,15 @@ function Search() {
   const [paymentAdded, setPaymentAdded] = useState(false); // <-- new state variable
 
   const handlePaymentAdded = () => { // <-- new function
+    console.log("in handle payment method in search.js - setting payment added to true")
     setPaymentAdded(true)
   };
 
   useEffect(() => {
     fetchStudents();
-  }, []);
+    setAccessToken(accessToken);
+    setAuth(isAuthenticated);
+  }, [accessToken, isAuthenticated, setAccessToken, setAuth]);
 
   const fetchStudents = () => {
     const token = sessionStorage.getItem('bearer');
@@ -77,16 +81,25 @@ function Search() {
 
   const detailCard = () => {
     if (selectedPerson) {
+      console.log("isauthenticated")
+      console.log(isAuthenticated)
       return (
         <div className="detail-card-container">
-          <DetailCard
-            person={selectedPerson}
-            onClose={handleClose}
-            handlePaymentAdded={handlePaymentAdded} // <-- pass the function to DetailCard
-          />
-          <BookingCard person={selectedPerson} />
-          <AgentsCard person={selectedPerson} />
-          <PaymentsCard person={selectedPerson} paymentAdded={paymentAdded} />
+<DetailCard
+  person={selectedPerson}
+  onClose={handleClose}
+  handlePaymentAdded={handlePaymentAdded}
+  accessToken={accessToken}
+  isAuthenticated={isAuthenticated}
+  setAccessToken={setAccessToken}
+  setAuth={setAuth}
+/>
+          <BookingCard person={selectedPerson}   isAuthenticated={isAuthenticated}
+/>
+          <AgentsCard person={selectedPerson}   isAuthenticated={isAuthenticated}
+/>
+          <PaymentsCard person={selectedPerson} paymentAdded={paymentAdded}   isAuthenticated={isAuthenticated}
+/>
         </div>
       );
     }

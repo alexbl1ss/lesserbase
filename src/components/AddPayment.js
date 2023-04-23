@@ -29,6 +29,7 @@ function AddPayment(props) {
     const handleSave = () => {
         props.addPayment(payment)
         .then(() => {
+            console.log("calling handlepaymentmethod from add payment handle save")
             props.handlePaymentAdded(); // <-- call the function to refresh PaymentsCard
             handleClose();
           })

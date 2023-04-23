@@ -3,7 +3,9 @@ import { SERVER_URL } from '../constants.js'
 import './AgentsCard.css';
 
 
-function AgentsCard({ person, onClose }) {
+function AgentsCard({ person, onClose, isAuthenticated }) {
+  console.log("agents card isauthenticated")
+  console.log(isAuthenticated)
  
   const [agents, setAgents] = useState([]);
 

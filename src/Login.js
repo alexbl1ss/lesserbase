@@ -9,12 +9,12 @@ import { SERVER_URL } from './constants.js';
 
 function Login() {
   const [accessToken, setAccessToken] = useState(null);
- 
+  const [isAuthenticated, setAuth] = useState(false);
+
   const [user, setUser] = useState({
         email: '', 
         password: ''
       });
-    const [isAuthenticated, setAuth] = useState(false);
     const [open, setOpen] = useState(false);
 
     const handleChange = (event) => {
@@ -33,6 +33,7 @@ function Login() {
           if (data.access_token !== undefined) {
             setAccessToken(data.access_token);
             sessionStorage.setItem('bearer', data.access_token);
+            sessionStorage.setItem('isAuthenticated', true);
             setAuth(true);
           } else {
             setOpen(true);
@@ -43,8 +44,14 @@ function Login() {
       if (isAuthenticated) {
         console.log("authenticated")
         console.log(accessToken)
+        
 
-        return <Search />;
+        return <Search 
+        accessToken={accessToken}
+        isAuthenticated={isAuthenticated}
+        setAccessToken={setAccessToken}
+        setAuth={setAuth}
+          />;
       }
       else {  
         return(

@@ -3,8 +3,11 @@ import { SERVER_URL } from '../constants.js'
 import './BookingCard.css';
 
 
-function BookingCard({ person, onClose }) {
+function BookingCard({ person, onClose, isAuthenticated}) {
  
+  console.log("booking card isauthenticated")
+  console.log(isAuthenticated)
+
   const [bookings, setBookings] = useState([]);
 
   useEffect(() => {

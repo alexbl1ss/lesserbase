@@ -2,9 +2,23 @@ import React, { useState, useEffect } from 'react';
 import './DetailCard.css';
 import AddPayment from './AddPayment';
 import  { SERVER_URL } from '../constants.js'
+import InvoicePage from './InvoicePage';
 
-function DetailCard({ person, onClose, handlePaymentAdded }) {
+function DetailCard({ person, onClose, handlePaymentAdded, accessToken, isAuthenticated, setAccessToken, setAuth }) {
 
+  console.log("detail card isauthenticated")
+  console.log(isAuthenticated)
+
+  const handleLaunchInvoice = () => {
+    const invoiceData = {
+      studentName: person.studentName,
+      studentSurname: person.studentSurname,
+      // Add more data as needed
+    };
+    sessionStorage.setItem('invoiceData', JSON.stringify(invoiceData));
+    window.open('/invoice', '_blank');
+  };
+  
   let imgPath;
   if (person.studentGender === 'male') {
     const maleImgPaths = [
@@ -41,12 +55,14 @@ function DetailCard({ person, onClose, handlePaymentAdded }) {
       console.error(err);
     }
   };  
+
   const { id, studentName, studentSurname, dateAdded, mtRef, studentDob, studentGender, studentNationality, englishLevel, roomRequirements, photoPermissions, classRequirements, allergies, notes, arrivalDate, departureDate } = person;
 
   return (
     <React.Fragment>
-<AddPayment addPayment={addPayment} studentId={person.id} handlePaymentAdded={handlePaymentAdded} /> 
-          <div className="detail-card">
+      <AddPayment addPayment={addPayment} studentId={person.id} handlePaymentAdded={handlePaymentAdded} /> 
+      <button variant="contained" onClick={handleLaunchInvoice}>Launch Invoice</button>
+      <div className="detail-card">
       <button className="close-btn" onClick={onClose}>X</button>
       <div className="left-column">
       <img className="br-100 h3 w3 dib" alt={person.id} src={imgPath} />
@@ -69,7 +85,7 @@ function DetailCard({ person, onClose, handlePaymentAdded }) {
         <p><strong>Departure Date:</strong> {departureDate}</p>
       </div>
     </div>
-    </React.Fragment>
+     </React.Fragment>
   );
 }
 

@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { SERVER_URL } from '../constants.js'
 
-function PaymentsCard({ person, onClose, paymentAdded }) { // <-- add paymentAdded as a prop
+function PaymentsCard({ person, onClose, paymentAdded, isAuthenticated }) { // <-- add paymentAdded as a prop
+  console.log("payments card isauthenticated")
+  console.log(isAuthenticated)
+
   const [payments, setPayments] = useState([]);
 
   useEffect(() => {
