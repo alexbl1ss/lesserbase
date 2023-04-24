@@ -17,14 +17,14 @@ const payments = JSON.parse(sessionStorage.getItem('payments'));
 
 
 function InvoicePage() {
+console.log("got here safely")
+const totalActualCharge = bookings && bookings.length ? bookings.reduce((acc, booking) => {
+  return acc + booking.actualCharge;
+}, 0) : 0;
 
-  const totalActualCharge = bookings.reduce((acc, booking) => {
-    return acc + booking.actualCharge;
-  }, 0);
-
-  const totalAlreadyPaid = payments.reduce((acc, payment) => {
-    return acc + payment.paymentamount;
-  }, 0);
+const totalAlreadyPaid = payments && payments.length ? payments.reduce((acc, payment) => {
+  return acc + payment.paymentamount;
+}, 0) : 0;  console.log("got here safely?")
 
   const outstandingBalance = totalActualCharge - totalAlreadyPaid;
 
@@ -97,31 +97,39 @@ function InvoicePage() {
           <div className="bookings-container">
             <table className="bookings-table">
               <tbody>
-                {bookings.map((booking) => (
-                  <tr key={booking.bookingId}>
-                    <td>{booking.productName}</td>
-                    <td>{booking.startDate}</td>
-                    <td>{booking.endDate}</td>
-                    <td>£ {booking.actualCharge} GBP</td>
-                  </tr>
-                ))}
-                <tr>
-                  <td></td>
-                  <td></td>
+              {bookings ? (
+  bookings.map((booking) => (
+    <tr key={booking.bookingId}>
+      <td>{booking.productName}</td>
+      <td>{booking.startDate}</td>
+      <td>{booking.endDate}</td>
+      <td>£ {booking.actualCharge} GBP</td>
+    </tr>
+  ))
+) : (
+  <tr>
+    <td colSpan="4">No bookings found</td>
+  </tr>
+)}                <tr>
+                  <td colSpan="2"></td>
                   <td><strong>Total:</strong></td>
                   <td>£ {totalActualCharge} GBP</td>
                 </tr>
-                {payments.map((payment) => (
-                  <tr key={payment.id}>
-                    <td></td>
-                    <td>Payment Received</td>
-                    <td>{payment.paymentdate}</td>
-                    <td>£ {payment.paymentamount} GBP</td>
-                  </tr>
-                ))}
+                {payments ? (
+  payments.map((payment) => (
+    <tr key={payment.id}>
+      <td></td>
+      <td>Payment Received</td>
+      <td>{payment.paymentdate}</td>
+      <td>£ {payment.paymentamount} GBP</td>
+    </tr>
+  ))
+) : (
+  <tr>
+  </tr>
+)}
                 <tr>
-                  <td></td>
-                  <td></td>
+                  <td colSpan="2"></td>
                   <td><strong>Balance Due:</strong></td>
                   <td>£ {outstandingBalance} GBP</td>
                 </tr>
