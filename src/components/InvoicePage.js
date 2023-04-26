@@ -17,14 +17,13 @@ const payments = JSON.parse(sessionStorage.getItem('payments'));
 
 
 function InvoicePage() {
-console.log("got here safely")
 const totalActualCharge = bookings && bookings.length ? bookings.reduce((acc, booking) => {
   return acc + booking.actualCharge;
 }, 0) : 0;
 
 const totalAlreadyPaid = payments && payments.length ? payments.reduce((acc, payment) => {
   return acc + payment.paymentamount;
-}, 0) : 0;  console.log("got here safely?")
+}, 0) : 0;  
 
   const outstandingBalance = totalActualCharge - totalAlreadyPaid;
 
@@ -91,7 +90,7 @@ const totalAlreadyPaid = payments && payments.length ? payments.reduce((acc, pay
           </div>
           <p style={{ textAlign: 'right' }}>
             <div>Date: {formattedDate}</div>  
-            <div>Invoice number: 2112</div>
+            <div>Invoice number: {student.mtRef}-01</div>
           </p>
           <h2>Booked Items</h2>
           <div className="bookings-container">
@@ -111,16 +110,13 @@ const totalAlreadyPaid = payments && payments.length ? payments.reduce((acc, pay
     <td colSpan="4">No bookings found</td>
   </tr>
 )}                <tr>
-                  <td colSpan="2"></td>
-                  <td><strong>Total:</strong></td>
+                  <td colSpan="3" style={{ textAlign: 'right' }}><strong>Total:</strong></td>
                   <td>£ {totalActualCharge} GBP</td>
                 </tr>
                 {payments ? (
   payments.map((payment) => (
     <tr key={payment.id}>
-      <td></td>
-      <td>Payment Received</td>
-      <td>{payment.paymentdate}</td>
+       <td colSpan="3" style={{ textAlign: 'right' }}>Payment Received {payment.paymentdate}</td>
       <td>£ {payment.paymentamount} GBP</td>
     </tr>
   ))
@@ -129,8 +125,7 @@ const totalAlreadyPaid = payments && payments.length ? payments.reduce((acc, pay
   </tr>
 )}
                 <tr>
-                  <td colSpan="2"></td>
-                  <td><strong>Balance Due:</strong></td>
+                  <td colSpan="3" style={{ textAlign: 'right' }}><strong>Balance Due:</strong></td>
                   <td>£ {outstandingBalance} GBP</td>
                 </tr>
               </tbody>
