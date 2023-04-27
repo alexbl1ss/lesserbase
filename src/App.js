@@ -10,7 +10,7 @@ function App() {
       <AppBar position="static">
         <Toolbar>
           <Typography variant="h6">
-            CarShop
+            Bliss Bill View
           </Typography>
         </Toolbar>
       </AppBar>

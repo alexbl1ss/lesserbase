@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import './DetailCard.css';
 import AddPayment from './AddPayment';
 import  { SERVER_URL } from '../constants.js'
 
