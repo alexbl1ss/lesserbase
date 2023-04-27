@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { SERVER_URL } from '../../constants.js'
 import '../AgentsCard.css';
+import AddAgent from '../AddAgent.js';
+import EditAgent from '../EditAgent.js';
 
 function StudentAgents(props) {
   const { selectedPerson } = props;
@@ -25,13 +27,49 @@ function StudentAgents(props) {
     fetchAgents();
   }, [fetchAgents]);
 
-  //        <button onClick={handleUpdate}>Update Agents</button> {/* new button */}
+  const addAgent = (agent) => {
+    const token = sessionStorage.getItem("bearer"); 
 
-//  const handleUpdate = () => {
-//    setUpdateAgents(!updateAgents); // toggle updateAgents state variable
-//  }
+    fetch(`${SERVER_URL}api/students/${selectedPerson.id}/agents`,
+      { method: 'POST', headers: {
+        'Content-Type':'application/json',
+        'Authorization' : `Bearer ${token}`
+      },
+      body: JSON.stringify(agent)
+    })
+    .then(response => {
+      if (response.ok) {
+        fetchAgents();
+      }
+      else {
+        alert('Something went wrong!');
+      }
+    })
+    .catch(err => console.error(err))
+  }
 
-  return (
+  const editAgent = (agent, id) => {
+    const token = sessionStorage.getItem("bearer"); 
+
+    fetch(`${SERVER_URL}api/agents/${id}`,
+      { method: 'PUT', headers: {
+        'Content-Type':'application/json',
+        'Authorization' : `Bearer ${token}`
+      },
+      body: JSON.stringify(agent)
+    })
+    .then(response => {
+      if (response.ok) {
+        fetchAgents();
+      }
+      else {
+        alert('Something went wrong!');
+      }
+    })
+    .catch(err => console.error(err))
+  }
+
+   return (
     <React.Fragment>
       <div className="detail-card agent-card">
         <table style={{ width: '80%', textAlign: 'left', margin: 'auto', borderCollapse: 'collapse' }}>
@@ -51,7 +89,11 @@ function StudentAgents(props) {
                 <td>{agent.agentType}</td>
                 <td>{agent.agentName}</td>
                 <td>{agent.commission}</td>
-                <td>{agent.commissionRate}</td>
+                <td>{agent.commissionRate}</td>   
+                <td>
+                <EditAgent passedAgent={agent} editAgent={editAgent} />
+                </td>
+             
               </tr>
             ))}
           </tbody>
@@ -61,6 +103,7 @@ function StudentAgents(props) {
         <p>Student: {selectedPerson.id}</p>
         <p>Is authenticated: {sessionStorage.getItem('isAuthenticated').toString()}</p>
       </div>
+      <AddAgent addAgent={addAgent} />
     </React.Fragment>
   );
 }
