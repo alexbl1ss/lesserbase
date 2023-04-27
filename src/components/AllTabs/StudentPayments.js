@@ -11,7 +11,15 @@ function StudentPayments(props) {
     fetch(`${SERVER_URL}api/payments/${selectedPerson.id}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (response.status === 204) { 
+          return [];
+        } else if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error('Failed to fetch payments');
+        }
+      })
       .then((data) => {
         sessionStorage.setItem('payments', JSON.stringify(data));
         setPayments(data);

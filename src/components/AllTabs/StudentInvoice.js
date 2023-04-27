@@ -16,15 +16,25 @@ function StudentInvoice(props) {
     fetch(`${SERVER_URL}api/student/${selectedPerson.id}/booking`, {
       headers: { Authorization: `Bearer ${token}` },
     })
-    .then((response) => response.json())
-    .then((data) => {
-      sessionStorage.setItem('bookings', JSON.stringify(data));
-      setBookings(data);})
-    .catch((err) => console.error(err));
-    }, [selectedPerson.id]);
-  useEffect(() => {
+      .then((response) => {
+        if (response.status === 204) {
+          return [];
+        } else if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error('Failed to fetch bookings');
+        }
+      })
+      .then((data) => {
+        sessionStorage.setItem('bookings', JSON.stringify(data));
+        setBookings(data);
+      })
+      .catch((err) => console.error(err));
+  }, [selectedPerson.id]);
+ useEffect(() => {
     fetchBookings();
   }, [fetchBookings]);
+
 
   const [payments, setPayments] = useState([]);
   const fetchPayments = useCallback(() => {
@@ -32,7 +42,15 @@ function StudentInvoice(props) {
     fetch(`${SERVER_URL}api/payments/${selectedPerson.id}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (response.status === 204) { 
+          return [];
+        } else if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error('Failed to fetch payments');
+        }
+      })
       .then((data) => {
         sessionStorage.setItem('payments', JSON.stringify(data));
         setPayments(data);

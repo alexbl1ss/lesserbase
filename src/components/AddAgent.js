@@ -5,9 +5,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
-import  Checkbox from '@mui/material/Checkbox';
 import Stack from '@mui/material/Stack';
-import FormControlLabel from '@mui/material/Stack';
 
 function AddAgent(props) {
     const [open, setOpen] = useState(false);

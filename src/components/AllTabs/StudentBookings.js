@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { SERVER_URL } from '../../constants.js'
 import '../BookingCard.css';
+import EditBooking from '../EditBooking.js';
 
 function StudentBookings(props) {
   const { selectedPerson } = props;
@@ -11,18 +12,83 @@ function StudentBookings(props) {
     fetch(`${SERVER_URL}api/student/${selectedPerson.id}/booking`, {
       headers: { Authorization: `Bearer ${token}` },
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (response.status === 204) {
+          return [];
+        } else if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error('Failed to fetch bookings');
+        }
+      })
       .then((data) => {
         sessionStorage.setItem('bookings', JSON.stringify(data));
-        setBookings(data);})
+        setBookings(data);
+      })
       .catch((err) => console.error(err));
   }, [selectedPerson.id]);
+
   useEffect(() => {
     fetchBookings();
   }, [fetchBookings]);
 
-
+  const editBooking = (booking, id) => {
+    const token = sessionStorage.getItem("bearer"); 
+    fetch(`${SERVER_URL}api/bookings/${id}`,
+      { method: 'PUT', headers: {
+        'Content-Type':'application/json',
+        'Authorization' : `Bearer ${token}`
+      },
+      body: JSON.stringify(booking)
+    })
+    .then(response => {
+      if (response.ok) {
+        fetchBookings();
+      }
+      else {
+        alert('Something went wrong!');
+      }
+    })
+    .catch(err => console.error(err))
+  }
  
+  const deleteBooking = (event, booking) => {
+    event.preventDefault();
+  
+    const token = sessionStorage.getItem("bearer");
+    const id = booking.id;
+    
+    fetch(`${SERVER_URL}api/bookings/${booking}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      method: 'GET'
+    })
+      .then(response => response.json())
+      .then(data => {
+        const productId = data.product.id;
+        
+        return fetch(`${SERVER_URL}api/bookings/${booking}/product/${productId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          method: 'DELETE'
+        })
+      })
+      .then(response => {
+
+        if (response.ok) {
+          fetchBookings();
+        }
+        else {
+          alert('Something went wrong!');
+        }
+      })
+      .catch(err => console.error(err))
+  }
+      
   return(
     <React.Fragment>
     <div className="detail-card booking-card">
@@ -48,6 +114,12 @@ function StudentBookings(props) {
               <td>{booking.defaultRate}</td>
               <td>{booking.actualCharge}</td>
               <td>{booking.bookingStatus}</td>
+              <td>
+                <EditBooking passedBooking={booking} editBooking={editBooking} />
+              </td>
+              <td>
+              <button onClick={(event) => deleteBooking(event, booking.bookingId)}>Delete</button>
+              </td>
             </tr>
           ))}
         </tbody>
