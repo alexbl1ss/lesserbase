@@ -56,7 +56,6 @@ function StudentBookings(props) {
     event.preventDefault();
   
     const token = sessionStorage.getItem("bearer");
-    const id = booking.id;
     
     fetch(`${SERVER_URL}api/bookings/${booking}`, {
       headers: {
@@ -91,7 +90,7 @@ function StudentBookings(props) {
       
   return(
     <React.Fragment>
-    <div className="detail-card booking-card">
+    <div className="detail-card booking-card" style={{ padding: '20px 0' }}>
     <table style={{ width: '80%', textAlign: 'left', margin: 'auto', borderCollapse: 'collapse' }}>
         <thead>
           <tr>
@@ -125,9 +124,9 @@ function StudentBookings(props) {
         </tbody>
       </table>
     </div>
-      <div>
-        <p>Student: {selectedPerson.id}</p>
-        <p>Is authenticated: {sessionStorage.getItem('isAuthenticated').toString()}</p>
+    <div>
+        <p style={{ color: '#999999', fontSize: '10px' }}>Student: {selectedPerson.id}</p>
+        <p style={{ color: '#999999', fontSize: '10px' }}>Is authenticated: {sessionStorage.getItem('isAuthenticated').toString()}</p>
       </div>
     </React.Fragment>
 );

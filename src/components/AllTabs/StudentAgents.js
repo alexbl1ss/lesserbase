@@ -71,7 +71,7 @@ function StudentAgents(props) {
 
    return (
     <React.Fragment>
-      <div className="detail-card agent-card">
+      <div className="detail-card agent-card" style={{ padding: '20px 0' }}>
         <table style={{ width: '80%', textAlign: 'left', margin: 'auto', borderCollapse: 'collapse' }}>
           <thead>
             <tr>
@@ -93,17 +93,16 @@ function StudentAgents(props) {
                 <td>
                 <EditAgent passedAgent={agent} editAgent={editAgent} />
                 </td>
-             
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-      <div>
-        <p>Student: {selectedPerson.id}</p>
-        <p>Is authenticated: {sessionStorage.getItem('isAuthenticated').toString()}</p>
-      </div>
       <AddAgent addAgent={addAgent} />
+      <div>
+        <p style={{ color: '#999999', fontSize: '10px' }}>Student: {selectedPerson.id}</p>
+        <p style={{ color: '#999999', fontSize: '10px' }}>Is authenticated: {sessionStorage.getItem('isAuthenticated').toString()}</p>
+      </div>
     </React.Fragment>
   );
 }

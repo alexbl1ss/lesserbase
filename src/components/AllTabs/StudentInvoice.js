@@ -119,10 +119,10 @@ function StudentInvoice(props) {
         <div>Check in: {selectedPerson.arrivalDate}</div>
         <div>Check out: {selectedPerson.departureDate}</div>
       </div>
-      <p style={{ textAlign: 'right' }}>
-        <div>Date: {formattedDate}</div>
-        <div>Invoice number: {selectedPerson.mtRef}-01</div>
-      </p>
+      <div style={{ textAlign: 'right' }}>
+        <p>Date: {formattedDate}</p>
+        <p>Invoice number: {selectedPerson.mtRef}-01</p>
+      </div>
       <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
         <div style={{ textAlign: "center" }}>
           <h2>Booked Items</h2>
@@ -173,9 +173,9 @@ function StudentInvoice(props) {
     </div>
     <button onClick={generatePDF} type="button">Save PDF</button>
     <div>
-      <p>Student: {selectedPerson.id}</p>
-      <p>Is authenticated: {sessionStorage.getItem('isAuthenticated').toString()}</p>
-    </div>
+        <p style={{ color: '#999999', fontSize: '10px' }}>Student: {selectedPerson.id}</p>
+        <p style={{ color: '#999999', fontSize: '10px' }}>Is authenticated: {sessionStorage.getItem('isAuthenticated').toString()}</p>
+      </div>
   </React.Fragment>
 </Container>
   );

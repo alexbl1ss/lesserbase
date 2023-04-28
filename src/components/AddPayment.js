@@ -8,9 +8,10 @@ import TextField from '@mui/material/TextField';
 import Stack from '@mui/material/Stack';
 
 function AddPayment(props) {
+
     const [open, setOpen] = useState(false);
     const [payment, setPayment] = useState({
-        studentid: props.studentId,
+        studentId: props.studentId,
         paymentamount: '',
         paymentaccount: '',
         paymentdate: ''
@@ -28,15 +29,7 @@ function AddPayment(props) {
 
     const handleSave = () => {
         props.addPayment(payment)
-        .then(() => {
-            console.log("calling handlepaymentmethod from add payment handle save")
-            props.handlePaymentAdded(); // <-- call the function to refresh PaymentsCard
-            handleClose();
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      
+        handleClose();
     }
 
     const handleChange = (event) => {
@@ -50,9 +43,9 @@ function AddPayment(props) {
                 <DialogTitle>Record A Payment</DialogTitle>
                 <DialogContent>
                     <Stack spacing={2} mt={1}> 
-                        <TextField label="Student DB ref ID" name="studentid" 
+                        <TextField label="Student DB ref ID" name="studentId" 
                             autoFocus 
-                            variant="standard" value={payment.studentid} 
+                            variant="standard" value={payment.studentId} 
                             InputProps={{
                                 readOnly: true,
                             }} />

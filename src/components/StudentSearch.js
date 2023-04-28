@@ -35,7 +35,7 @@ function StudentSearch(props) {
           <SearchList
             filteredPersons={filteredPersons}
             handleCardClick={handleCardClick}
-            maxCards={8}
+            maxCards={80}
           />
         </Scroll>
       );
@@ -93,8 +93,7 @@ function StudentSearch(props) {
         {searchList()}
         {showTabs()}
         <div>
-          <p>Access token: {sessionStorage.getItem('bearer')}</p>
-          <p>Is authenticated: {sessionStorage.getItem('isAuthenticated').toString()}</p>
+        <p style={{ color: '#999999', fontSize: '10px' }}>Is authenticated: {sessionStorage.getItem('isAuthenticated').toString()}</p>
         </div>
       </form>
     </section>

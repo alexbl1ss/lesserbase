@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { SERVER_URL } from '../../constants.js'
 import '../PaymentsCard.css';
+import AddPayment from '../AddPayment.js';
 
 function StudentPayments(props) {
   const { selectedPerson } = props;
@@ -31,9 +32,41 @@ function StudentPayments(props) {
     fetchPayments();
   }, [fetchPayments]);
 
+  const addPayment = (payment) => {
+    const token = sessionStorage.getItem("bearer"); 
+
+    fetch(`${SERVER_URL}api/payments/${selectedPerson.id}`,
+      { method: 'POST', headers: {
+        'Content-Type':'application/json',
+        'Authorization' : `Bearer ${token}`
+      },
+      body: JSON.stringify(payment)
+    })
+    .then(response => {
+      if (response.ok) {
+        fetchPayments();
+      }
+      else {
+        alert('Something went wrong!');
+      }
+    })
+    .catch(err => console.error(err))
+  }
+
+  const deletePayment = (event, payment) => {
+    event.preventDefault();
+  
+    const token = sessionStorage.getItem("bearer");
+    const id = payment.id;
+
+    console.log(token + " " + id)
+    alert("that button doesn't do anything yet")
+    
+  }
+
   return(
     <React.Fragment>
-        <div className="detail-card payments-card">
+        <div className="detail-card payments-card" style={{ padding: '20px 0' }}>
         <table style={{ width: '80%', textAlign: 'left', margin: 'auto', borderCollapse: 'collapse' }}>
             <thead>
               <tr>
@@ -48,16 +81,20 @@ function StudentPayments(props) {
                 <tr key={payment.id}>
                   <td>{payment.id}</td>
                   <td>{payment.paymentdate}</td>
-                  <td>{payment.paymentamount}</td>
+                  <td>£ {payment.paymentamount}</td>
                   <td>{payment.paymentaccount}</td>
+                  <td>
+                    <button onClick={(event) => deletePayment(event, payment)}>Delete</button>
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-      <div>
-      <p>Student: {selectedPerson.id}</p>
-        <p>Is authenticated: {sessionStorage.getItem('isAuthenticated').toString()}</p>
+        <AddPayment studentId={selectedPerson.id} addPayment={addPayment} />
+        <div>
+        <p style={{ color: '#999999', fontSize: '10px' }}>Student: {selectedPerson.id}</p>
+        <p style={{ color: '#999999', fontSize: '10px' }}>Is authenticated: {sessionStorage.getItem('isAuthenticated').toString()}</p>
       </div>
     </React.Fragment>
 );

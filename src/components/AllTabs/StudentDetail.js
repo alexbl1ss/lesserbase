@@ -27,7 +27,7 @@ function StudentDetail(props) {
 
   return (
     <React.Fragment>
-      <div className="detail-card">
+      <div className="detail-card" style={{ padding: '20px 0' }}>
         <table style={{ width: '80%', textAlign: 'left', margin: 'auto', borderCollapse: 'collapse' }}>
           <tbody>
             <tr>
@@ -56,6 +56,11 @@ function StudentDetail(props) {
           </tbody>
         </table>
       </div>
+      <div>
+        <p style={{ color: '#999999', fontSize: '10px' }}>Student: {selectedPerson.id}</p>
+        <p style={{ color: '#999999', fontSize: '10px' }}>Is authenticated: {sessionStorage.getItem('isAuthenticated').toString()}</p>
+      </div>
+
     </React.Fragment>
   );
 }
