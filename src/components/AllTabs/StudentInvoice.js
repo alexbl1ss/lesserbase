@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Container from '@mui/material/Container';
+import { toPng } from 'html-to-image';
 import jsPDF from 'jspdf';
 import '../InvoicePage.css';
 import { SERVER_URL } from '../../constants.js'
@@ -94,6 +95,56 @@ function StudentInvoice(props) {
     });
   }
 
+  const generatePDF2 = () => {
+    // Get the report element
+    const report = document.getElementById('report');
+  
+    // Convert the report to an image
+    toPng(report)
+      .then(function (dataUrl) {
+        // Create a new PDF document
+        const pdf = new jsPDF();
+  
+        // Set the width of the image to 80% of the PDF page width
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const imageWidth = 0.8 * pageWidth;
+  
+        // Calculate the height of the image based on the aspect ratio of the original image
+        const img = new Image();
+        img.src = dataUrl;
+        img.onload = function () {
+          const imageHeight = (img.height * imageWidth) / img.width;
+  
+          // Split the image across multiple pages if necessary
+          let yOffset = 0;
+          while (yOffset < imageHeight) {
+            // Calculate the height of the image on this page
+            const pageHeight = pdf.internal.pageSize.getHeight();
+            const remainingHeight = imageHeight - yOffset;
+            const heightOnPage = Math.min(remainingHeight, pageHeight);
+  
+            // Center the image horizontally on the PDF page
+            const x = (pageWidth - imageWidth) / 2;
+  
+            // Add the image to the PDF
+            pdf.addImage(dataUrl, 'PNG', x, yOffset, imageWidth, heightOnPage);
+  
+            // Add a new page if necessary
+            yOffset += heightOnPage;
+            if (yOffset < imageHeight) {
+              pdf.addPage();
+            }
+          }
+  
+          // Save the PDF
+          pdf.save('report.pdf');
+        };
+      })
+      .catch(function (error) {
+        console.error('Error generating PDF', error);
+      });
+  }
+    
   return (
 <Container
   fixed
@@ -172,6 +223,7 @@ function StudentInvoice(props) {
       </div>
     </div>
     <button onClick={generatePDF} type="button">Save PDF</button>
+    <button onClick={generatePDF2} type="button">Save PDF2</button>
     <div>
         <p style={{ color: '#999999', fontSize: '10px' }}>Student: {selectedPerson.id}</p>
         <p style={{ color: '#999999', fontSize: '10px' }}>Is authenticated: {sessionStorage.getItem('isAuthenticated').toString()}</p>

@@ -58,12 +58,28 @@ function StudentPayments(props) {
   
     const token = sessionStorage.getItem("bearer");
     const id = payment.id;
-
-    console.log(token + " " + id)
-    alert("that button doesn't do anything yet")
-    
+  
+    fetch(`${SERVER_URL}api/payments/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      }
+    })
+    .then(response => {
+      if (response.ok) {
+        fetchPayments();
+      } else {
+        alert("Error deleting payment");
+        console.error(response.statusText);
+      }
+    })
+    .catch(error => {
+      alert("Error deleting payment");
+      console.error(error);
+    });
   }
-
+  
   return(
     <React.Fragment>
         <div className="detail-card payments-card" style={{ padding: '20px 0' }}>
