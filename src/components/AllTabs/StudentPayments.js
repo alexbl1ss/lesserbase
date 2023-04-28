@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { SERVER_URL } from '../../constants.js'
 import '../PaymentsCard.css';
-import AddPayment from '../AddPayment.js';
+import AddPayment from '../AddsEdits/AddPayment.js';
 
 function StudentPayments(props) {
   const { selectedPerson } = props;

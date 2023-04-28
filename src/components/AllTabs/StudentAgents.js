@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { SERVER_URL } from '../../constants.js'
 import '../AgentsCard.css';
-import AddAgent from '../AddAgent.js';
-import EditAgent from '../EditAgent.js';
+import AddAgent from '../AddsEdits/AddAgent.js';
+import EditAgent from '../AddsEdits/EditAgent.js';
 
 function StudentAgents(props) {
   const { selectedPerson } = props;

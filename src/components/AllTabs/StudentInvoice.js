@@ -11,6 +11,23 @@ function StudentInvoice(props) {
   const today = new Date();
   const formattedDate = `${today.getDate()}/${today.getMonth() + 1}/${today.getFullYear()}`;
 
+  const [agents, setAgents] = useState([]);
+  const fetchAgents = useCallback(() => {
+    const token = sessionStorage.getItem('bearer');
+    fetch(`${SERVER_URL}api/students/${selectedPerson.id}/agents`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        sessionStorage.setItem('agents', JSON.stringify(data));
+        setAgents(data);
+      })
+      .catch((err) => console.error(err));
+  }, [selectedPerson.id]);
+
+  useEffect(() => {
+    fetchAgents();
+  }, [fetchAgents]);
   const [bookings, setBookings] = useState([]);
   const fetchBookings = useCallback(() => {
     const token = sessionStorage.getItem('bearer');
@@ -65,16 +82,33 @@ function StudentInvoice(props) {
   let blissLogoPath;
   blissLogoPath = process.env.PUBLIC_URL + "/assets/img/blissLogo.png";
 
-  const totalActualCharge = bookings && bookings.length ? bookings.reduce((acc, booking) => {
+  const totalCommission = agents && agents.length ? agents.reduce((acc, agent) => {
+    return acc + agent.commissionRate;
+  }, 0) : 0;
+  const factor = (100 - totalCommission) / 100;
+
+
+  const totalGrossCharge = bookings && bookings.length ? bookings.reduce((acc, booking) => {
     return acc + booking.actualCharge;
+  }, 0) : 0;
+  
+  const totalNetCharge = bookings && bookings.length ? bookings.reduce((acc, booking) => {
+    if (booking.commissionable) 
+    {
+      return acc + booking.actualCharge * factor;
+    } else {
+      return acc + booking.actualCharge;
+    }
   }, 0) : 0;
   
   const totalAlreadyPaid = payments && payments.length ? payments.reduce((acc, payment) => {
     return acc + payment.paymentamount;
   }, 0) : 0;  
   
-  const outstandingBalance = totalActualCharge - totalAlreadyPaid;
-  
+  const outstandingBalanceGross = totalGrossCharge - totalAlreadyPaid;
+  const outstandingBalanceNet = totalNetCharge - totalAlreadyPaid;
+  const [gross, setGross] = useState(false);
+
   let rcpinv;
   let rcpinvalt;
   if(totalAlreadyPaid===0){
@@ -188,7 +222,7 @@ function StudentInvoice(props) {
                   <td>{booking.productName}</td>
                   <td>{booking.startDate}</td>
                   <td>{booking.endDate}</td>
-                  <td>£ {booking.actualCharge} GBP</td>
+                  <td>£ {booking.commissionable && !gross ? booking.actualCharge * factor : booking.actualCharge} GBP</td>
                 </tr>
               ))
             ) : (
@@ -198,7 +232,7 @@ function StudentInvoice(props) {
             )}
             <tr>
               <td colSpan="3" style={{ textAlign: 'right' }}><strong>Total:</strong></td>
-              <td>£ {totalActualCharge} GBP</td>
+              <td>£ {gross ? totalGrossCharge: totalNetCharge} GBP</td>
             </tr>
             {payments ? (
               payments.map((payment) => (
@@ -212,7 +246,7 @@ function StudentInvoice(props) {
             )}
             <tr>
               <td colSpan="3" style={{ textAlign: 'right' }}><strong>Balance Due:</strong></td>
-              <td>£ {outstandingBalance} GBP</td>
+              <td>£ {gross ? outstandingBalanceGross: outstandingBalanceNet} GBP</td>
             </tr>
           </tbody>
         </table>
@@ -222,6 +256,7 @@ function StudentInvoice(props) {
         <img alt="info@brownleeschools.com" src={footer} style={{ height: '80px', width: '200px', marginTop: '35px'}}/>
       </div>
     </div>
+    <button onClick={() => setGross(!gross)} type="button">Gross/Net</button>
     <button onClick={generatePDF} type="button">Save PDF</button>
     <button onClick={generatePDF2} type="button">Save PDF2</button>
     <div>
