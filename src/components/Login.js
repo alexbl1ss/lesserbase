@@ -3,14 +3,12 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Stack from '@mui/material/Stack';
 import Snackbar from '@mui/material/Snackbar';
-import Search from './components/Search.js';
+import StudentSearch from './StudentSearch';
 
-import { SERVER_URL } from './constants.js';
+import { SERVER_URL } from '../constants.js';
 
 function Login() {
-  const [accessToken, setAccessToken] = useState(null);
   const [isAuthenticated, setAuth] = useState(false);
-
   const [user, setUser] = useState({
         email: '', 
         password: ''
@@ -29,9 +27,8 @@ function Login() {
         })
         .then(response => response.json())
         .then(data => {
-          console.log(data.access_token);
           if (data.access_token !== undefined) {
-            setAccessToken(data.access_token);
+            //setAccessToken(data.access_token);
             sessionStorage.setItem('bearer', data.access_token);
             sessionStorage.setItem('isAuthenticated', true);
             setAuth(true);
@@ -42,16 +39,7 @@ function Login() {
         .catch(err => console.error(err));
       };        
       if (isAuthenticated) {
-        console.log("authenticated")
-        console.log(accessToken)
-        
-
-        return <Search 
-        accessToken={accessToken}
-        isAuthenticated={isAuthenticated}
-        setAccessToken={setAccessToken}
-        setAuth={setAuth}
-          />;
+        return <StudentSearch  />;
       }
       else {  
         return(
