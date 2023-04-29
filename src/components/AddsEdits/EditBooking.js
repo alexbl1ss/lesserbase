@@ -16,7 +16,8 @@ function EditBooking(props) {
   const [booking, setBooking] = useState({
     bookingId: passedBooking.bookingId,
     actualCharge: passedBooking.actualCharge,
-    bookingStatus: passedBooking.bookingStatus
+    bookingStatus: passedBooking.bookingStatus,
+    notes: passedBooking.notes
 });
 
     // Open the modal form and update the car state
@@ -24,7 +25,8 @@ function EditBooking(props) {
         setBooking({
           bookingId: passedBooking.bookingId,
           actualCharge: passedBooking.actualCharge,
-          bookingStatus: passedBooking.bookingStatus
+          bookingStatus: passedBooking.bookingStatus,
+          notes: passedBooking.notes
         })      
         setOpen(true);
       }
@@ -42,7 +44,7 @@ function EditBooking(props) {
         setBooking({...booking, [event.target.name]: value});
       }
           
-      // Update car and close modal form 
+      // Update booking and close modal form 
       const handleSave = () => {
         props.editBooking(booking, passedBooking.bookingId);
         handleClose();
@@ -52,7 +54,7 @@ function EditBooking(props) {
         <div>
           <IconButton onClick={handleClickOpen}><EditIcon color="primary"/></IconButton>
           <Dialog open={open} onClose={handleClose}>
-              <DialogTitle>Edit car</DialogTitle>
+              <DialogTitle>Edit booking</DialogTitle>
               <DialogContent>
                 <Stack spacing={2} mt={1}> 
                 <TextField label="actualCharge" name="actualCharge" 
@@ -60,6 +62,9 @@ function EditBooking(props) {
                     onChange={handleChange}/> 
                   <TextField label="PROVISIONAL,CONFIRMED,PAID" name="bookingStatus" 
                     variant="standard" value={booking.bookingStatus} 
+                    onChange={handleChange}/> 
+                  <TextField label="notes" name="notes" 
+                    variant="standard" value={booking.notes} 
                     onChange={handleChange}/> 
                 </Stack>
               </DialogContent>    

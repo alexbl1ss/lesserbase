@@ -12,12 +12,12 @@ function StudentSearch(props) {
     
   const filteredPersons = students.filter(
     (person) =>
-      person.studentName.toLowerCase().includes(searchField.toLowerCase()) ||
-      person.studentSurname.toLowerCase().includes(searchField.toLowerCase()) ||
-      person.mtRef.toLowerCase().includes(searchField.toLowerCase()) ||
-      person.studentNationality.toLowerCase().includes(searchField.toLowerCase())
+      (person.studentName?.toLowerCase().includes(searchField.toLowerCase()) || 
+       person.studentSurname?.toLowerCase().includes(searchField.toLowerCase()) ||
+       person.mtRef?.toLowerCase().includes(searchField.toLowerCase()) ||
+       person.studentNationality?.toLowerCase().includes(searchField.toLowerCase()))
   );
-  
+    
   const handleCardClick = (person) => {
     setSelectedPerson(person);
     setSearchShow(false);

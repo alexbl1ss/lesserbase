@@ -101,6 +101,7 @@ function StudentBookings(props) {
             <th>Default Rate</th>
             <th>Actual Charge</th>
             <th>Booking Status</th>
+            <th>Booking Notes</th>
           </tr>
         </thead>
         <tbody>
@@ -113,6 +114,7 @@ function StudentBookings(props) {
               <td>{booking.defaultRate}</td>
               <td>{booking.actualCharge}</td>
               <td>{booking.bookingStatus}</td>
+              <td>{booking.notes}</td>
               <td>
                 <EditBooking passedBooking={booking} editBooking={editBooking} />
               </td>

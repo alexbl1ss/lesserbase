@@ -8,8 +8,6 @@ function StudentAgents(props) {
   const { selectedPerson } = props;
 
   const [agents, setAgents] = useState([]);
-//  const [updateAgents, setUpdateAgents] = useState(false); // new state variable
-
   const fetchAgents = useCallback(() => {
     const token = sessionStorage.getItem('bearer');
     fetch(`${SERVER_URL}api/students/${selectedPerson.id}/agents`, {
