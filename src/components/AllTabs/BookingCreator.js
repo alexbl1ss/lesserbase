@@ -5,7 +5,7 @@ import '../BookingCard.css';
 function BookingCreator(props) {
   const { selectedPerson } = props;
   const [eligableProducts, setEligableProducts] = useState([]);
-  const [campus, setCampus] = useState('Kilgraston');
+  const [campus, setCampus] = useState('Strathallan');
   const [selectedProducts, setSelectedProducts] = useState([]);
 
 

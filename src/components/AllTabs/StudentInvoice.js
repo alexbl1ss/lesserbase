@@ -10,7 +10,14 @@ function StudentInvoice(props) {
   
   const today = new Date();
   const formattedDate = `${today.getDate()}/${today.getMonth() + 1}/${today.getFullYear()}`;
+ const [invoiceDate, setInvoiceDate] = useState(formattedDate);
+ 
+  const handleInvoiceDateChange = (event) => {
+    setInvoiceDate(event.target.value);
+  };
 
+
+ 
   const [agents, setAgents] = useState([]);
   const fetchAgents = useCallback(() => {
     const token = sessionStorage.getItem('bearer');
@@ -205,7 +212,7 @@ function StudentInvoice(props) {
         <div>Check out: {selectedPerson.departureDate}</div>
       </div>
       <div style={{ textAlign: 'right' }}>
-        <p>Date: {formattedDate}</p>
+        <p>Date: {invoiceDate}</p>
         <p>Invoice number: {selectedPerson.mtRef}-01</p>
       </div>
       <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
@@ -256,6 +263,7 @@ function StudentInvoice(props) {
         <img alt="info@brownleeschools.com" src={footer} style={{ height: '80px', width: '200px', marginTop: '35px'}}/>
       </div>
     </div>
+    <p>Date: <input type="text" value={invoiceDate} onChange={handleInvoiceDateChange} /></p>
     <button onClick={() => setGross(!gross)} type="button">Gross/Net</button>
     <button onClick={generatePDF} type="button">Save PDF</button>
     <button onClick={generatePDF2} type="button">Save PDF2</button>
