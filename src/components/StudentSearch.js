@@ -47,8 +47,19 @@ function StudentSearch(props) {
       fetch(`${SERVER_URL}api/students`, {
         headers: { Authorization: `Bearer ${token}` },
       })
-        .then((response) => response.json())
-        .then((data) => setStudents(data))
+      .then((response) => {
+        if (response.status === 204) {
+          return [];
+        } else if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error('Failed to fetch students');
+        }
+      })
+      .then((data) => {
+        sessionStorage.setItem('students', JSON.stringify(data));
+        setStudents(data);
+      })
         .catch((err) => console.error(err));
     };
   
