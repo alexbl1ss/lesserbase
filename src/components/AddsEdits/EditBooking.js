@@ -54,7 +54,7 @@ function EditBooking(props) {
         <div>
           <IconButton onClick={handleClickOpen}><EditIcon color="primary"/></IconButton>
           <Dialog open={open} onClose={handleClose}>
-              <DialogTitle>Edit booking</DialogTitle>
+              <DialogTitle>Edit Booking</DialogTitle>
               <DialogContent>
                 <Stack spacing={2} mt={1}> 
                 <TextField label="actualCharge" name="actualCharge" 

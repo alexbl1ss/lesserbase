@@ -35,6 +35,7 @@ function StudentInvoice(props) {
   useEffect(() => {
     fetchAgents();
   }, [fetchAgents]);
+
   const [bookings, setBookings] = useState([]);
   const fetchBookings = useCallback(() => {
     const token = sessionStorage.getItem('bearer');
@@ -59,7 +60,9 @@ function StudentInvoice(props) {
  useEffect(() => {
     fetchBookings();
   }, [fetchBookings]);
-
+    const sortedBookings = bookings.sort((a, b) => {
+    return new Date(a.startDate) - new Date(b.startDate);
+  });
 
   const [payments, setPayments] = useState([]);
   const fetchPayments = useCallback(() => {
@@ -114,7 +117,7 @@ function StudentInvoice(props) {
   
   const outstandingBalanceGross = totalGrossCharge - totalAlreadyPaid;
   const outstandingBalanceNet = totalNetCharge - totalAlreadyPaid;
-  const [gross, setGross] = useState(false);
+  const [gross, setGross] = useState(true);
 
   let rcpinv;
   let rcpinvalt;
@@ -223,8 +226,8 @@ function StudentInvoice(props) {
       <div className="bookings-container">
         <table className="bookings-table">
           <tbody>
-            {bookings ? (
-              bookings.map((booking) => (
+            {sortedBookings ? (
+              sortedBookings.map((booking) => (
                 <tr key={booking.bookingId}>
                   <td>{booking.productName}</td>
                   <td>{booking.startDate}</td>

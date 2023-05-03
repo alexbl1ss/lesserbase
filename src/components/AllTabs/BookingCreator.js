@@ -5,7 +5,7 @@ import '../BookingCard.css';
 function BookingCreator(props) {
   const { selectedPerson } = props;
   const [eligableProducts, setEligableProducts] = useState([]);
-  const [campus, setCampus] = useState('Strathallan');
+  const [campus, setCampus] = useState('Kilgraston');
   const [selectedProducts, setSelectedProducts] = useState([]);
 
 
@@ -34,6 +34,11 @@ function BookingCreator(props) {
     fetchEligableProducts();
   }, [fetchEligableProducts]);
 
+  const sortedProducts = eligableProducts.sort((a, b) => {
+    return new Date(a.startDate) - new Date(b.startDate);
+  });
+  
+  
   const handleCampusChange = () => {
     setCampus(campus === 'Kilgraston' ? 'Strathallan' : 'Kilgraston');
   }
@@ -77,7 +82,7 @@ const handleBookings = () => {
     
   return(
     <React.Fragment>
-    <button onClick={handleCampusChange}  type="button">Switch Campus</button>
+    <button onClick={handleCampusChange}  type="button">Kilgraston/Strathallan</button>
     <div className="detail-card booking-card" style={{ padding: '20px 0' }}>
       <table style={{ width: '80%', textAlign: 'left', margin: 'auto', borderCollapse: 'collapse' }}>
         <thead>
@@ -89,26 +94,30 @@ const handleBookings = () => {
             <th>End Date</th>
             <th>Capacity</th>
             <th>Allocated</th>
-            <th>Commission</th>
             <th>Default Rate</th>
             <th>book?</th>
           </tr>
         </thead>
         <tbody>
-          {eligableProducts.map((eligableProduct) => (
-            <tr key={eligableProduct.id}>
-              <td>{eligableProduct.id}</td>
-              <td>{eligableProduct.name}</td>
-              <td>{eligableProduct.base}</td>
-              <td>{eligableProduct.startDate}</td>
-              <td>{eligableProduct.endDate}</td>
-              <td>{eligableProduct.capacity}</td>
-              <td>{eligableProduct.allocated}</td>
-              <td>{eligableProduct.commissionable ? "YES" : "NO"}</td>
-              <td>{eligableProduct.defaultRate}</td>
-              <td><input type="checkbox" onChange={() => handleProductSelect(eligableProduct)} /></td>
-             </tr>
-          ))}
+        {sortedProducts.map((eligableProduct) => (
+          <tr key={eligableProduct.startDate}>
+          <td>{eligableProduct.id}</td>
+          <td>{eligableProduct.name}</td>
+          <td>{eligableProduct.base}</td>
+          <td>{eligableProduct.startDate}</td>
+          <td>{eligableProduct.endDate}</td>
+          <td>{eligableProduct.capacity}</td>
+          <td>{eligableProduct.allocated}</td>
+          <td>{eligableProduct.defaultRate}</td>
+          <td>
+          <input
+            type="checkbox"
+            disabled={eligableProduct.allocated >= eligableProduct.capacity}
+            onChange={() => handleProductSelect(eligableProduct)}
+          />
+        </td>
+      </tr>
+    ))}
         </tbody>
       </table>
     </div>
