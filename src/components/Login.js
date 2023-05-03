@@ -4,6 +4,7 @@ import TextField from '@mui/material/TextField';
 import Stack from '@mui/material/Stack';
 import Snackbar from '@mui/material/Snackbar';
 import StudentSearch from './StudentSearch';
+import WhoIsDoing from './WhoIsDoing';
 
 import { SERVER_URL } from '../constants.js';
 
@@ -39,7 +40,8 @@ function Login() {
         .catch(err => console.error(err));
       };        
       if (isAuthenticated) {
-        return <StudentSearch  />;
+        //return <StudentSearch  />;
+        return <WhoIsDoing />;
       }
       else {  
         return(
