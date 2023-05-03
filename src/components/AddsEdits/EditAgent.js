@@ -63,7 +63,7 @@ function EditAgent(props) {
         <div>
           <IconButton onClick={handleClickOpen}><EditIcon color="primary"/></IconButton>
           <Dialog open={open} onClose={handleClose}>
-              <DialogTitle>Edit car</DialogTitle>
+              <DialogTitle>Edit Agent</DialogTitle>
               <DialogContent>
                 <Stack spacing={2} mt={1}> 
                 <TextField label="agentName" name="agentName" 

@@ -32,6 +32,11 @@ function StudentBookings(props) {
     fetchBookings();
   }, [fetchBookings]);
 
+    const sortedBookings = bookings.sort((a, b) => {
+    return new Date(a.startDate) - new Date(b.startDate);
+  });
+  
+
   const editBooking = (booking, id) => {
     const token = sessionStorage.getItem("bearer"); 
     fetch(`${SERVER_URL}api/bookings/${id}`,
@@ -105,7 +110,7 @@ function StudentBookings(props) {
           </tr>
         </thead>
         <tbody>
-          {bookings.map((booking) => (
+          {sortedBookings.map((booking) => (
             <tr key={booking.bookingId}>
               <td>{booking.bookingId}</td>
               <td>{booking.productName}</td>
