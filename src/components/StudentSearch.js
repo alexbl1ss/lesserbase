@@ -15,7 +15,8 @@ function StudentSearch(props) {
       (person.studentName?.toLowerCase().includes(searchField.toLowerCase()) || 
        person.studentSurname?.toLowerCase().includes(searchField.toLowerCase()) ||
        person.mtRef?.toLowerCase().includes(searchField.toLowerCase()) ||
-       person.studentNationality?.toLowerCase().includes(searchField.toLowerCase()))
+       person.studentNationality?.toLowerCase().includes(searchField.toLowerCase()) ||
+       person.id.toString().includes(searchField.toLowerCase()))
   );
     
   const handleCardClick = (person) => {
