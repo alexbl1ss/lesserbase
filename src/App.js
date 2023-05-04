@@ -16,7 +16,7 @@ function App() {
             <Typography variant="h6">
               Bliss Bill View
             </Typography>
-            <Button color="inherit">Your Button Text</Button>
+            <Button color="inherit">Planner</Button>
           </Box>
         </Toolbar>
       </AppBar>
