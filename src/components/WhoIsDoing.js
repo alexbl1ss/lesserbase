@@ -10,9 +10,9 @@ function WhoIsDoing() {
   const [selectedDate, setSelectedDate] = useState(dayjs());
   const [activities, setActivities] = useState([]);
 
-  const fetchActivities = () => {
+  const fetchActivities = (formattedDate) => {
     const token = sessionStorage.getItem('bearer');
-    fetch(`${SERVER_URL}api/whoisdoing`, {
+    fetch(`${SERVER_URL}api/whoisdoing/${formattedDate}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((response) => {
@@ -33,9 +33,12 @@ function WhoIsDoing() {
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
-    fetchActivities();
+  
+    const formattedDate = date.format('YYYY-MM-DD');
+    console.log(formattedDate);
+    fetchActivities(formattedDate);
   };
-
+      
   const handleExportCSV = () => {
     
     const csvHeaderRow = "Student Id, Booking Id, Product Id, Product Name, Product Base, Student Name, Student Surname";
