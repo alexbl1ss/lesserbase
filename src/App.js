@@ -27,7 +27,8 @@ function App() {
 
   return (
     <div className="App">
-      <AppBar position="static">
+          <title>SBC</title>
+    <AppBar position="static">
         <Toolbar>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
             <Typography variant="h6">
