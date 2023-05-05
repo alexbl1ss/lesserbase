@@ -8,6 +8,7 @@ import Box from '@mui/material/Box';
 import Login from './components/Login';
 import StudentSearch from './components/StudentSearch';
 import WhoIsDoing from './components/WhoIsDoing';
+import { SERVER_URL } from './constants.js';
 
 function App() {
   const [isAuthenticated, setAuth] = useState(false);
@@ -24,6 +25,19 @@ function App() {
     setShowStudentSearch(false);
     setAuth(true);
   };
+
+  const handleLogout = () => {
+
+    const token = sessionStorage.getItem('bearer');
+    fetch(`${SERVER_URL}api/v1/auth/logout`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    .catch((err) => console.error(err));
+
+    sessionStorage.removeItem('isAuthenticated');
+    setAuth(false);
+  };
+  
 
   return (
     <div className="App">
@@ -52,6 +66,9 @@ function App() {
                 >
                   Planner
                 </Button>
+                <Button color="inherit" onClick={handleLogout}>
+            Logout
+          </Button>
               </Box>
             )}
           </Box>
