@@ -100,7 +100,7 @@ const handleBookings = () => {
         </thead>
         <tbody>
         {sortedProducts.map((eligableProduct) => (
-          <tr key={eligableProduct.startDate}>
+          <tr key={eligableProduct.id}>
           <td>{eligableProduct.id}</td>
           <td>{eligableProduct.name}</td>
           <td>{eligableProduct.base}</td>
