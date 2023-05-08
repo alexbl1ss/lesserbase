@@ -73,7 +73,7 @@ function EditAgent(props) {
                     variant="standard" value={agent.commission} 
                     onChange={handleChange}/> 
                   <TextField label="commissionRate" name="commissionRate" 
-                    variant="standard" value={agent.commissionRate} 
+                    variant="standard" type="number" value={agent.commissionRate} 
                     onChange={handleChange}/> 
                 </Stack>
               </DialogContent>    

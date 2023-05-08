@@ -58,7 +58,7 @@ function EditBooking(props) {
               <DialogContent>
                 <Stack spacing={2} mt={1}> 
                 <TextField label="actualCharge" name="actualCharge" 
-                    variant="standard" value={booking.actualCharge} 
+                     variant="standard" type="number" value={booking.actualCharge}  
                     onChange={handleChange}/> 
                   <TextField label="PROVISIONAL,CONFIRMED,PAID" name="bookingStatus" 
                     variant="standard" value={booking.bookingStatus} 
