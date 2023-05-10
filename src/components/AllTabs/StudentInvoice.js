@@ -255,7 +255,7 @@ function StudentInvoice(props) {
               <tr></tr>
             )}
             <tr>
-              <td colSpan="3" style={{ textAlign: 'right' }}><strong>Balance Due:</strong></td>
+              <td colSpan="3" style={{ textAlign: 'right' }}><strong>Balance Due 15th May:</strong></td>
               <td>£ {gross ? outstandingBalanceGross: outstandingBalanceNet} GBP</td>
             </tr>
           </tbody>
