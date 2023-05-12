@@ -7,11 +7,11 @@ function BookingCreator(props) {
   const [eligableProducts, setEligableProducts] = useState([]);
   const [campus, setCampus] = useState('Kilgraston');
   const [selectedProducts, setSelectedProducts] = useState([]);
-
+  const [searchPath, setSearchPath] = useState('UnselectedEligableProducts');
 
   const fetchEligableProducts = useCallback(() => {
     const token = sessionStorage.getItem('bearer');
-    fetch(`${SERVER_URL}api/products/UnselectedEligableProducts/student/${selectedPerson.id}/campus/${campus}`, {
+    fetch(`${SERVER_URL}api/products/${searchPath}/student/${selectedPerson.id}/campus/${campus}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((response) => {
@@ -28,7 +28,7 @@ function BookingCreator(props) {
         setEligableProducts(data);
       })
       .catch((err) => console.error(err));
-  }, [selectedPerson.id, campus]);
+  }, [selectedPerson.id, campus, searchPath]);
 
   useEffect(() => {
     fetchEligableProducts();
@@ -39,8 +39,12 @@ function BookingCreator(props) {
   });
   
   
-  const handleCampusChange = () => {
-    setCampus(campus === 'Kilgraston' ? 'Strathallan' : 'Kilgraston');
+  const handleCampusChangeKilgraston = () => {
+    setCampus('Kilgraston');
+  }
+
+  const handleCampusChangeStrathallan = () => {
+    setCampus('Strathallan');
   }
 
   const handleProductSelect = useCallback((product) => {
@@ -79,10 +83,21 @@ const handleBookings = () => {
       })
       .catch((err) => console.error(err));
   }
+
+  const widenSearch = () => {
+    setSearchPath('UnselectedEligableProductsWide');
+  }
+  const normalSearch = () => {
+    setSearchPath('UnselectedEligableProducts');
+  }
     
   return(
     <React.Fragment>
-    <button onClick={handleCampusChange}  type="button">Kilgraston/Strathallan</button>
+    <button onClick={handleCampusChangeKilgraston}  type="button">Kilgraston</button>
+    <button onClick={handleCampusChangeStrathallan}  type="button">Strathallan</button>
+    <button onClick={widenSearch} type="button">Wide Search</button>
+    <button onClick={normalSearch} type="button">Normal Search</button>
+    <button onClick={handleBookings} type="button">Book</button>
     <div className="detail-card booking-card" style={{ padding: '20px 0' }}>
       <table style={{ width: '80%', textAlign: 'left', margin: 'auto', borderCollapse: 'collapse' }}>
         <thead>
