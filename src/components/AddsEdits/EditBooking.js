@@ -17,17 +17,21 @@ function EditBooking(props) {
     bookingId: passedBooking.bookingId,
     actualCharge: passedBooking.actualCharge,
     bookingStatus: passedBooking.bookingStatus,
-    notes: passedBooking.notes
+    notes: passedBooking.notes,
+    startDate: passedBooking.startDate,
+    endDate: passedBooking.endDate
 });
 
-    // Open the modal form and update the car state
+    // Open the modal form and update the booking 
     const handleClickOpen = () => {
         setBooking({
           bookingId: passedBooking.bookingId,
           actualCharge: passedBooking.actualCharge,
           bookingStatus: passedBooking.bookingStatus,
-          notes: passedBooking.notes
-        })      
+          notes: passedBooking.notes,
+          startDate: passedBooking.startDate,
+          endDate: passedBooking.endDate
+              })      
         setOpen(true);
       }
     
@@ -37,6 +41,7 @@ function EditBooking(props) {
       };
       
       const handleChange = (event) => {
+        console.log("handlingChange : " + event.target.name)
         const value = event.target.name === 'actualCharge'
           ? parseFloat(event.target.value)
           : event.target.value;
@@ -65,6 +70,12 @@ function EditBooking(props) {
                     onChange={handleChange}/> 
                   <TextField label="notes" name="notes" 
                     variant="standard" value={booking.notes} 
+                    onChange={handleChange}/> 
+                  <TextField label="Custom Start 2023-04-05" name="startDate" 
+                    variant="standard" value={booking.startDate} 
+                    onChange={handleChange}/> 
+                  <TextField label="Custom End 2023-04-05" name="endDate" 
+                    variant="standard" value={booking.endDate} 
                     onChange={handleChange}/> 
                 </Stack>
               </DialogContent>    

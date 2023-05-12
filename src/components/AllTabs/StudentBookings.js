@@ -36,15 +36,21 @@ function StudentBookings(props) {
     return new Date(a.startDate) - new Date(b.startDate);
   });
   
-
   const editBooking = (booking, id) => {
+    
+    const customBooking = {
+      ...booking,
+      customStart: booking.startDate,
+      customEnd: booking.endDate
+    }
+
     const token = sessionStorage.getItem("bearer"); 
     fetch(`${SERVER_URL}api/bookings/${id}`,
       { method: 'PUT', headers: {
         'Content-Type':'application/json',
         'Authorization' : `Bearer ${token}`
       },
-      body: JSON.stringify(booking)
+      body: JSON.stringify(customBooking)
     })
     .then(response => {
       if (response.ok) {
