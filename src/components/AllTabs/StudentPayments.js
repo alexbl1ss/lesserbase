@@ -2,6 +2,8 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { SERVER_URL } from '../../constants.js'
 import '../PaymentsCard.css';
 import AddPayment from '../AddsEdits/AddPayment.js';
+import IconButton from '@mui/material/IconButton';
+import { Delete } from '@mui/icons-material';
 
 function StudentPayments(props) {
   const { selectedPerson } = props;
@@ -100,7 +102,7 @@ function StudentPayments(props) {
                   <td>£ {payment.paymentamount}</td>
                   <td>{payment.paymentaccount}</td>
                   <td>
-                    <button onClick={(event) => deletePayment(event, payment)}>Delete</button>
+                  <IconButton onClick={(event) => deletePayment(event, payment)}><Delete color="primary"/></IconButton>
                   </td>
                 </tr>
               ))}

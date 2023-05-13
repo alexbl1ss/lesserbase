@@ -2,6 +2,8 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { SERVER_URL } from '../../constants.js'
 import '../BookingCard.css';
 import EditBooking from '../AddsEdits/EditBooking.js';
+import IconButton from '@mui/material/IconButton';
+import { Delete } from '@mui/icons-material';
 
 function StudentBookings(props) {
   const { selectedPerson } = props;
@@ -130,7 +132,8 @@ function StudentBookings(props) {
                 <EditBooking passedBooking={booking} editBooking={editBooking} />
               </td>
               <td>
-              <button onClick={(event) => deleteBooking(event, booking.bookingId)}>Delete</button>
+              <IconButton onClick={(event) => deleteBooking(event, booking.bookingId)}><Delete color="primary"/></IconButton>
+
               </td>
             </tr>
           ))}
