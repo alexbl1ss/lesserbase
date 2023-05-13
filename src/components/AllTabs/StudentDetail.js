@@ -1,11 +1,39 @@
-import React from 'react';
- 
+import React, { useState, useEffect, useCallback } from 'react';
+import EditStudent from '../AddsEdits/EditStudent';
+import { SERVER_URL } from '../../constants.js'
+
 
 function StudentDetail(props) {
   const { selectedPerson } = props;
+  const [student, setStudent] = useState([]);
+
+  const fetchStudent = useCallback(() => {
+    const token = sessionStorage.getItem('bearer');
+    fetch(`${SERVER_URL}api/students/${selectedPerson.id}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((response) => {
+        if (response.status === 204) {
+          return [];
+        } else if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error('Failed to fetch student');
+        }
+      })
+      .then((data) => {
+        sessionStorage.setItem('bookings', JSON.stringify(data));
+        setStudent(data);
+      })
+      .catch((err) => console.error(err));
+  }, [selectedPerson.id]);
+
+  useEffect(() => {
+    fetchStudent();
+  }, [fetchStudent]);
 
   let imgPath;
-  if (selectedPerson.studentGender === 'male') {
+  if (student.studentGender === 'male') {
     const maleImgPaths = [
       "/assets/img/1.png",
       "/assets/img/3.png",
@@ -22,8 +50,45 @@ function StudentDetail(props) {
     imgPath = process.env.PUBLIC_URL + femaleImgPaths[Math.floor(Math.random() * femaleImgPaths.length)];
   }
 
-  const { id, studentName, studentSurname, dateAdded, mtRef, studentDob, studentGender, studentNationality, englishLevel, roomRequirements, photoPermissions, classRequirements, allergies, notes, arrivalDate, departureDate } = selectedPerson;
+  const { id, 
+    studentName, 
+    studentSurname, 
+    dateAdded, 
+    mtRef, 
+    studentDob, 
+    studentGender, 
+    studentNationality, 
+    englishLevel, 
+    roomRequirements, 
+    photoPermissions, 
+    classRequirements, 
+    allergies, 
+    notes, 
+    arrivalDate, 
+    departureDate } = student;
 
+
+  const editStudent = (student, id) => {
+
+    const token = sessionStorage.getItem("bearer"); 
+
+     fetch(`${SERVER_URL}api/students/${id}`,
+       { method: 'PUT', headers: {
+         'Content-Type':'application/json',
+         'Authorization' : `Bearer ${token}`
+       },
+       body: JSON.stringify(student)
+     })
+     .then(response => {
+       if (response.ok) {
+         fetchStudent();
+       }
+       else {
+         alert('Something went wrong!');
+       }
+     })
+   .catch(err => console.error(err))
+  }
 
   return (
     <React.Fragment>
@@ -57,10 +122,11 @@ function StudentDetail(props) {
         </table>
       </div>
       <div>
-        <p style={{ color: '#999999', fontSize: '10px' }}>Student: {selectedPerson.id}</p>
+        <p style={{ color: '#999999', fontSize: '10px' }}>Student: {selectedPerson.id}
+        <EditStudent passedStudent={student} editStudent={editStudent} />
+        </p>
         <p style={{ color: '#999999', fontSize: '10px' }}>Is authenticated: {sessionStorage.getItem('isAuthenticated').toString()}</p>
       </div>
-
     </React.Fragment>
   );
 }

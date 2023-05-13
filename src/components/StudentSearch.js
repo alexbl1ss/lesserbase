@@ -3,6 +3,7 @@ import { SERVER_URL } from '../constants.js'
 import MyTabs from './TabComponent/MyTabs.js';
 import SearchList from './SearchList.js';
 import Scroll from './Scroll.js';
+import AddStudent from './AddsEdits/AddStudent.js';
 
 function StudentSearch(props) {
   const [searchField, setSearchField] = useState("");
@@ -89,6 +90,56 @@ function StudentSearch(props) {
     return null;
   };
 
+  const addStudent = (student) => {
+    console.log("do nothing for now");
+    console.log(student.dateAdded);
+    console.log(student.mtRef);
+    console.log(student.studentName);
+    console.log(student.studentSurname);
+    console.log(student.studentDob);
+    console.log(student.studentGender);
+    console.log(student.studentNationality);
+    console.log( student.englishLevel);
+    console.log(student.roomRequirements);
+    console.log(student.photoPermissions);
+    console.log(student.classRequirements);
+    console.log(student.allergies);
+    console.log(student.notes);
+    console.log(student.arrivalDate);
+    console.log(student.departureDate);
+
+    const token = sessionStorage.getItem("bearer"); 
+
+    fetch(`${SERVER_URL}api/students`,
+      { method: 'POST', headers: {
+        'Content-Type':'application/json',
+        'Authorization' : `Bearer ${token}`
+      },
+      body: JSON.stringify(student)
+    })
+    .then(response => {
+      if (response.ok) {
+        return response.json();
+
+//        fetchStudents();
+      }
+      else {
+        alert('Something went wrong!');
+      }
+    })
+    .then((data) => {
+      //sessionStorage.setItem('bookings', JSON.stringify(data));
+      //setStudent(data);
+      console.log("response data");
+      console.log(JSON.stringify(data.id));
+          fetchStudents();
+      //setActivePerson(JSON.stringify(data.id))
+    })
+    .catch(err => console.error(err))
+
+  }
+
+
   return (
     <section className="garamond">
       <form onReset={handleReset}>
@@ -105,6 +156,7 @@ function StudentSearch(props) {
         {searchList()}
         {showTabs()}
         <div>
+        <AddStudent addStudent={addStudent} />
         <p style={{ color: '#999999', fontSize: '10px' }}>Is authenticated: {sessionStorage.getItem('isAuthenticated').toString()}</p>
         </div>
       </form>

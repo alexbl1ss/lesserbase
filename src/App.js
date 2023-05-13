@@ -9,10 +9,12 @@ import Login from './components/Login';
 import StudentSearch from './components/StudentSearch';
 import WhoIsDoing from './components/WhoIsDoing';
 import { SERVER_URL } from './constants.js';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import 'dayjs/locale/en-gb';
 
 function App() {
   const [isAuthenticated, setAuth] = useState(false);
-  const [showStudentSearch, setShowStudentSearch] = useState(true);
   const [showWhoIsDoing, setShowWhoIsDoing] = useState(false);
 
 
@@ -22,7 +24,6 @@ function App() {
   }, []);
 
   const onLoginSuccess = () => {
-    setShowStudentSearch(false);
     setAuth(true);
   };
 
@@ -40,6 +41,7 @@ function App() {
   
 
   return (
+    <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale='en-gb'>
     <div className="App">
           <title>SBC</title>
     <AppBar position="static">
@@ -84,6 +86,7 @@ function App() {
         <Login onLoginSuccess={onLoginSuccess} />
       )}
     </div>
+    </LocalizationProvider>
   );
       }
 
