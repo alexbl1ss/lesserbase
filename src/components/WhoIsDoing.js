@@ -301,7 +301,7 @@ function WhoIsDoing() {
             <th>Name</th>
             <th>Departing</th>
             <th>Transfer Id</th>
-            <th>Departure Time</th>
+            <th>Pickup Time</th>
             <th>Self Transfer</th>
             <th>Flight</th>
             <th>Destination</th>
