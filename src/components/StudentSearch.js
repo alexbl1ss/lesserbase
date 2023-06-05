@@ -46,7 +46,7 @@ function StudentSearch(props) {
 
   const fetchStudents = () => {
       const token = sessionStorage.getItem('bearer');
-      fetch(`${SERVER_URL}api/students`, {
+      fetch(`${SERVER_URL}api/studentsBasic`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {

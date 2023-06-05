@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './App.css';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
@@ -12,18 +12,18 @@ import { SERVER_URL } from './constants.js';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import 'dayjs/locale/en-gb';
+import Rent from './components/Rent';
+
 
 function App() {
   const [isAuthenticated, setAuth] = useState(false);
   const [showWhoIsDoing, setShowWhoIsDoing] = useState(false);
+  const [showRentOption, setShowRentOption] = useState(false); // New state variable
+  const [showRentPage, setShowRentPage] = useState(false);
 
 
-  useEffect(() => {
-    const authStatus = sessionStorage.getItem('isAuthenticated');
-    setAuth(authStatus === 'true');
-  }, []);
-
-  const onLoginSuccess = () => {
+  const onLoginSuccess = (username) => {
+    setShowRentOption(username === 'billview@bliss.com');
     setAuth(true);
   };
 
@@ -42,20 +42,18 @@ function App() {
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale='en-gb'>
-    <div className="App">
-          <title>SBC</title>
-    <AppBar position="static">
-        <Toolbar>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
-            <Typography variant="h6">
-              Bliss Bill View
-            </Typography>
+      <div className="App">
+        <title>SBC</title>
+        <AppBar position="static">
+          <Toolbar>
+            {/* ... existing code ... */}
             {isAuthenticated && (
               <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'flex-end' }}>
                 <Button
                   color="inherit"
                   onClick={() => {
                     setShowWhoIsDoing(false);
+                    setShowRentPage(false); // Add this line
                   }}
                 >
                   Students
@@ -64,30 +62,40 @@ function App() {
                   color="inherit"
                   onClick={() => {
                     setShowWhoIsDoing(true);
+                    setShowRentPage(false); // Add this line
                   }}
                 >
                   Planner
                 </Button>
-                <Button color="inherit" onClick={handleLogout}>
-            Logout
-          </Button>
+                {showRentOption && (
+                  <Button
+                    color="inherit"
+                    onClick={() => {
+                      setShowWhoIsDoing(false);
+                      setShowRentPage(true); // Add this line
+                    }}
+                  >
+                    Costs
+                  </Button>
+                )}
               </Box>
             )}
-          </Box>
-        </Toolbar>
-      </AppBar>
-      {isAuthenticated ? (
-        showWhoIsDoing ? (
-          <WhoIsDoing />
+          </Toolbar>
+        </AppBar>
+        {isAuthenticated ? (
+          showWhoIsDoing ? (
+            <WhoIsDoing />
+          ) : showRentPage ? ( // Add this condition
+            <Rent />
+          ) : (
+            <StudentSearch />
+          )
         ) : (
-          <StudentSearch />
-        )
-      ) : (
-        <Login onLoginSuccess={onLoginSuccess} />
-      )}
-    </div>
+          <Login onLoginSuccess={onLoginSuccess} />
+        )}
+      </div>
     </LocalizationProvider>
   );
-      }
+}
 
 export default App;
