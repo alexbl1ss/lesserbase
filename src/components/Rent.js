@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { SERVER_URL } from '../constants.js';
 import Collapse from '@mui/material/Collapse';
 import IconButton from '@mui/material/IconButton';
@@ -6,12 +6,36 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 
 
-function Rent() {
-  const [residentCount, setResidentCount] = useState([]);
-  const [rentTableCollapsed, setRentTableCollapsed] = useState(false);
-  const [commissionTableCollapsed, setCommissionTableCollapsed] = useState(false);
-  const [commissions, setCommissions] = useState([]);
-
+const calculateRunningTotals = (commissions) => {
+    let netTotal = 0;
+    let grossTotal = 0;
+  
+    commissions.forEach((item) => {
+      if (item.commission === 'NET') {
+        netTotal += item.actualCharge * (item.commissionRate / 100);
+      } else if (item.commission === 'GROSS') {
+        grossTotal += item.actualCharge * (item.commissionRate / 100);
+      }
+    });
+  
+    // Update the commissions array with running totals
+    const updatedCommissions = commissions.map((item) => {
+      if (item.commission === 'NET') {
+        item.runningTotal = netTotal;
+      } else if (item.commission === 'GROSS') {
+        item.runningTotal = grossTotal;
+      }
+      return item;
+    });
+  
+    return updatedCommissions;
+  };
+  function Rent() {
+    const [residentCount, setResidentCount] = useState([]);
+    const [rentTableCollapsed, setRentTableCollapsed] = useState(false);
+    const [commissionTableCollapsed, setCommissionTableCollapsed] = useState(false);
+    const [commissions, setCommissions] = useState([]);
+  
   const fetchCommission = () => {
     console.log("fetchCommission");
     const token = sessionStorage.getItem('bearer');
@@ -81,42 +105,68 @@ function Rent() {
     return dates;
   };
 
-const handleGetResidentCount = () => {
-  getResidentCountsForDates('2023-08-08', '2023-08-08');
-  fetchCommission()
-    .then(() => {
-      calculateRunningTotals();
-    })
-    .catch((error) => {
-      console.error(error);
+  const handleGetRentData = () => {
+    fetchRentData()
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+  
+  const handleGetCommissionData = () => {
+    fetchCommissionData()
+      .then((response) => {
+        if (response && response.data && response.status) {
+          const { data, status } = response;
+          if (status === 204) {
+            setCommissions([]);
+          } else {
+            setCommissions(data);
+            calculateRunningTotals(data);
+          }
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+      
+  const calculateRunningTotals = (commissions) => {
+    let netTotal = 0;
+    let grossTotal = 0;
+  
+    const updatedCommissions = commissions.map((item) => {
+      if (item.commission === 'NET') {
+        netTotal += item.actualCharge * (item.commissionRate / 100);
+        item.runningTotal = netTotal;
+      } else if (item.commission === 'GROSS') {
+        grossTotal += item.actualCharge * (item.commissionRate / 100);
+        item.runningTotal = grossTotal;
+      }
+      return item;
     });
-};
-
-const calculateRunningTotals = () => {
-  let netTotal = 0;
-  let grossTotal = 0;
-
-  commissions.forEach((item) => {
-    if (item.commission === 'NET') {
-      netTotal += item.actualCharge * (item.commissionRate / 100);
-    } else if (item.commission === 'GROSS') {
-      grossTotal += item.actualCharge * (item.commissionRate / 100);
-    }
-  });
-
-  // Update the commissions array with running totals
-  const updatedCommissions = commissions.map((item) => {
-    if (item.commission === 'NET') {
-      item.runningTotal = netTotal;
-    } else if (item.commission === 'GROSS') {
-      item.runningTotal = grossTotal;
-    }
-    return item;
-  });
-
-  setCommissions(updatedCommissions);
-};
-
+  
+    setCommissions(updatedCommissions); // Update commissions state with running totals
+  };
+    const fetchRentData = () => {
+    return getResidentCountsForDates('2023-06-08', '2023-08-08');
+  };
+  
+  const fetchCommissionData = () => {
+    setCommissions([]); // Clear the commissions state
+    return fetchCommission()
+      .then((response) => {
+        const { data, status } = response;
+        if (status === 204) {
+          setCommissions([]);
+        } else {
+          setCommissions(data);
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+  
   const calculateTotalCost = () => {
     let total = 0;
     residentCount.forEach((item) => {
@@ -149,7 +199,7 @@ const calculateRunningTotals = () => {
     return total.toFixed(2);
   };
       
-    const handleExportCSV = (dataToExport, headerRow, fileName) => {
+  const handleExportCSVRent = (dataToExport, headerRow, fileName) => {
     // Convert data to CSV format
     const csvData = dataToExport.map(
       ({ givenDate, campus, residentType, residentCount }) =>
@@ -178,6 +228,39 @@ const calculateRunningTotals = () => {
     link.click();
   };
   
+  const handleExportCSVCommission = (dataToExport, headerRow, fileName) => {
+        // Convert data to CSV format
+        const csvData = dataToExport.map(
+          ({
+            agentId,
+            agentName,
+            commission,
+            commissionRate,
+            studentId,
+            mtRef,
+            bookingId,
+            actualCharge,
+            productName,
+          }) =>
+            `${agentId},${agentName},${commission},${commissionRate},${studentId},${mtRef},${bookingId},${actualCharge},${productName},${
+              commission === 'NET' ? actualCharge * (commissionRate / 100) : ''
+            },${commission === 'GROSS' ? actualCharge * (commissionRate / 100) : ''}`
+        );
+      
+        // Add headers row to CSV data
+        csvData.unshift(headerRow);
+      
+        const csvContent = 'data:text/csv;charset=utf-8,' + csvData.join('\n');
+      
+        // Trigger download of CSV file
+        const encodedURI = encodeURI(csvContent);
+        const link = document.createElement('a');
+        link.setAttribute('href', encodedURI);
+        link.setAttribute('download', fileName);
+        document.body.appendChild(link);
+        link.click();
+      };
+        
 // Calculate the cost based on campus, resident type, and count
 const calculateCost = (campus, residentType, residentCount) => {
     let cost = 0;
@@ -195,8 +278,9 @@ const calculateCost = (campus, residentType, residentCount) => {
   
   return (
     <section className="garamond">
-      <div className="pa2">
-        <button onClick={handleGetResidentCount}>get Numbers</button>
+        <div className="pa2">
+        <button onClick={handleGetRentData}>Get Rent Data</button>
+        <button onClick={handleGetCommissionData}>Get Commission Data</button>
         <div style={{ marginLeft: '50px' }}>
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <span>Rent</span>
@@ -252,7 +336,7 @@ const calculateCost = (campus, residentType, residentCount) => {
             </table>
             <button
               onClick={() =>
-                handleExportCSV(
+                handleExportCSVRent(
                   residentCount,
                   'Date, Campus, Resident Type, Resident Count, Cost',
                   'rent.csv'
@@ -336,10 +420,10 @@ const calculateCost = (campus, residentType, residentCount) => {
             </table>
             <button
               onClick={() =>
-                handleExportCSV(
-                  residentCount,
-                  'Date, Campus, Resident Type, Resident Count, Cost',
-                  'rent.csv'
+                handleExportCSVCommission(
+                    commissions,
+                    'Agent Id,Name,Commission Type,Rate,Student Id,Master Tracker Ref,Booking Id,Charge,Product Name,NET,GROSS',
+                    'commission.csv'
                 )
               }
               type="button"
