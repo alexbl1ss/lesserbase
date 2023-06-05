@@ -22,7 +22,7 @@ function App() {
 
 
   const onLoginSuccess = (username) => {
-    setShowRentOption(username === 'billview@bliss.com');
+    setShowRentOption(username === 'alex.brown@bliss.com');
     setAuth(true);
   };
 
