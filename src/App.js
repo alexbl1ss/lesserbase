@@ -53,7 +53,7 @@ function App() {
                   color="inherit"
                   onClick={() => {
                     setShowWhoIsDoing(false);
-                    setShowRentPage(false); // Add this line
+                    setShowRentPage(false);
                   }}
                 >
                   Students
@@ -62,7 +62,7 @@ function App() {
                   color="inherit"
                   onClick={() => {
                     setShowWhoIsDoing(true);
-                    setShowRentPage(false); // Add this line
+                    setShowRentPage(false);
                   }}
                 >
                   Planner
@@ -72,12 +72,15 @@ function App() {
                     color="inherit"
                     onClick={() => {
                       setShowWhoIsDoing(false);
-                      setShowRentPage(true); // Add this line
+                      setShowRentPage(true);
                     }}
                   >
                     Costs
                   </Button>
                 )}
+                <Button color="inherit" onClick={handleLogout}>
+                  Logout
+                </Button>
               </Box>
             )}
           </Toolbar>
@@ -85,7 +88,7 @@ function App() {
         {isAuthenticated ? (
           showWhoIsDoing ? (
             <WhoIsDoing />
-          ) : showRentPage ? ( // Add this condition
+          ) : showRentPage ? (
             <Rent />
           ) : (
             <StudentSearch />
@@ -96,6 +99,6 @@ function App() {
       </div>
     </LocalizationProvider>
   );
-}
+  }
 
 export default App;
