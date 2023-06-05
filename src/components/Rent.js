@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { SERVER_URL } from '../constants.js';
 import Collapse from '@mui/material/Collapse';
 import IconButton from '@mui/material/IconButton';
@@ -6,30 +6,6 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 
 
-const calculateRunningTotals = (commissions) => {
-    let netTotal = 0;
-    let grossTotal = 0;
-  
-    commissions.forEach((item) => {
-      if (item.commission === 'NET') {
-        netTotal += item.actualCharge * (item.commissionRate / 100);
-      } else if (item.commission === 'GROSS') {
-        grossTotal += item.actualCharge * (item.commissionRate / 100);
-      }
-    });
-  
-    // Update the commissions array with running totals
-    const updatedCommissions = commissions.map((item) => {
-      if (item.commission === 'NET') {
-        item.runningTotal = netTotal;
-      } else if (item.commission === 'GROSS') {
-        item.runningTotal = grossTotal;
-      }
-      return item;
-    });
-  
-    return updatedCommissions;
-  };
   function Rent() {
     const [residentCount, setResidentCount] = useState([]);
     const [rentTableCollapsed, setRentTableCollapsed] = useState(false);
@@ -168,15 +144,43 @@ const calculateRunningTotals = (commissions) => {
   };
   
   const calculateTotalCost = () => {
-    let total = 0;
-    residentCount.forEach((item) => {
+    let totals = {
+      Kilgraston: 0,
+      Strathallan: 0,
+      Glenalmond: 0,
+      Overall: 0
+    };
+      residentCount.forEach((item) => {
       if (item.campus === 'Kilgraston' && item.residentType === 'student') {
-        total += item.residentCount * 35;
+        totals.Kilgraston += item.residentCount * 35;
+        totals.Overall += item.residentCount * 35;
+      } else if (item.campus === 'Kilgraston' && item.residentType === 'Adult') {
+        totals.Kilgraston += item.residentCount * 30;
+        totals.Overall += item.residentCount * 30;
+      } else if (item.campus === 'Kilgraston' && item.residentType === 'Staff') {
+        totals.Kilgraston += item.residentCount * 30;
+        totals.Overall += item.residentCount * 30;
       } else if (item.campus === 'Strathallan' && item.residentType === 'student') {
-        total += item.residentCount * 45;
+        totals.Strathallan += item.residentCount * 45;
+        totals.Overall += item.residentCount * 45;
+      } else if (item.campus === 'Strathallan' && item.residentType === 'Adult') {
+        totals.Strathallan += item.residentCount * 45;
+        totals.Overall += item.residentCount * 45;
+      } else if (item.campus === 'Strathallan' && item.residentType === 'Staff') {
+        totals.Strathallan += item.residentCount * 30;
+        totals.Overall += item.residentCount * 30;
+      } else if (item.campus === 'Glenalmond' && item.residentType === 'student') {
+        totals.Glenalmond += item.residentCount * 45;
+        totals.Overall += item.residentCount * 45;
+      } else if (item.campus === 'Glenalmond' && item.residentType === 'Adult') {
+        totals.Glenalmond += item.residentCount * 25;
+        totals.Overall += item.residentCount * 25;
+      } else if (item.campus === 'Glenalmond' && item.residentType === 'Staff') {
+        totals.Glenalmond += item.residentCount * 45;
+        totals.Overall += item.residentCount * 45;
       }
     });
-    return total;
+    return totals;
   };
 
   const calculateTotalNet = () => {
@@ -278,12 +282,36 @@ const calculateCost = (campus, residentType, residentCount) => {
   
   return (
     <section className="garamond">
-        <div className="pa2">
+      <div className="pa2">
         <button onClick={handleGetRentData}>Get Rent Data</button>
         <button onClick={handleGetCommissionData}>Get Commission Data</button>
-        <div style={{ marginLeft: '50px' }}>
+  
+        <div style={{ marginBottom: '20px' }}>
           <div style={{ display: 'flex', alignItems: 'center' }}>
-            <span>Rent</span>
+            <h2 style={{ marginRight: '10px' }}>Rent</h2>
+          </div>
+          <table style={{ width: '30%', borderCollapse: 'collapse', textAlign: 'left', marginBottom: '10px' }}>
+            <tbody>
+              <tr>
+                <td>Total (Kilgraston):</td>
+                <td>£ {calculateTotalCost().Kilgraston}</td>
+              </tr>
+              <tr>
+                <td>Total (Strathallan):</td>
+                <td>£ {calculateTotalCost().Strathallan}</td>
+              </tr>
+              <tr>
+                <td>Total (Glenalmond):</td>
+                <td>£ {calculateTotalCost().Glenalmond}</td>
+              </tr>
+              <tr>
+                <td>Total (Overall):</td>
+                <td>£ {calculateTotalCost().Overall}</td>
+              </tr>
+            </tbody>
+          </table>
+          <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+            <span>Detail</span>
             <IconButton
               onClick={() => setRentTableCollapsed(!rentTableCollapsed)}
               aria-expanded={rentTableCollapsed}
@@ -330,7 +358,7 @@ const calculateCost = (campus, residentType, residentCount) => {
                   <td></td>
                   <td></td>
                   <td>Total:</td>
-                  <td>£ {calculateTotalCost()}</td>
+                  <td>£ {calculateTotalCost().Overall}</td>
                 </tr>
               </tfoot>
             </table>
@@ -348,10 +376,29 @@ const calculateCost = (campus, residentType, residentCount) => {
             </button>
           </Collapse>
         </div>
-
-
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-            <span>Commission</span>
+  
+        <div style={{ marginBottom: '20px' }}>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <h2 style={{ marginRight: '10px' }}>Commission</h2>
+          </div>
+          <table style={{ width: '30%', borderCollapse: 'collapse', textAlign: 'left', marginBottom: '10px' }}>
+            <tbody>
+              <tr>
+                <td>Total (Net):</td>
+                <td>£ {calculateTotalNet()}</td>
+              </tr>
+              <tr>
+                <td>Total (Gross):</td>
+                <td>£ {calculateTotalGross()}</td>
+              </tr>
+              <tr>
+              <td>Total (Overall):</td>
+                <td>£ {Number(calculateTotalGross()) + Number(calculateTotalNet())}</td>
+              </tr>
+            </tbody>
+          </table>
+          <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+            <span>Detail</span>
             <IconButton
               onClick={() => setCommissionTableCollapsed(!commissionTableCollapsed)}
               aria-expanded={commissionTableCollapsed}
@@ -391,12 +438,12 @@ const calculateCost = (campus, residentType, residentCount) => {
                     <td>{item.productName}</td>
                     <td>
                       {item.commission === 'NET' ? (
-                        '£ ' + item.actualCharge * item.commissionRate/100
+                        '£ ' + item.actualCharge * item.commissionRate / 100
                       ) : null}
                     </td>
                     <td>
                       {item.commission === 'GROSS' ? (
-                        '£ ' + item.actualCharge * item.commissionRate/100
+                        '£ ' + item.actualCharge * item.commissionRate / 100
                       ) : null}
                     </td>
                   </tr>
@@ -404,7 +451,7 @@ const calculateCost = (campus, residentType, residentCount) => {
               </tbody>
               <tfoot>
                 <tr>
-                <td></td>
+                  <td></td>
                   <td></td>
                   <td></td>
                   <td></td>
@@ -421,9 +468,9 @@ const calculateCost = (campus, residentType, residentCount) => {
             <button
               onClick={() =>
                 handleExportCSVCommission(
-                    commissions,
-                    'Agent Id,Name,Commission Type,Rate,Student Id,Master Tracker Ref,Booking Id,Charge,Product Name,NET,GROSS',
-                    'commission.csv'
+                  commissions,
+                  'Agent Id,Name,Commission Type,Rate,Student Id,Master Tracker Ref,Booking Id,Charge,Product Name,NET,GROSS',
+                  'commission.csv'
                 )
               }
               type="button"
@@ -432,16 +479,17 @@ const calculateCost = (campus, residentType, residentCount) => {
             </button>
           </Collapse>
         </div>
-
-
+  
         <div>
           <p style={{ color: '#999999', fontSize: '10px' }}>
             Is authenticated: {sessionStorage.getItem('isAuthenticated').toString()}
           </p>
         </div>
+      </div>
     </section>
   );
   
+   
 }
 
 export default Rent;
