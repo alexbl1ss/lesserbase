@@ -151,34 +151,22 @@ import ExpandLessIcon from '@mui/icons-material/ExpandLess';
       Overall: 0
     };
       residentCount.forEach((item) => {
-      if (item.campus === 'Kilgraston' && item.residentType === 'student') {
+      if (item.campus.toLowerCase() === 'kilgraston' && item.residentType.toLowerCase() === 'student') {
         totals.Kilgraston += item.residentCount * 35;
         totals.Overall += item.residentCount * 35;
-      } else if (item.campus === 'Kilgraston' && item.residentType === 'Adult') {
+      } else if (item.campus.toLowerCase() === 'kilgraston' && item.residentType.toLowerCase() === 'staff') {
         totals.Kilgraston += item.residentCount * 30;
         totals.Overall += item.residentCount * 30;
-      } else if (item.campus === 'Kilgraston' && item.residentType === 'Staff') {
-        totals.Kilgraston += item.residentCount * 30;
+      } else if (item.campus.toLowerCase() === 'kilgraston' && item.residentType.toLowerCase() === 'adult') {
+        totals.Kilgraston += item.residentCount * 0;
         totals.Overall += item.residentCount * 30;
-      } else if (item.campus === 'Strathallan' && item.residentType === 'student') {
+      } else if (item.campus.toLowerCase() === 'strathallan') {
         totals.Strathallan += item.residentCount * 45;
         totals.Overall += item.residentCount * 45;
-      } else if (item.campus === 'Strathallan' && item.residentType === 'Adult') {
-        totals.Strathallan += item.residentCount * 45;
-        totals.Overall += item.residentCount * 45;
-      } else if (item.campus === 'Strathallan' && item.residentType === 'Staff') {
-        totals.Strathallan += item.residentCount * 30;
-        totals.Overall += item.residentCount * 30;
-      } else if (item.campus === 'Glenalmond' && item.residentType === 'student') {
+      } else if (item.campus.toLowerCase() === 'glenalmond') {
         totals.Glenalmond += item.residentCount * 45;
         totals.Overall += item.residentCount * 45;
-      } else if (item.campus === 'Glenalmond' && item.residentType === 'Adult') {
-        totals.Glenalmond += item.residentCount * 25;
-        totals.Overall += item.residentCount * 25;
-      } else if (item.campus === 'Glenalmond' && item.residentType === 'Staff') {
-        totals.Glenalmond += item.residentCount * 45;
-        totals.Overall += item.residentCount * 45;
-      }
+       }
     });
     return totals;
   };
@@ -268,14 +256,16 @@ import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 // Calculate the cost based on campus, resident type, and count
 const calculateCost = (campus, residentType, residentCount) => {
     let cost = 0;
-    if (campus === 'Kilgraston' && residentType === 'student') {
+    if (campus.toLowerCase() === 'kilgraston' && residentType.toLowerCase() === 'student') {
       cost = residentCount * 35;
-    } else if (campus === 'Strathallan' && residentType === 'student') {
-      cost = residentCount * 45;
-    } else if (campus === 'Kilgraston' && residentType === 'Adult') {
+    } else if (campus.toLowerCase() === 'kilgraston' && residentType.toLowerCase() === 'staff') {
+      cost = residentCount * 30;
+    } else if (campus.toLowerCase() === 'kilgraston' && residentType.toLowerCase() === 'adult') {
       cost = residentCount * 0;
-    } else if (campus === 'Strathallan' && residentType === 'Adult') {
-      cost = residentCount * 45;
+    } else if (campus.toLowerCase() === 'strathallan') {
+        cost = residentCount * 45;
+    } else if (campus.toLowerCase() === 'glenalmond') {
+        cost = residentCount * 45;
     }
     return cost;
   };
@@ -339,13 +329,15 @@ const calculateCost = (campus, residentType, residentCount) => {
                     <td>{item.residentType}</td>
                     <td>{item.residentCount}</td>
                     <td>
-                      {item.campus === 'Kilgraston' && item.residentType === 'student' ? (
-                        '£ ' + item.residentCount * 35
-                      ) : item.campus === 'Strathallan' && item.residentType === 'student' ? (
+                    {(item.campus.toLowerCase() === 'kilgraston' && item.residentType === 'student') ? (
+                      '£ ' + item.residentCount * 35
+                    ) : (item.campus.toLowerCase() === 'kilgraston' && item.residentType === 'staff') ? (
+                        '£ ' + item.residentCount * 30
+                    ) : (item.campus.toLowerCase() === 'kilgraston' && item.residentType === 'adult') ? (
+                     '£ ' + item.residentCount * 0
+                    ) : item.campus === 'Strathallan'  ? (
                         '£ ' + item.residentCount * 45
-                      ) : item.campus === 'Kilgraston' && item.residentType === 'Adult' ? (
-                        '£ ' + item.residentCount * 0
-                      ) : item.campus === 'Strathallan' && item.residentType === 'Adult' ? (
+                      ) : item.campus === 'Glenalmond'  ? (
                         '£ ' + item.residentCount * 45
                       ) : null}
                     </td>
