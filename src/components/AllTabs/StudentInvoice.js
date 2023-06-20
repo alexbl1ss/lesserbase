@@ -258,7 +258,7 @@ function StudentInvoice(props) {
                   <td>{booking.productName}</td>
                   <td>{booking.startDate}</td>
                   <td>{booking.endDate}</td>
-                  <td>£ {booking.commissionable && !gross ? booking.actualCharge * factor : booking.actualCharge} GBP</td>
+                  <td>£ {booking.commissionable && !gross ? (booking.actualCharge * factor).toFixed(2) : booking.actualCharge.toFixed(2)} GBP</td>
                 </tr>
               ))
             ) : (
