@@ -14,17 +14,21 @@ import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 function WhoIsDoing() {
   const [selectedDate, setSelectedDate] = useState(dayjs());
   const [activities, setActivities] = useState([]);
+  const [activitiesCount, setActivitiesCount] = useState([]);
   const [residents, setResidents] = useState([]);
+  const [residentsCount, setResidentsCount] = useState([]);
   const [arrivers, setArrivers] = useState([]);
   const [leavers, setLeavers] = useState([]);
   const [residentsTableCollapsed, setResidentsTableCollapsed] = useState(false);
   const [activitiesTableCollapsed, setActivitiesTableCollapsed] = useState(false);
   const [transfersInTableCollapsed, setTransfersInTableCollapsed] = useState(false);
   const [transfersOutTableCollapsed, setTransfersOutTableCollapsed] = useState(false);
+  const [campus, setCampus] = useState('Kilgraston');
+
 
   const fetchActivities = (formattedDate) => {
     const token = sessionStorage.getItem('bearer');
-    fetch(`${SERVER_URL}api/whoisdoing/${formattedDate}`, {
+    fetch(`${SERVER_URL}api/whoisdoing/${formattedDate}/${campus}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((response) => {
@@ -37,7 +41,7 @@ function WhoIsDoing() {
         }
       })
       .then((data) => {
-        sessionStorage.setItem('students', JSON.stringify(data));
+        sessionStorage.setItem('activities', JSON.stringify(data));
         setActivities(data);
       })
       .catch((err) => console.error(err));
@@ -45,7 +49,7 @@ function WhoIsDoing() {
 
   const fetchResidents = (formattedDate) => {
     const token = sessionStorage.getItem('bearer');
-    fetch(`${SERVER_URL}api/whoisresident/${formattedDate}`, {
+    fetch(`${SERVER_URL}api/whoisresident/${formattedDate}/${campus}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((response) => {
@@ -58,10 +62,53 @@ function WhoIsDoing() {
         }
       })
       .then((data) => {
-        sessionStorage.setItem('students', JSON.stringify(data));
+        sessionStorage.setItem('residents', JSON.stringify(data));
         setResidents(data);
       })
       .catch((err) => console.error(err));
+  };
+
+  const fetchResidentsCount = (formattedDate) => {
+    const token = sessionStorage.getItem('bearer');
+    fetch(`${SERVER_URL}api/residentcount/${formattedDate}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((response) => {
+        if (response.status === 204) {
+          return [];
+        } else if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error('Failed to fetch Residents Count');
+        }
+      })
+      .then((data) => {
+        sessionStorage.setItem('residentsCount', JSON.stringify(data));
+        setResidentsCount(data);
+      })
+      .catch((err) => console.error(err));
+  };
+
+  const fetchActivitiesCount = (formattedDate) => {
+    const token = sessionStorage.getItem('bearer');
+    fetch(`${SERVER_URL}api/activitiesCount/${formattedDate}/${campus}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((response) => {
+        if (response.status === 204) {
+          return [];
+        } else if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error('Failed to fetch Activities Count');
+        }
+      })
+      .then((data) => {
+        sessionStorage.setItem('activitiesCount', JSON.stringify(data));
+        setActivitiesCount(data);
+      })
+      .catch((err) => console.error(err));
+      console.log(activitiesCount)
   };
 
   const fetchArrivers = (formattedDate) => {
@@ -108,15 +155,16 @@ function WhoIsDoing() {
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
+    const formattedDate = date.toISOString().split('T')[0]; // Format the date as YYYY-MM-DD
   
-    const formattedDate = date.format('YYYY-MM-DD');
-    console.log(formattedDate);
     fetchActivities(formattedDate);
     fetchResidents(formattedDate);
     fetchArrivers(formattedDate);
     fetchLeavers(formattedDate);
+    fetchResidentsCount(formattedDate);
+    fetchActivitiesCount(formattedDate)
   };
-      
+        
   const handleExportCSV = (dataToExport, headerRow, fileName) => {
     
     
@@ -171,12 +219,52 @@ function WhoIsDoing() {
     document.body.appendChild(link);
     link.click();
   };
+ 
+  const handleCampusChangeKilgraston = () => {
+    setCampus('Kilgraston');
   
+    const formattedDate = selectedDate.toISOString().split('T')[0]; // Format the selected date as YYYY-MM-DD
+  
+    fetchActivities(formattedDate);
+    fetchResidents(formattedDate);
+    fetchResidentsCount(formattedDate);
+    fetchActivitiesCount(formattedDate)
+
+  };
+  const handleCampusChangeStrathallan = () => {
+    setCampus('Strathallan');
+  
+    const formattedDate = selectedDate.toISOString().split('T')[0]; // Format the selected date as YYYY-MM-DD
+  
+    fetchActivities(formattedDate);
+    fetchResidents(formattedDate);
+    fetchResidentsCount(formattedDate);
+    fetchActivitiesCount(formattedDate)
+
+  }
+
+  const handleCampusChangeGlenalmond = () => {
+    setCampus('Glenalmond');
+  
+    const formattedDate = selectedDate.toISOString().split('T')[0]; // Format the selected date as YYYY-MM-DD
+  
+    fetchActivities(formattedDate);
+    fetchResidents(formattedDate);
+    fetchResidentsCount(formattedDate);
+    fetchActivitiesCount(formattedDate)
+
+  }
+
+
   return (
     <section className="garamond">
       <div className="pa2"></div>
+      <button onClick={handleCampusChangeKilgraston}  type="button">Kilgraston</button>
+      <button onClick={handleCampusChangeStrathallan}  type="button">Strathallan</button>
+      <button onClick={handleCampusChangeGlenalmond}  type="button">Glenalmond</button>
+      <div style={{ marginBottom: '10px' }}></div>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <DatePicker
+      <DatePicker
           label="Select Date"
           value={selectedDate}
           onChange={handleDateChange}
@@ -186,8 +274,29 @@ function WhoIsDoing() {
         />
       </LocalizationProvider>
       <div style={{ marginLeft: '50px' }}>
+      <table style={{ width: '30%', borderCollapse: 'collapse', textAlign: 'left', marginBottom: '10px' }}>
+            <thead>
+            <tr>
+            <th colSpan="3">All Residents</th>
+          </tr>
+            <th>Campus</th>
+            <th>Resident Type</th>
+            <th>count</th>
+            </thead>
+            <tbody>
+            {residentsCount.map((residentcount) => (
+            <React.Fragment key={`${residentcount.campus}-${residentcount.residentType}`}>
+              <tr>
+              <td>{residentcount.campus}</td>
+              <td>{residentcount.residentType}</td>
+              <td>{residentcount.residentCount}</td>
+            </tr>
+            </React.Fragment>
+          ))}
+            </tbody>
+          </table>
   <div style={{ display: 'flex', alignItems: 'center' }}>
-    <span>Residents</span>
+    <span>Residents Detail (selected campus only)</span>
     <IconButton
       onClick={() => setResidentsTableCollapsed(!residentsTableCollapsed)}
       aria-expanded={residentsTableCollapsed}
@@ -236,9 +345,34 @@ function WhoIsDoing() {
 </div>
 
 <div style={{ marginLeft: '50px' }}>
-  <div style={{ display: 'flex', alignItems: 'center' }}>
-    <span>Activities</span>
-    <IconButton
+<table style={{ width: '30%', borderCollapse: 'collapse', textAlign: 'left', marginBottom: '10px', marginTop: '10px'}}>
+  <thead>
+    <tr>
+      <th colSpan="4">{campus} Activities</th>
+    </tr>
+    <tr>
+      <th>ID</th>
+      <th>Activity</th>
+      <th>Base</th>
+      <th>Count</th>
+    </tr>
+  </thead>
+  <tbody>
+    {activitiesCount.map((activityCount) => (
+      <React.Fragment key={`${activityCount.product_id}`}>
+        <tr>
+          <td>{activityCount.product_id}</td>
+          <td>{activityCount.product_name}</td>
+          <td>{activityCount.product_base}</td>
+          <td>{activityCount.count}</td>
+        </tr>
+      </React.Fragment>
+    ))}
+  </tbody>
+</table>
+          <div style={{ display: 'flex', alignItems: 'center', marginTop: '10px' }}>
+          <p>Activities Detail</p>
+              <IconButton
       onClick={() => setActivitiesTableCollapsed(!activitiesTableCollapsed)}
       aria-expanded={activitiesTableCollapsed}
       aria-label="show more"
