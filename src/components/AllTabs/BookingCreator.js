@@ -47,6 +47,10 @@ function BookingCreator(props) {
     setCampus('Strathallan');
   }
 
+  const handleCampusChangeGlenalmond = () => {
+    setCampus('Glenalmond');
+  }
+
   const handleProductSelect = useCallback((product) => {
     if (selectedProducts.some((p) => p.id === product.id)) {
         setSelectedProducts(selectedProducts.filter((p) => p.id !== product.id));
@@ -95,6 +99,7 @@ const handleBookings = () => {
     <React.Fragment>
     <button onClick={handleCampusChangeKilgraston}  type="button">Kilgraston</button>
     <button onClick={handleCampusChangeStrathallan}  type="button">Strathallan</button>
+    <button onClick={handleCampusChangeGlenalmond}  type="button">Glenalmond</button>
     <button onClick={widenSearch} type="button">Wide Search</button>
     <button onClick={normalSearch} type="button">Normal Search</button>
     <button onClick={handleBookings} type="button">Book</button>
