@@ -234,19 +234,19 @@ useEffect(() => {
   
 //    const formattedDate = selectedDate.toISOString().split('T')[0]; // Format the selected date as YYYY-MM-DD
   
-    //fetchActivities(formattedDate);
-    //fetchResidents(formattedDate);
-    //fetchResidentsCount(formattedDate);
-    //fetchActivitiesCount(formattedDate)
+    fetchActivities(formattedDate);
+    fetchResidents(formattedDate);
+    fetchResidentsCount(formattedDate);
+    fetchActivitiesCount(formattedDate)
 
   };
   const handleCampusChangeStrathallan = () => {
     setCampus('Strathallan');
      
-    //fetchActivities(formattedDate);
-    //fetchResidents(formattedDate);
-    //fetchResidentsCount(formattedDate);
-    //fetchActivitiesCount(formattedDate)
+    fetchActivities(formattedDate);
+    fetchResidents(formattedDate);
+    fetchResidentsCount(formattedDate);
+    fetchActivitiesCount(formattedDate)
 
   }
 
@@ -255,10 +255,10 @@ useEffect(() => {
   
 //    const formattedDate = selectedDate.toISOString().split('T')[0]; // Format the selected date as YYYY-MM-DD
   
-    //fetchActivities(formattedDate);
-    //fetchResidents(formattedDate);
-    //fetchResidentsCount(formattedDate);
-    //fetchActivitiesCount(formattedDate)
+    fetchActivities(formattedDate);
+    fetchResidents(formattedDate);
+    fetchResidentsCount(formattedDate);
+    fetchActivitiesCount(formattedDate)
 
   }
 
