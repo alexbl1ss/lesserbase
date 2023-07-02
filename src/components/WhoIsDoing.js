@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import TextField from '@mui/material/TextField';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -13,6 +13,8 @@ import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 
 function WhoIsDoing() {
   const [selectedDate, setSelectedDate] = useState(dayjs());
+  const [formattedDate, setFormattedDate] = useState(selectedDate.toISOString().split('T')[0]);
+  
   const [activities, setActivities] = useState([]);
   const [activitiesCount, setActivitiesCount] = useState([]);
   const [residents, setResidents] = useState([]);
@@ -25,6 +27,21 @@ function WhoIsDoing() {
   const [transfersOutTableCollapsed, setTransfersOutTableCollapsed] = useState(false);
   const [campus, setCampus] = useState('Kilgraston');
 
+// Update formattedDate whenever selectedDate changes
+useEffect(() => {
+  const newFormattedDate = selectedDate.toISOString().split('T')[0];
+  setFormattedDate(newFormattedDate);
+}, [selectedDate]);
+
+// Fetch data whenever formattedDate changes
+useEffect(() => {
+  fetchActivities(formattedDate);
+  fetchResidents(formattedDate);
+  fetchArrivers(formattedDate);
+  fetchLeavers(formattedDate);
+  fetchResidentsCount(formattedDate);
+  fetchActivitiesCount(formattedDate);
+}, [formattedDate]);
 
   const fetchActivities = (formattedDate) => {
     const token = sessionStorage.getItem('bearer');
@@ -155,16 +172,8 @@ function WhoIsDoing() {
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
-    const formattedDate = date.toISOString().split('T')[0]; // Format the date as YYYY-MM-DD
-  
-    fetchActivities(formattedDate);
-    fetchResidents(formattedDate);
-    fetchArrivers(formattedDate);
-    fetchLeavers(formattedDate);
-    fetchResidentsCount(formattedDate);
-    fetchActivitiesCount(formattedDate)
   };
-        
+            
   const handleExportCSV = (dataToExport, headerRow, fileName) => {
     
     
@@ -223,35 +232,33 @@ function WhoIsDoing() {
   const handleCampusChangeKilgraston = () => {
     setCampus('Kilgraston');
   
-    const formattedDate = selectedDate.toISOString().split('T')[0]; // Format the selected date as YYYY-MM-DD
+//    const formattedDate = selectedDate.toISOString().split('T')[0]; // Format the selected date as YYYY-MM-DD
   
-    fetchActivities(formattedDate);
-    fetchResidents(formattedDate);
-    fetchResidentsCount(formattedDate);
-    fetchActivitiesCount(formattedDate)
+    //fetchActivities(formattedDate);
+    //fetchResidents(formattedDate);
+    //fetchResidentsCount(formattedDate);
+    //fetchActivitiesCount(formattedDate)
 
   };
   const handleCampusChangeStrathallan = () => {
     setCampus('Strathallan');
-  
-    const formattedDate = selectedDate.toISOString().split('T')[0]; // Format the selected date as YYYY-MM-DD
-  
-    fetchActivities(formattedDate);
-    fetchResidents(formattedDate);
-    fetchResidentsCount(formattedDate);
-    fetchActivitiesCount(formattedDate)
+     
+    //fetchActivities(formattedDate);
+    //fetchResidents(formattedDate);
+    //fetchResidentsCount(formattedDate);
+    //fetchActivitiesCount(formattedDate)
 
   }
 
   const handleCampusChangeGlenalmond = () => {
     setCampus('Glenalmond');
   
-    const formattedDate = selectedDate.toISOString().split('T')[0]; // Format the selected date as YYYY-MM-DD
+//    const formattedDate = selectedDate.toISOString().split('T')[0]; // Format the selected date as YYYY-MM-DD
   
-    fetchActivities(formattedDate);
-    fetchResidents(formattedDate);
-    fetchResidentsCount(formattedDate);
-    fetchActivitiesCount(formattedDate)
+    //fetchActivities(formattedDate);
+    //fetchResidents(formattedDate);
+    //fetchResidentsCount(formattedDate);
+    //fetchActivitiesCount(formattedDate)
 
   }
 
