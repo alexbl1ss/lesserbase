@@ -9,6 +9,7 @@ import Collapse from '@mui/material/Collapse';
 import IconButton from '@mui/material/IconButton';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import { saveAs } from 'file-saver';
 
 
 function WhoIsDoing() {
@@ -194,24 +195,21 @@ useEffect(() => {
   };
 
   const handleResidentExportCSV = (dataToExport, headerRow, fileName) => {
-    
-    
+    console.log("in handle residents export");
+  
     // Convert activities to CSV format
     const csvData = dataToExport.map(
       ({ id, type, name, gender, base, arrival, departure, notes }) =>
         `${id},${type},${name},${gender},${base},${arrival},${departure},${notes}`
     );
-    const csvContent = 'data:text/csv;charset=utf-8,' + headerRow + '\n' + csvData.join('\n');
-
-    // Trigger download of CSV file
-    const encodedURI = encodeURI(csvContent);
-    const link = document.createElement('a');
-    link.setAttribute('href', encodedURI);
-    link.setAttribute('download', fileName);
-    document.body.appendChild(link);
-    link.click();
+    const csvContent = headerRow + '\n' + csvData.join('\n');
+  
+    // Using FileSaver to save the file
+    var blob = new Blob([csvContent], { type: "text/csv;charset=utf-8" });
+    saveAs(blob, fileName);
   };
 
+  
   const handleTransferExportCSV = (dataToExport, headerRow, fileName) => {
     // Convert transfers to CSV format
     const csvData = dataToExport.map(

@@ -7,6 +7,7 @@ import Box from '@mui/material/Box';
 import Login from './components/Login';
 import StudentSearch from './components/StudentSearch';
 import WhoIsDoing from './components/WhoIsDoing';
+import Transfers from './components/Transfers';
 import { SERVER_URL } from './constants.js';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -19,6 +20,7 @@ function App() {
   const [showWhoIsDoing, setShowWhoIsDoing] = useState(false);
   const [showRentOption, setShowRentOption] = useState(false); // New state variable
   const [showRentPage, setShowRentPage] = useState(false);
+  const [showTransfers, setShowTransfers] = useState(false);
 
 
   const onLoginSuccess = (username) => {
@@ -53,6 +55,7 @@ function App() {
                   onClick={() => {
                     setShowWhoIsDoing(false);
                     setShowRentPage(false);
+                    setShowTransfers(false);
                   }}
                 >
                   Students
@@ -62,9 +65,20 @@ function App() {
                   onClick={() => {
                     setShowWhoIsDoing(true);
                     setShowRentPage(false);
+                    setShowTransfers(false);
                   }}
                 >
                   Planner
+                </Button>
+                <Button
+                  color="inherit"
+                  onClick={() => {
+                    setShowWhoIsDoing(false);
+                    setShowRentPage(false);
+                    setShowTransfers(true);
+                  }}
+                >
+                  Transfers
                 </Button>
                 {showRentOption && (
                   <Button
@@ -72,7 +86,8 @@ function App() {
                     onClick={() => {
                       setShowWhoIsDoing(false);
                       setShowRentPage(true);
-                    }}
+                      setShowTransfers(false);
+                      }}
                   >
                     Costs
                   </Button>
@@ -89,6 +104,8 @@ function App() {
             <WhoIsDoing />
           ) : showRentPage ? (
             <Rent />
+          ) : showTransfers ? (
+            <Transfers />
           ) : (
             <StudentSearch />
           )
