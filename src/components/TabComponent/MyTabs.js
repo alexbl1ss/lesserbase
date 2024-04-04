@@ -6,6 +6,7 @@ import StudentPayments from "../AllTabs/StudentPayments";
 import StudentInvoice from "../AllTabs/StudentInvoice";
 import BookingCreator from "../AllTabs/BookingCreator";
 import StudentTransfers from "../AllTabs/StudentTransfers";
+import StudentStays from "../AllTabs/StudentStays"
 
 const MyTabs = (props) => {
 
@@ -18,6 +19,9 @@ const MyTabs = (props) => {
     };
     const handleagents = () => {
         setActiveTab("agents");
+    };
+    const handlestays = () => {
+        setActiveTab("stays");
     };
     const handletransfers = () => {
         setActiveTab("transfers");
@@ -49,6 +53,11 @@ const MyTabs = (props) => {
                     className={activeTab === "details" ? "active" : ""}
                     onClick={handledetails}>
                 Details
+                </li>
+                <li
+                    className={activeTab === "stays" ? "active" : ""}
+                    onClick={handlestays}>
+                Stays
                 </li>
                 <li
                     className={activeTab === "agents" ? "active" : ""}
@@ -88,6 +97,7 @@ const MyTabs = (props) => {
             </ul>
             <div className="outlet">
                 {activeTab === "details" ? <StudentDetail selectedPerson={selectedPerson}/> : null}
+                {activeTab === "stays" ? <StudentStays selectedPerson={selectedPerson}/> : null}
                 {activeTab === "agents" ? <StudentAgents selectedPerson={selectedPerson}/> : null}
                 {activeTab === "transfers" ? <StudentTransfers selectedPerson={selectedPerson}/> : null}
                 {activeTab === "bookings" ? <StudentBookings selectedPerson={selectedPerson}/> : null}
