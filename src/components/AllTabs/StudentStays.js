@@ -5,32 +5,45 @@ function StudentStays(props) {
 
     const { selectedPerson } = props;
     const [stays, setStays] = useState([]);
+    const [selectedStay, setSelectedStay] =useState(null);
 
 
     const fetchStays = useCallback(() => {
-        const token = sessionStorage.getItem('bearer');
-        fetch(`${SERVER_URL}api/student/${selectedPerson.id}/stays`, {
+      const token = sessionStorage.getItem('bearer');
+      fetch(`${SERVER_URL}api/student/${selectedPerson.id}/stays`, {
           headers: { Authorization: `Bearer ${token}` },
+      })
+        .then((response) => {
+          if (response.status === 204) { 
+            return [];
+          } else if (response.ok) {
+            return response.json();
+          } else {
+            throw new Error('Failed to fetch stays');
+          }
         })
-          .then((response) => {
-            if (response.status === 204) { 
-              return [];
-            } else if (response.ok) {
-              return response.json();
-            } else {
-              throw new Error('Failed to fetch payments');
-            }
-          })
-          .then((data) => {
-            sessionStorage.setItem('payments', JSON.stringify(data));
-            setStays(data);
-          })
-          .catch((err) => console.error(err));
-      }, [selectedPerson.id]);
-    
+        .then((data) => {
+          sessionStorage.setItem('stays', JSON.stringify(data)); // Corrected the key here
+          setStays(data);
+          if (data.length > 0) {
+            setSelectedStay(data[data.length - 1]);  // Set to the most recent stay
+          }
+        })
+        .catch((err) => console.error(err));
+    }, [selectedPerson.id]);
+      
       useEffect(() => {
         fetchStays();
       }, [fetchStays]);
+    
+      const handleStaySelect = useCallback((stay) => {
+        if(selectedStay === stay) {
+        console.log("don't actually do anything - ignore the deselection")
+        } else {
+        console.log(stay);
+        setSelectedStay(stay);
+        }
+    }, [selectedStay]);
     
       return(
         <React.Fragment>
@@ -51,6 +64,13 @@ function StudentStays(props) {
                       <td>{stay.campus}</td>
                       <td>{stay.arrivalDate}</td>
                       <td>{stay.departureDate}</td>
+                      <td>
+                        <input
+                          type="checkbox"
+                          checked={selectedStay && stay.stayId === selectedStay.stayId}
+                          onChange={() => handleStaySelect(stay)}
+                        />
+                      </td>
                     </tr>
                   ))}
                 </tbody>

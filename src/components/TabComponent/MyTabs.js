@@ -59,16 +59,16 @@ const MyTabs = (props) => {
                     onClick={handlestays}>
                 Stays
                 </li>
-                <li
+                {/* <li
                     className={activeTab === "agents" ? "active" : ""}
                     onClick={handleagents}>
                 Agents
-                </li>
-                <li
+                </li> */}
+                {/* <li
                     className={activeTab === "transfers" ? "active" : ""}
                     onClick={handletransfers}>
                 Transfers
-                </li>
+                </li> */}
                 <li
                     className={activeTab === "bookingcreator" ? "active" : ""}
                     onClick={handlebookingcreator}>
@@ -79,16 +79,16 @@ const MyTabs = (props) => {
                     onClick={handlebookings}>
                 Bookings
                 </li>
-                <li
+                {/* <li
                     className={activeTab === "payments" ? "active" : ""}
                     onClick={handlepayments}>
                 Payments
-                </li>
-                <li
+                </li> */}
+                {/* <li
                     className={activeTab === "invoice" ? "active" : ""}
                     onClick={handleinvoice}>
                 Invoice/Receipt
-                </li>
+                </li> */}
                 <li
                     className="close-tab"
                     onClick={handleClose}>
