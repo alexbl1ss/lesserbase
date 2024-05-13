@@ -91,7 +91,6 @@ function StudentSearch(props) {
   };
 
   const addStudent = (student) => {
-    console.log("do nothing for now");
     console.log(student.dateAdded);
     console.log(student.mtRef);
     console.log(student.studentName);
