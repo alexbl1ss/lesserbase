@@ -12,7 +12,7 @@ const MyTabs = (props) => {
 
     const { selectedPerson, onClose } = props;
     const [activeTab, setActiveTab] = useState("details");
-    //  Functions to handle Tab Switching
+    const [selectedStay, setSelectedStay] = useState(null); // State to hold the selected stay
 
     const handledetails = () => {
         setActiveTab("details");
@@ -97,11 +97,11 @@ const MyTabs = (props) => {
             </ul>
             <div className="outlet">
                 {activeTab === "details" ? <StudentDetail selectedPerson={selectedPerson}/> : null}
-                {activeTab === "stays" ? <StudentStays selectedPerson={selectedPerson}/> : null}
+                {activeTab === "stays" && <StudentStays selectedPerson={selectedPerson} selectedStay={selectedStay} setSelectedStay={setSelectedStay} />}
+                {activeTab === "bookingcreator" && <BookingCreator selectedPerson={selectedPerson} selectedStay={selectedStay} />}
+                {activeTab === "bookings" ? <StudentBookings selectedPerson={selectedPerson}/> : null}
                 {activeTab === "agents" ? <StudentAgents selectedPerson={selectedPerson}/> : null}
                 {activeTab === "transfers" ? <StudentTransfers selectedPerson={selectedPerson}/> : null}
-                {activeTab === "bookings" ? <StudentBookings selectedPerson={selectedPerson}/> : null}
-                {activeTab === "bookingcreator" ? <BookingCreator selectedPerson={selectedPerson}/> : null}
                 {activeTab === "payments" ? <StudentPayments selectedPerson={selectedPerson}/> : null}
                 {activeTab === "invoice" ? <StudentInvoice selectedPerson={selectedPerson}/> : null}
             </div>

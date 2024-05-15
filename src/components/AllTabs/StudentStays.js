@@ -6,9 +6,8 @@ import EditStay from '../AddsEdits/EditStay.js';
 
 
 function StudentStays(props) {
-    const { selectedPerson } = props;
+    const { selectedPerson, selectedStay, setSelectedStay } = props;
     const [stays, setStays] = useState([]);
-    const [selectedStay, setSelectedStay] = useState(null);
     const [editOpen, setEditOpen] = useState(false); // State to manage edit dialog open status
 
     const fetchStays = useCallback(() => {
@@ -28,7 +27,7 @@ function StudentStays(props) {
             .then((data) => {
                 sessionStorage.setItem('stays', JSON.stringify(data)); // Corrected the key here
                 setStays(data);
-                if (data.length > 0) {
+                if (!selectedStay && data.length > 0) {
                     setSelectedStay(data[data.length - 1]);  // Set to the most recent stay
                 }
             })
@@ -146,6 +145,7 @@ function StudentStays(props) {
 
             <div>
                 <p style={{ color: '#999999', fontSize: '10px' }}>Student: {selectedPerson.id}</p>
+                <p style={{ color: '#999999', fontSize: '10px' }}>Selected Stay: {selectedStay ? selectedStay.stayId : 'None'}</p>
                 <p style={{ color: '#999999', fontSize: '10px' }}>Is authenticated: {sessionStorage.getItem('isAuthenticated').toString()}</p>
             </div>
         </React.Fragment>

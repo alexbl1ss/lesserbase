@@ -3,11 +3,13 @@ import { SERVER_URL } from '../../constants.js'
 import '../BookingCard.css';
 
 function BookingCreator(props) {
-  const { selectedPerson } = props;
+  const { selectedPerson, selectedStay } = props;
   const [eligableProducts, setEligableProducts] = useState([]);
   const [campus, setCampus] = useState('Kilgraston');
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [searchPath, setSearchPath] = useState('UnselectedEligableProducts');
+
+  console.log("Received selectedStay in BookingCreator:", selectedStay);
 
   const fetchEligableProducts = useCallback(() => {
     const token = sessionStorage.getItem('bearer');
@@ -144,6 +146,7 @@ const handleBookings = () => {
     <button onClick={handleBookings}  type="button">Create Bookings</button>
     <div>
         <p style={{ color: '#999999', fontSize: '10px' }}>Student: {selectedPerson.id}</p>
+        <p style={{ color: '#999999', fontSize: '10px' }}>Selected Stay: {selectedStay ? selectedStay.stayId : 'None'}</p>
         <p style={{ color: '#999999', fontSize: '10px' }}>Is authenticated: {sessionStorage.getItem('isAuthenticated').toString()}</p>
       </div>
     </React.Fragment>
