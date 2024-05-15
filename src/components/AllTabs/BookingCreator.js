@@ -5,15 +5,16 @@ import '../BookingCard.css';
 function BookingCreator(props) {
   const { selectedPerson, selectedStay } = props;
   const [eligableProducts, setEligableProducts] = useState([]);
-  const [campus, setCampus] = useState('Kilgraston');
+  const [stayId, setStayId] = useState(selectedStay ? selectedStay.stayId : '0');
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [searchPath, setSearchPath] = useState('UnselectedEligableProducts');
 
   console.log("Received selectedStay in BookingCreator:", selectedStay);
+  console.log(stayId);
 
   const fetchEligableProducts = useCallback(() => {
     const token = sessionStorage.getItem('bearer');
-    fetch(`${SERVER_URL}api/products/${searchPath}/student/${selectedPerson.id}/campus/${campus}`, {
+    fetch(`${SERVER_URL}api/products/eligableProducts/stay/${stayId}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((response) => {
@@ -30,7 +31,7 @@ function BookingCreator(props) {
         setEligableProducts(data);
       })
       .catch((err) => console.error(err));
-  }, [selectedPerson.id, campus, searchPath]);
+  }, [selectedPerson.id, stayId, searchPath]);
 
   useEffect(() => {
     fetchEligableProducts();
@@ -41,19 +42,7 @@ function BookingCreator(props) {
   });
   
   
-  const handleCampusChangeKilgraston = () => {
-    setCampus('Kilgraston');
-  }
-
-  const handleCampusChangeStrathallan = () => {
-    setCampus('Strathallan');
-  }
-
-  const handleCampusChangeGlenalmond = () => {
-    setCampus('Glenalmond');
-  }
-
-  const handleProductSelect = useCallback((product) => {
+   const handleProductSelect = useCallback((product) => {
     if (selectedProducts.some((p) => p.id === product.id)) {
         setSelectedProducts(selectedProducts.filter((p) => p.id !== product.id));
     } else {
@@ -99,9 +88,6 @@ const handleBookings = () => {
     
   return(
     <React.Fragment>
-    <button onClick={handleCampusChangeKilgraston}  type="button">Kilgraston</button>
-    <button onClick={handleCampusChangeStrathallan}  type="button">Strathallan</button>
-    <button onClick={handleCampusChangeGlenalmond}  type="button">Glenalmond</button>
     <button onClick={widenSearch} type="button">Wide Search</button>
     <button onClick={normalSearch} type="button">Normal Search</button>
     <button onClick={handleBookings} type="button">Book</button>
