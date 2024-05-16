@@ -4,8 +4,10 @@ export const SERVER_URL='https://blissdbtest.herokuapp.com/';
 //export const SERVER_URL='https://blissalex.herokuapp.com/';
 
 export const CAMPUSES = [
-    { value: 'Livingston', label: 'Livingston' },
-    { value: 'Bathgate', label: 'Bathgate' },
-    { value: 'Belfast', label: 'Belast' },
+  { value: 'Glenalmond', label: 'Glenalmond' },
+  { value: 'Kilgraston', label: 'Kilgraston' },
+  { value: 'Rishworth', label: 'Rishworth' },
+  { value: 'StBees', label: 'StBees' },
+  { value: 'Strathallan', label: 'Strathallan' },
     // Add more campuses as needed
   ];
