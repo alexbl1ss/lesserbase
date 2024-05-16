@@ -2,7 +2,11 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { SERVER_URL } from '../../constants.js'
 import AddStay from '../AddsEdits/AddStay.js';
 import Button from '@mui/material/Button'; // Import Button from Material-UI
+import EditIcon from '@mui/icons-material/Edit'; // Import Edit Icon
+import AddIcon from '@mui/icons-material/Add'; // Import Add Icon
 import EditStay from '../AddsEdits/EditStay.js';
+import IconButton from '@mui/material/IconButton'; // Import IconButton from Material-UI
+
 
 
 function StudentStays(props) {
@@ -115,7 +119,9 @@ function StudentStays(props) {
                                 <td>{stay.arrivalDate}</td>
                                 <td>{stay.departureDate}</td>
                                 <td>
-                                    <Button variant="contained" onClick={() => handleEditClick(stay)}>Edit</Button> {/* Add the Edit button */}
+                                    <IconButton onClick={() => handleEditClick(stay)} color="primary">
+                                        <EditIcon />
+                                    </IconButton>
                                 </td>
                                 <td>
                                     <input

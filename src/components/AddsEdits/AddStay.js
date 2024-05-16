@@ -10,6 +10,8 @@ import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
+import AddIcon from '@mui/icons-material/Add'; // Import Add Icon
+import IconButton from '@mui/material/IconButton'; // Import IconButton from Material-UI
 import { CAMPUSES } from '../../constants'; // Import your campuses
 
 
@@ -47,7 +49,7 @@ function AddStay(props) {
 
     return (
         <div>
-            <Button variant="contained" onClick={handleClickOpen}>Add Stay</Button>
+            <IconButton onClick={handleClickOpen}color="primary"> <AddIcon/></IconButton>
             <Dialog open={open} onClose={handleClose}>
                 <DialogTitle>Add Stay</DialogTitle>
                 <DialogContent>
