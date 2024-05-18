@@ -119,3 +119,39 @@ ul.nav li.active {
   /* Other styles... */
 }
 
+.collapsible-table .nav {
+  padding: 10px;
+  margin: 5px 0;
+  background-color: #39A2DB;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 10px;
+}
+
+.collapsible-table .nav .content {
+  padding: 10px;
+  background-color: #dbe2e3;
+  color: #227387;
+  text-align: left;
+}
+
+.collapsible-table button {
+  cursor: pointer;
+  background-color: #f0f0f0;
+  color: #227387;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 5px;
+  margin-left: 10px;
+}
+
+
+
+
+
+
+
+
+

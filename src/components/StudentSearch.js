@@ -27,6 +27,18 @@ function StudentSearch(props) {
     setSearchShow(false);
   };
 
+  const handleSelectStudent = (studentId, event) => {
+    event.preventDefault(); // Prevent any default button click behavior
+    console.log("Select clicked for studentId:", studentId);
+    const student = students.find((s) => s.id === studentId);
+    if (student) {
+      console.log("Student selected:", student);
+      setSelectedPerson(student);
+    } else {
+      console.error("Student not found:", studentId);
+    }
+  };
+    
   const handleCloseTabs = () => {
     setSelectedPerson(null);
     setSearchField("");
@@ -145,7 +157,7 @@ function StudentSearch(props) {
             Is authenticated: {sessionStorage.getItem('isAuthenticated').toString()}
           </p>
         </div>
-        <CollapsibleTable incompleteBookings={incompleteBookings} />
+        <CollapsibleTable incompleteBookings={incompleteBookings} onSelectStudent={handleSelectStudent} />
       </form>
     </section>
   );
