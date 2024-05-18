@@ -122,10 +122,10 @@ function StudentDetail(props) {
         </table>
       </div>
       <div>
-        <p style={{ color: '#999999', fontSize: '10px' }}>Student: {selectedPerson.id}
-        <EditStudent passedStudent={student} editStudent={editStudent} />
-        </p>
-        <p style={{ color: '#999999', fontSize: '10px' }}>Is authenticated: {sessionStorage.getItem('isAuthenticated').toString()}</p>
+        <div style={{ color: '#999999', fontSize: '10px' }}>Student: {selectedPerson.id}
+          <EditStudent passedStudent={student} editStudent={editStudent} />
+        </div>
+        <div style={{ color: '#999999', fontSize: '10px' }}>Is authenticated: {sessionStorage.getItem('isAuthenticated').toString()}</div>
       </div>
     </React.Fragment>
   );
