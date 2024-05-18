@@ -12,6 +12,7 @@ function StudentSearch(props) {
   const [selectedPerson, setSelectedPerson] = useState(null);
   const [students, setStudents] = useState([]);
   const [incompleteBookings, setIncompleteBookings] = useState([]);
+  const [incompleteActivities, setIncompleteActivities] = useState([]);
 
   const filteredPersons = students.filter(
     (person) =>
@@ -28,7 +29,6 @@ function StudentSearch(props) {
   };
 
   const handleSelectStudent = (studentId) => {
-    // Find the student in the list by their ID
     const student = students.find((s) => s.id === studentId);
     if (student) {
       setSelectedPerson(student);
@@ -88,9 +88,22 @@ function StudentSearch(props) {
     .catch((err) => console.error(err));
   };
 
+  const fetchIncompleteActivities = () => {
+    const token = sessionStorage.getItem('bearer');
+    fetch(`${SERVER_URL}api/IncompleteBookings/1`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      setIncompleteActivities(data);
+    })
+    .catch((err) => console.error(err));
+  };
+
   useEffect(() => {
     fetchStudents();
     fetchIncompleteBookings();
+    fetchIncompleteActivities();
   }, []);
 
   const handleChange = (e) => {
@@ -154,7 +167,8 @@ function StudentSearch(props) {
             Is authenticated: {sessionStorage.getItem('isAuthenticated').toString()}
           </p>
         </div>
-        <CollapsibleTable incompleteBookings={incompleteBookings} onSelectStudent={handleSelectStudent} />
+        <CollapsibleTable incompleteBookings={incompleteBookings} onSelectStudent={handleSelectStudent} title="Incomplete Bookings" />
+        <CollapsibleTable incompleteBookings={incompleteActivities} onSelectStudent={handleSelectStudent} title="Incomplete Activities" />
       </form>
     </section>
   );
