@@ -3,9 +3,9 @@ import React, { useState } from 'react';
 function CollapsibleTable({ incompleteBookings, onSelectStudent }) {
   const [openIndex, setOpenIndex] = useState(null);
 
-  const toggleDetails = (index, event) => {
-    event.stopPropagation();  // Stop event propagation to prevent unintended clicks
-
+  const toggleRow = (index) => {
+    const booking = incompleteBookings[index];
+    onSelectStudent(booking.studentId); // Call the onSelectStudent function with the student ID
     setOpenIndex(openIndex === index ? null : index);
   };
 
@@ -18,28 +18,18 @@ function CollapsibleTable({ incompleteBookings, onSelectStudent }) {
             <div key={index}>
               <div
                 className={`nav ${openIndex === index ? 'active' : ''}`}
-                style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px', borderRadius: '10px', margin: '5px 0', backgroundColor: '#39A2DB', color: 'white' }}
+                onClick={() => toggleRow(index)}
+                style={{ cursor: 'pointer', padding: '10px', borderRadius: '10px', margin: '5px 0', backgroundColor: '#39A2DB', color: 'white', textAlign: 'left' }}
               >
-                <div
-                  onClick={() => toggleDetails(index)}
-                  style={{ flex: 1, cursor: 'pointer', textAlign: 'left' }}
-                >
-                  Student {booking.studentId} at {booking.campus}
-                </div>
-                <button
-                  onClick={() => onSelectStudent(booking.studentId)}
-                  style={{ cursor: 'pointer', backgroundColor: '#f0f0f0', color: '#227387', border: 'none', padding: '8px 16px', borderRadius: '5px' }}
-                >
-                  Select
-                </button>
+                Student {booking.studentId} at {booking.campus}
               </div>
               {openIndex === index && (
                 <div className="content" style={{ padding: '10px', backgroundColor: '#dbe2e3', color: '#227387', textAlign: 'left' }}>
-                  <p><strong>Stay Start:</strong> {booking.stayStart}</p>
-                  <p><strong>Stay End:</strong> {booking.stayEnd}</p>
-                  <p><strong>Stay Duration:</strong> {booking.stayDuration} days</p>
-                  <p><strong>Booking Coverage:</strong> {booking.bookingCoverage} days</p>
-                  <p><strong>Missing Days:</strong> {booking.stayDuration - booking.bookingCoverage}</p>
+                    : <strong>Stay Start:</strong> {booking.stayStart}
+                    : <strong>Stay End:</strong> {booking.stayEnd}
+                    : <strong>Stay Duration:</strong> {booking.stayDuration} days
+                    : <strong>Booking Coverage:</strong> {booking.bookingCoverage} days
+                     : <strong>Missing Days:</strong> {booking.stayDuration - booking.bookingCoverage}
                 </div>
               )}
             </div>

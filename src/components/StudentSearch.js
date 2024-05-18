@@ -27,18 +27,15 @@ function StudentSearch(props) {
     setSearchShow(false);
   };
 
-  const handleSelectStudent = (studentId, event) => {
-    event.preventDefault(); // Prevent any default button click behavior
-    console.log("Select clicked for studentId:", studentId);
+  const handleSelectStudent = (studentId) => {
+    // Find the student in the list by their ID
     const student = students.find((s) => s.id === studentId);
     if (student) {
-      console.log("Student selected:", student);
       setSelectedPerson(student);
-    } else {
-      console.error("Student not found:", studentId);
+      setSearchShow(false);
     }
   };
-    
+
   const handleCloseTabs = () => {
     setSelectedPerson(null);
     setSearchField("");
