@@ -1,11 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 
 function CollapsibleTable({ incompleteBookings, onSelectStudent, title }) {
-  const [openIndex, setOpenIndex] = useState(null);  // State to control individual rows
-  const [isTableCollapsed, setIsTableCollapsed] = useState(true);  // State to control the entire table
+  const [openIndex, setOpenIndex] = useState(null); // State to control individual rows
+  const [isTableCollapsed, setIsTableCollapsed] = useState(true); // State to control the entire table
 
-  const tableRef = useRef(null);  // Ref for the table to measure its full height
-  const [tableHeight, setTableHeight] = useState('auto');  // Dynamic height based on content
+  const tableRef = useRef(null); // Ref for the table to measure its full height
+  const [tableHeight, setTableHeight] = useState('auto'); // Dynamic height based on content
 
   // Toggle individual row details
   const toggleRow = (index) => {
@@ -14,7 +14,7 @@ function CollapsibleTable({ incompleteBookings, onSelectStudent, title }) {
 
   // Toggle the entire table's visibility
   const toggleTable = (e) => {
-    e.preventDefault();  // Prevent the default button action
+    e.preventDefault(); // Prevent the default button action
     e.stopPropagation(); // Stop click propagation to lower layers
 
     setIsTableCollapsed(!isTableCollapsed);
@@ -22,7 +22,7 @@ function CollapsibleTable({ incompleteBookings, onSelectStudent, title }) {
 
   // Handle 'Select' button click for details
   const handleSelectClick = (booking, e) => {
-    e.preventDefault();  // Prevent the default button action
+    e.preventDefault(); // Prevent the default button action
     e.stopPropagation(); // Stop click propagation to lower layers
 
     // Log booking details and call onSelectStudent with the student ID
@@ -35,7 +35,12 @@ function CollapsibleTable({ incompleteBookings, onSelectStudent, title }) {
     if (tableRef.current) {
       setTableHeight(`${tableRef.current.scrollHeight}px`);
     }
-  }, [incompleteBookings]);  // Adjust when bookings change
+  }, [incompleteBookings]); // Adjust when bookings change
+
+  // Debug log for incompleteBookings
+  useEffect(() => {
+    console.log("Updated incompleteBookings:", incompleteBookings);
+  }, [incompleteBookings]);
 
   return (
     <div 

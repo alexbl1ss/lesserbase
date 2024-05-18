@@ -39,6 +39,8 @@ function StudentSearch(props) {
   const handleCloseTabs = () => {
     setSelectedPerson(null);
     setSearchField("");
+    fetchIncompleteBookings();
+    fetchIncompleteActivities();
   };
 
   const searchList = () => {
@@ -81,9 +83,18 @@ function StudentSearch(props) {
     fetch(`${SERVER_URL}api/IncompleteBookings/0`, {
       headers: { Authorization: `Bearer ${token}` },
     })
-    .then((response) => response.json())
+    .then((response) => {
+      if (response.status === 204) {
+        return [];
+      } else if (response.ok) {
+        return response.json();
+      } else {
+        throw new Error('Failed to fetch incomplete bookings');
+      }
+    })
     .then((data) => {
-      setIncompleteBookings(data);
+      console.log("Fetched incomplete bookings:", data);
+      setIncompleteBookings(data.length > 0 ? [...data] : []); // Ensure a new array reference
     })
     .catch((err) => console.error(err));
   };
@@ -93,12 +104,22 @@ function StudentSearch(props) {
     fetch(`${SERVER_URL}api/IncompleteBookings/1`, {
       headers: { Authorization: `Bearer ${token}` },
     })
-    .then((response) => response.json())
+    .then((response) => {
+      if (response.status === 204) {
+        return [];
+      } else if (response.ok) {
+        return response.json();
+      } else {
+        throw new Error('Failed to fetch incomplete activities');
+      }
+    })
     .then((data) => {
-      setIncompleteActivities(data);
+      console.log("Fetched incomplete activities:", data);
+      setIncompleteActivities(data.length > 0 ? [...data] : []); // Ensure a new array reference
     })
     .catch((err) => console.error(err));
   };
+  
 
   useEffect(() => {
     fetchStudents();
