@@ -25,6 +25,7 @@ function App() {
 
   const onLoginSuccess = (username) => {
     setShowRentOption(username === 'alex.brown@bliss.com');
+    console.log("username: ", username);
     setAuth(true);
   };
 

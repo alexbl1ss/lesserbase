@@ -95,7 +95,7 @@ ul.nav li {
 ul.nav li:nth-child(n+2):nth-child(-n+7) {
   border-radius: 0;
 }
-ul.nav li:nth-child(8) {
+ul.nav li:nth-child(9) {
   border-radius: 0;
   transition: all 0.7s;
   border-bottom-right-radius: 2rem;
@@ -118,4 +118,94 @@ ul.nav li.active {
   background-color: #39A2DB;
   /* Other styles... */
 }
+
+.collapsible-table .nav {
+  padding: 10px;
+  margin: 5px 0;
+  background-color: #39A2DB;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 10px;
+}
+
+.collapsible-table .nav .content {
+  padding: 10px;
+  background-color: #dbe2e3;
+  color: #227387;
+  text-align: left;
+}
+
+.collapsible-table button {
+  cursor: pointer;
+  background-color: #f0f0f0;
+  color: #227387;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 5px;
+  margin-left: 10px;
+}
+
+/* Main container for the collapsible table */
+.CollapsibleTable {
+  width: 90%;
+  margin: 3.5rem auto 1.5rem;
+  transition: all 0.3s ease;
+}
+
+/* Nav for the individual rows */
+.collapsible-table .nav {
+  padding: 10px;
+  margin: 5px 0;
+  background-color: #39A2DB;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 10px;
+}
+
+/* Content for the collapsible rows */
+.collapsible-table .nav .content {
+  padding: 10px;
+  background-color: #dbe2e3;
+  color: #227387;
+  text-align: left;
+}
+
+/* Button styles */
+.collapsible-table button {
+  cursor: pointer;
+  background-color: #f0f0f0;
+  color: #227387;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 5px;
+  margin-left: 10px;
+}
+
+/* Add these styles to your CSS file */
+
+.CollapsibleTable {
+  font-family: 'Arial, sans-serif'; /* Example font */
+}
+
+.CollapsibleTable h2 {
+  font-family: 'Arial, sans-serif'; /* Example font */
+}
+
+.CollapsibleTable .nav {
+  font-family: 'Arial, sans-serif'; /* Example font */
+}
+
+.CollapsibleTable .content {
+  font-family: 'Arial, sans-serif'; /* Example font */
+}
+
+
+
+
+
+
 
