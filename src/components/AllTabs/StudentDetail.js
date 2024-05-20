@@ -65,7 +65,15 @@ function StudentDetail(props) {
     allergies, 
     notes, 
     arrivalDate, 
-    departureDate } = student;
+    departureDate,
+    hasPoolPermission,
+    hasPhotoPermission,
+    hasMedicalPermission,
+    hasHospitalPermission,
+    hasExcursionPermission,
+    hasActivityPermission,
+    hasSupervisionPermission
+  } = student;
 
 
   const editStudent = (student, id) => {
@@ -109,15 +117,36 @@ function StudentDetail(props) {
             <tr>
               <td style={{ textAlign: 'center' }}>{studentName} {studentSurname}</td>
               <td>English level: {englishLevel}</td>
-              <td>Arrives: {arrivalDate}</td>
-              <td>Departs: {departureDate}</td>
+              <td colSpan="2"></td>
             </tr>
             <tr style={{ height: '50px' }}><td colSpan="4" > </td></tr>
             <tr><td>Room Requirements: </td><td colSpan="3">{roomRequirements}</td></tr>
             <tr><td>Class Requirements: </td><td colSpan="3">{classRequirements}</td></tr>
             <tr><td>Allergies: </td><td colSpan="3">{allergies}</td></tr>
             <tr><td>Notes: </td><td colSpan="3">{notes}</td></tr>
-            <tr><td>Photo Permissions: </td><td colSpan="3">{photoPermissions}</td></tr>
+            <tr>
+              <td colSpan="2">Permissions:</td>
+              <td>Photo:</td>
+              <td>{hasPhotoPermission ? 'Yes' : 'No'}</td>
+            </tr>
+            <tr>
+              <td>Medical:</td>
+              <td>{hasMedicalPermission ? 'Yes' : 'No'}</td>
+              <td>Hospital:</td>
+              <td>{hasHospitalPermission ? 'Yes' : 'No'}</td>
+            </tr>
+            <tr>
+              <td>Excursion:</td>
+              <td>{hasExcursionPermission ? 'Yes' : 'No'}</td>
+              <td>Activity:</td>
+              <td>{hasActivityPermission ? 'Yes' : 'No'}</td>
+            </tr>
+            <tr>
+              <td>Supervision:</td>
+              <td>{hasSupervisionPermission ? 'Yes' : 'No'}</td>
+              <td>Pool:</td>
+              <td>{hasPoolPermission ? 'Yes' : 'No'}</td>
+            </tr>
           </tbody>
         </table>
       </div>

@@ -5,6 +5,7 @@ import SearchList from './SearchList.js';
 import Scroll from './Scroll.js';
 import AddStudent from './AddsEdits/AddStudent.js';
 import CollapsibleTable from './CollapsibleTable.js';
+import CollapsibleStudentTable from './CollapsibleStudentTable.js';
 
 function StudentSearch(props) {
   const [searchField, setSearchField] = useState("");
@@ -13,6 +14,7 @@ function StudentSearch(props) {
   const [students, setStudents] = useState([]);
   const [incompleteBookings, setIncompleteBookings] = useState([]);
   const [incompleteActivities, setIncompleteActivities] = useState([]);
+  const [studentsWithoutStays, setStudentsWithoutStays] = useState([]);
 
   const filteredPersons = students.filter(
     (person) =>
@@ -41,6 +43,7 @@ function StudentSearch(props) {
     setSearchField("");
     fetchIncompleteBookings();
     fetchIncompleteActivities();
+    fetchStudentsWithoutStays();
   };
 
   const searchList = () => {
@@ -120,11 +123,24 @@ function StudentSearch(props) {
     .catch((err) => console.error(err));
   };
   
+  const fetchStudentsWithoutStays = () => {
+    const token = sessionStorage.getItem('bearer');
+    fetch(`${SERVER_URL}api/studentsWithoutStays`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log("Fetched students without stays:", data);
+      setStudentsWithoutStays(data.length > 0 ? [...data] : []); // Ensure a new array reference
+    })
+    .catch((err) => console.error(err));
+  };
 
   useEffect(() => {
     fetchStudents();
     fetchIncompleteBookings();
     fetchIncompleteActivities();
+    fetchStudentsWithoutStays();
   }, []);
 
   const handleChange = (e) => {
@@ -188,6 +204,7 @@ function StudentSearch(props) {
             Is authenticated: {sessionStorage.getItem('isAuthenticated').toString()}
           </p>
         </div>
+        <CollapsibleStudentTable incompleteStudents={studentsWithoutStays} onSelectStudent={handleSelectStudent} title="Students without Stay details" />
         <CollapsibleTable incompleteBookings={incompleteBookings} onSelectStudent={handleSelectStudent} title="Incomplete Bookings" />
         <CollapsibleTable incompleteBookings={incompleteActivities} onSelectStudent={handleSelectStudent} title="Incomplete Activities" />
       </form>
