@@ -41,10 +41,16 @@ function StudentSearch(props) {
   const handleCloseTabs = () => {
     setSelectedPerson(null);
     setSearchField("");
+    fetchData();
+  };
+
+  const fetchData = () => {
+    fetchStudents();
     fetchIncompleteBookings();
     fetchIncompleteActivities();
     fetchStudentsWithoutStays();
   };
+
 
   const searchList = () => {
     if (searchShow) {
@@ -96,7 +102,7 @@ function StudentSearch(props) {
       }
     })
     .then((data) => {
-      console.log("Fetched incomplete bookings:", data);
+      //console.log("Fetched incomplete bookings:", data);
       setIncompleteBookings(data.length > 0 ? [...data] : []); // Ensure a new array reference
     })
     .catch((err) => console.error(err));
@@ -117,7 +123,7 @@ function StudentSearch(props) {
       }
     })
     .then((data) => {
-      console.log("Fetched incomplete activities:", data);
+      //console.log("Fetched incomplete activities:", data);
       setIncompleteActivities(data.length > 0 ? [...data] : []); // Ensure a new array reference
     })
     .catch((err) => console.error(err));
@@ -130,7 +136,7 @@ function StudentSearch(props) {
     })
     .then((response) => response.json())
     .then((data) => {
-      console.log("Fetched students without stays:", data);
+      //console.log("Fetched students without stays:", data);
       setStudentsWithoutStays(data.length > 0 ? [...data] : []); // Ensure a new array reference
     })
     .catch((err) => console.error(err));
@@ -175,10 +181,13 @@ function StudentSearch(props) {
         return response.json();
       } else {
         alert('Something went wrong!');
+        return null;
       }
     })
-    .then(() => {
-      fetchStudents();
+    .then(newStudent => {
+      if (newStudent) {
+        fetchData();  // Refetch all data to reflect the new student addition
+      }
     })
     .catch(err => console.error(err));
   };

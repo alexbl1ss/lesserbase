@@ -9,8 +9,8 @@ function BookingCreator(props) {
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [searchPath, setSearchPath] = useState('UnselectedEligableProducts');
 
-  console.log("Received selectedStay in BookingCreator:", selectedStay);
-  console.log(stayId);
+  //console.log("Received selectedStay in BookingCreator:", selectedStay);
+  //console.log(stayId);
 
   const fetchEligableProducts = useCallback(() => {
     const token = sessionStorage.getItem('bearer');

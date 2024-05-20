@@ -26,7 +26,7 @@ function CollapsibleStudentTable({ incompleteStudents, onSelectStudent, title })
     e.stopPropagation(); // Stop click propagation to lower layers
 
     // Log student details and call onSelectStudent with the student ID
-    console.log("student Details:", student);
+    //console.log("student Details:", student);
     onSelectStudent(student.id);
   };
 
@@ -39,7 +39,7 @@ function CollapsibleStudentTable({ incompleteStudents, onSelectStudent, title })
 
   // Debug log for incompletestudents
   useEffect(() => {
-    console.log("Updated incompleteStudents:", incompleteStudents);
+    //console.log("Updated incompleteStudents:", incompleteStudents);
   }, [incompleteStudents]);
 
   return (
