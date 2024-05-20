@@ -96,7 +96,7 @@ const MyTabs = (props) => {
                 </li>
             </ul>
             <div className="outlet">
-                {activeTab === "details" ? <StudentDetail selectedPerson={selectedPerson}/> : null}
+                {activeTab === "details" ? <StudentDetail selectedPerson={selectedPerson} selectedStay={selectedStay} setSelectedStay={setSelectedStay} /> : null}
                 {activeTab === "stays" && <StudentStays selectedPerson={selectedPerson} selectedStay={selectedStay} setSelectedStay={setSelectedStay} />}
                 {activeTab === "bookingcreator" && <BookingCreator selectedPerson={selectedPerson} selectedStay={selectedStay} />}
                 {activeTab === "bookings" ? <StudentBookings selectedPerson={selectedPerson}/> : null}
