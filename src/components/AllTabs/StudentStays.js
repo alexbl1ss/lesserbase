@@ -44,9 +44,9 @@ function StudentStays(props) {
 
     const handleStaySelect = useCallback((stay) => {
         if (selectedStay === stay) {
-            console.log("don't actually do anything - ignore the deselection")
+            //console.log("don't actually do anything - ignore the deselection")
         } else {
-            console.log(stay);
+            //console.log(stay);
             setSelectedStay(stay);
         }
     }, [selectedStay]);
