@@ -13,6 +13,8 @@ import MenuItem from '@mui/material/MenuItem';
 import AddIcon from '@mui/icons-material/Add'; // Import Add Icon
 import IconButton from '@mui/material/IconButton'; // Import IconButton from Material-UI
 import { CAMPUSES } from '../../constants'; // Import your campuses
+import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 
 
 function AddStay(props) {
@@ -20,11 +22,16 @@ function AddStay(props) {
     const { passedStudent } = props;
     const [stay, setStay] = useState({
         campus: '',
-        arrivalDate: '',
-        departureDate: '',
+        arrivalDate: new Date(),
+        departureDate: new Date(),
     });
 
     const handleClickOpen = () => {
+        setStay(prevStay => ({
+            ...prevStay,
+            arrivalDate: new Date('2024-06-30'),
+            departureDate: new Date('2024-08-10')
+          }));
         setOpen(true);
     };
 
@@ -39,6 +46,13 @@ function AddStay(props) {
         handleClose();
     };
 
+    const handleDateChange = (date, name) => {
+        setStay(prevStay => ({
+          ...prevStay,
+          [name]: date
+        }));
+      };
+    
     const handleChange = (event) => {
         const { name, value } = event.target;
         setStay((prevState) => ({
@@ -53,6 +67,7 @@ function AddStay(props) {
             <Dialog open={open} onClose={handleClose}>
                 <DialogTitle>Add Stay</DialogTitle>
                 <DialogContent>
+                <LocalizationProvider dateAdapter={AdapterDateFns}>
                     <Stack spacing={2} mt={1}>
                         <FormControl>
                             <InputLabel id="campus-label">Campus</InputLabel>
@@ -71,22 +86,33 @@ function AddStay(props) {
                                 ))}
                             </Select>
                         </FormControl>
-                        <TextField 
-                            label="Arrive" 
-                            name="arrivalDate" 
-                            variant="standard" 
-                            value={stay.arrivalDate} 
-                            onChange={handleChange}
-                        /> 
-                        <TextField 
-                            label="Depart" 
-                            name="departureDate" 
-                            variant="standard" 
-                            value={stay.departureDate} 
-                            onChange={handleChange}
-                        /> 
+                        <DatePicker
+                            label="Arrive"
+                            value={stay.arrivalDate}
+                            onChange={(date) => handleDateChange(date, 'arrivalDate')}
+                            renderInput={(params) => (
+                            <TextField
+                                {...params}
+                                fullWidth
+                                sx={{ mb: 0, mt: 0 }}
+                            />
+                            )}
+                        />
+                        <DatePicker
+                            label="Depart"
+                            value={stay.departureDate}
+                            onChange={(date) => handleDateChange(date, 'departureDate')}
+                            renderInput={(params) => (
+                            <TextField
+                                {...params}
+                                fullWidth
+                                sx={{ mb: 0, mt: 0 }}
+                            />
+                            )}
+                        />
                     </Stack>
-                </DialogContent>    
+                    </LocalizationProvider>
+                    </DialogContent>    
                 <DialogActions>
                     <Button onClick={handleClose}>Cancel</Button>
                     <Button onClick={handleSave}>Save</Button>
