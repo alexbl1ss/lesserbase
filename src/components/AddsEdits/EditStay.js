@@ -11,22 +11,29 @@ import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import { CAMPUSES } from '../../constants'; // Import your campuses
+import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 
 
 function EditStay(props) {
     const { passedStudent, selectedStay, open, onClose, editStay } = props;
     const [stay, setStay] = useState({
         campus: '',
-        arrivalDate: '',
-        departureDate: '',
+        arrivalDate: new Date(),
+        departureDate: new Date(),
     });
 
     useEffect(() => {
         if (selectedStay) {
+            const safeDate = (dateString) => {
+                const date = new Date(dateString);
+                return date instanceof Date && !isNaN(date) ? date : new Date(); // Default to current date if invalid
+              };
+        
             setStay({
                 campus: selectedStay.campus,
-                arrivalDate: selectedStay.arrivalDate,
-                departureDate: selectedStay.departureDate,
+                arrivalDate: safeDate(selectedStay.arrivalDate),
+                departureDate: safeDate(selectedStay.departureDate),
             });
         }
     }, [selectedStay]);
@@ -38,6 +45,13 @@ function EditStay(props) {
         onClose();
     };
 
+    const handleDateChange = (date, name) => {
+        setStay(prevStay => ({
+          ...prevStay,
+          [name]: date
+        }));
+      };
+    
     const handleChange = (event) => {
         const { name, value } = event.target;
         setStay((prevState) => ({
@@ -50,10 +64,11 @@ function EditStay(props) {
         <Dialog open={open} onClose={onClose}>
             <DialogTitle>Edit Stay</DialogTitle>
             <DialogContent>
-                <Stack spacing={2} mt={1}>
-                    <FormControl>
-                        <InputLabel id="campus-label">Campus</InputLabel>
-                        <Select
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                    <Stack spacing={2} mt={1}>
+                        <FormControl>
+                            <InputLabel id="campus-label">Campus</InputLabel>
+                            <Select
                                 labelId="campus-label"
                                 id="campus"
                                 name="campus"
@@ -67,22 +82,33 @@ function EditStay(props) {
                                     </MenuItem>
                                 ))}
                             </Select>
-                    </FormControl>
-                    <TextField
-                        label="Arrive"
-                        name="arrivalDate"
-                        variant="standard"
-                        value={stay.arrivalDate}
-                        onChange={handleChange}
-                    />
-                    <TextField
-                        label="Depart"
-                        name="departureDate"
-                        variant="standard"
-                        value={stay.departureDate}
-                        onChange={handleChange}
-                    />
-                </Stack>
+                        </FormControl>
+                        <DatePicker
+                            label="Arrive"
+                            value={stay.arrivalDate}
+                            onChange={(date) => handleDateChange(date, 'arrivalDate')}
+                            renderInput={(params) => (
+                            <TextField
+                                {...params}
+                                fullWidth
+                                sx={{ mb: 0, mt: 0 }}
+                            />
+                            )}
+                        />
+                        <DatePicker
+                            label="Depart"
+                            value={stay.departureDate}
+                            onChange={(date) => handleDateChange(date, 'departureDate')}
+                            renderInput={(params) => (
+                            <TextField
+                                {...params}
+                                fullWidth
+                                sx={{ mb: 0, mt: 0 }}
+                            />
+                            )}
+                        />
+                    </Stack>
+                    </LocalizationProvider>
             </DialogContent>
             <DialogActions>
                 <Button onClick={onClose}>Cancel</Button>

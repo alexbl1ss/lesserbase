@@ -1,0 +1,52 @@
+Bliss database:
+
+Merge Multiyear to Main
+
+In main
+update connections in application.properties to connect to the prod database
+
+
+Merge Main to Prod
+watch Heroku logs for build
+
+Add new storedprocs to prod database in workbench:
+SQL/IncompleteBookings.sql - done
+
+Populate prod database Stays table in workbench:
+SQL/code for stays table.sql
+
+Add new afternoon products to prod via Postman
+SQL/2024afternoons.csv
+
+
+Bliss Bill View:
+
+Merge multiyear to main
+update constants in main to point at export const SERVER_URL='https://blissdb.herokuapp.com/';
+
+Merge Main to Prod
+watch logs on aws amplify
+
+Test
+Create student
+should not complain
+should appear in students without stay details - failed, appeared after logout/login
+open student from there
+add stay
+check bookings page - should have eligable products
+close student
+should be in incomplete bookings list
+open from there - failed, had to explicitly reselect the stay
+add bookings
+close student
+should be in incomplete activities
+open student from there
+add afternoon and weekends
+close student
+should be gone from lists - failed, still in incomplete activities list because not going on trip on arrival or departure day
+
+search for existing student cam11
+update permissions
+add stay
+add second stay
+check bookers

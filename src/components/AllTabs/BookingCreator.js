@@ -7,14 +7,14 @@ function BookingCreator(props) {
   const [eligableProducts, setEligableProducts] = useState([]);
   const [stayId, setStayId] = useState(selectedStay ? selectedStay.stayId : '0');
   const [selectedProducts, setSelectedProducts] = useState([]);
-  const [searchPath, setSearchPath] = useState('UnselectedEligableProducts');
+  const [searchPath, setSearchPath] = useState('eligableProducts');
 
   //console.log("Received selectedStay in BookingCreator:", selectedStay);
   //console.log(stayId);
 
   const fetchEligableProducts = useCallback(() => {
     const token = sessionStorage.getItem('bearer');
-    fetch(`${SERVER_URL}api/products/eligableProducts/stay/${stayId}`, {
+    fetch(`${SERVER_URL}api/products/${searchPath}/stay/${stayId}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((response) => {
@@ -80,10 +80,11 @@ const handleBookings = () => {
   }
 
   const widenSearch = () => {
-    setSearchPath('UnselectedEligableProductsWide');
+    console.log("widen search");
+    setSearchPath('eligableProductsWide');
   }
   const normalSearch = () => {
-    setSearchPath('UnselectedEligableProducts');
+    setSearchPath('eligableProducts');
   }
     
   return(
