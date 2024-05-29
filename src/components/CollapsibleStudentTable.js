@@ -1,13 +1,11 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 
 function CollapsibleStudentTable({ incompleteStudents, onSelectStudent, title }) {
   const [openIndex, setOpenIndex] = useState(null); // State to control individual rows
   const [isTableCollapsed, setIsTableCollapsed] = useState(true); // State to control the entire table
 
-  const tableRef = useRef(null); // Ref for the table to measure its full height
-  const [tableHeight, setTableHeight] = useState('auto'); // Dynamic height based on content
-
-  // Toggle individual row details
+  const tableRef = useRef(null); 
+  
   const toggleRow = (index) => {
     setOpenIndex(openIndex === index ? null : index);
   };
@@ -29,18 +27,6 @@ function CollapsibleStudentTable({ incompleteStudents, onSelectStudent, title })
     //console.log("student Details:", student);
     onSelectStudent(student.id);
   };
-
-  // Adjust the height of the table dynamically
-  useEffect(() => {
-    if (tableRef.current) {
-      setTableHeight(`${tableRef.current.scrollHeight}px`);
-    }
-  }, [incompleteStudents]); // Adjust when students change
-
-  // Debug log for incompletestudents
-  useEffect(() => {
-    //console.log("Updated incompleteStudents:", incompleteStudents);
-  }, [incompleteStudents]);
 
   return (
     <div 

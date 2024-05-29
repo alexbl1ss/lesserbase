@@ -1,9 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { SERVER_URL } from '../../constants.js'
 import AddStay from '../AddsEdits/AddStay.js';
-import Button from '@mui/material/Button'; // Import Button from Material-UI
 import EditIcon from '@mui/icons-material/Edit'; // Import Edit Icon
-import AddIcon from '@mui/icons-material/Add'; // Import Add Icon
 import EditStay from '../AddsEdits/EditStay.js';
 import IconButton from '@mui/material/IconButton'; // Import IconButton from Material-UI
 
@@ -36,7 +34,7 @@ function StudentStays(props) {
                 }
             })
             .catch((err) => console.error(err));
-    }, [selectedPerson.id]);
+    }, [selectedPerson.id, setSelectedStay, selectedStay]);
 
     useEffect(() => {
         fetchStays();
@@ -49,7 +47,7 @@ function StudentStays(props) {
             //console.log(stay);
             setSelectedStay(stay);
         }
-    }, [selectedStay]);
+    }, [selectedStay, setSelectedStay]);
 
     const addStay = (stay) => {
         const token = sessionStorage.getItem("bearer");

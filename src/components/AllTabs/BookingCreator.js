@@ -5,12 +5,9 @@ import '../BookingCard.css';
 function BookingCreator(props) {
   const { selectedPerson, selectedStay } = props;
   const [eligableProducts, setEligableProducts] = useState([]);
-  const [stayId, setStayId] = useState(selectedStay ? selectedStay.stayId : '0');
+  const [stayId] = useState(selectedStay ? selectedStay.stayId : '0');
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [searchPath, setSearchPath] = useState('eligableProducts');
-
-  //console.log("Received selectedStay in BookingCreator:", selectedStay);
-  //console.log(stayId);
 
   const fetchEligableProducts = useCallback(() => {
     const token = sessionStorage.getItem('bearer');
@@ -31,7 +28,7 @@ function BookingCreator(props) {
         setEligableProducts(data);
       })
       .catch((err) => console.error(err));
-  }, [selectedPerson.id, stayId, searchPath]);
+  }, [stayId, searchPath]);
 
   useEffect(() => {
     fetchEligableProducts();
