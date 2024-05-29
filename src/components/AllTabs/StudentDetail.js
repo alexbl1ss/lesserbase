@@ -5,8 +5,7 @@ import { SERVER_URL } from '../../constants.js'
 function StudentDetail(props) {
   const { selectedPerson, selectedStay, setSelectedStay } = props;
   const [student, setStudent] = useState(null);
-  const [stays, setStays] = useState([]);
-
+  
   const fetchStays = useCallback(() => {
     const token = sessionStorage.getItem('bearer');
     fetch(`${SERVER_URL}api/student/${selectedPerson.id}/stays`, {
@@ -22,7 +21,6 @@ function StudentDetail(props) {
         }
       })
       .then((data) => {
-        setStays(data);
         // Automatically select the most recent stay if none is currently selected
         if (!selectedStay && data.length > 0) {
           setSelectedStay(data[data.length - 1]);  // Set to the most recent stay
@@ -87,12 +85,9 @@ function StudentDetail(props) {
     studentNationality, 
     englishLevel, 
     roomRequirements, 
-    photoPermissions, 
     classRequirements, 
     allergies, 
     notes, 
-    arrivalDate, 
-    departureDate,
     hasPoolPermission,
     hasPhotoPermission,
     hasMedicalPermission,

@@ -11,7 +11,6 @@ import Stack from '@mui/material/Stack';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import { SERVER_URL } from '../../constants.js';
-import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 
 function EditTransfer(props) {

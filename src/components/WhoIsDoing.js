@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import TextField from '@mui/material/TextField';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -34,17 +34,7 @@ useEffect(() => {
   setFormattedDate(newFormattedDate);
 }, [selectedDate]);
 
-// Fetch data whenever formattedDate changes
-useEffect(() => {
-  fetchActivities(formattedDate);
-  fetchResidents(formattedDate);
-  fetchArrivers(formattedDate);
-  fetchLeavers(formattedDate);
-  fetchResidentsCount(formattedDate);
-  fetchActivitiesCount(formattedDate);
-}, [formattedDate]);
-
-  const fetchActivities = (formattedDate) => {
+const fetchActivities = useCallback((formattedDate) => {
     const token = sessionStorage.getItem('bearer');
     fetch(`${SERVER_URL}api/whoisdoing/${formattedDate}/${campus}`, {
       headers: { Authorization: `Bearer ${token}` },
@@ -63,9 +53,9 @@ useEffect(() => {
         setActivities(data);
       })
       .catch((err) => console.error(err));
-  };
+  },[campus]);
 
-  const fetchResidents = (formattedDate) => {
+  const fetchResidents = useCallback((formattedDate) => {
     const token = sessionStorage.getItem('bearer');
     fetch(`${SERVER_URL}api/whoisresident/${formattedDate}/${campus}`, {
       headers: { Authorization: `Bearer ${token}` },
@@ -84,9 +74,9 @@ useEffect(() => {
         setResidents(data);
       })
       .catch((err) => console.error(err));
-  };
+    },[campus]);
 
-  const fetchResidentsCount = (formattedDate) => {
+  const fetchResidentsCount = useCallback((formattedDate) => {
     const token = sessionStorage.getItem('bearer');
     fetch(`${SERVER_URL}api/residentcount/${formattedDate}`, {
       headers: { Authorization: `Bearer ${token}` },
@@ -105,9 +95,9 @@ useEffect(() => {
         setResidentsCount(data);
       })
       .catch((err) => console.error(err));
-  };
+  },[]);
 
-  const fetchActivitiesCount = (formattedDate) => {
+  const fetchActivitiesCount = useCallback((formattedDate) => {
     const token = sessionStorage.getItem('bearer');
     fetch(`${SERVER_URL}api/activitiesCount/${formattedDate}/${campus}`, {
       headers: { Authorization: `Bearer ${token}` },
@@ -127,9 +117,19 @@ useEffect(() => {
       })
       .catch((err) => console.error(err));
       console.log(activitiesCount)
-  };
+  },[activitiesCount, campus]);
 
-  const fetchArrivers = (formattedDate) => {
+  // Fetch data whenever formattedDate changes
+useEffect(() => {
+  fetchActivities(formattedDate);
+  fetchResidents(formattedDate);
+  fetchArrivers(formattedDate);
+  fetchLeavers(formattedDate);
+  fetchResidentsCount(formattedDate);
+  fetchActivitiesCount(formattedDate);
+}, [formattedDate, fetchActivities, fetchResidents, fetchActivitiesCount, fetchResidentsCount]);
+
+const fetchArrivers = (formattedDate) => {
     const token = sessionStorage.getItem('bearer');
     fetch(`${SERVER_URL}api/whoisarriving/${formattedDate}`, {
       headers: { Authorization: `Bearer ${token}` },

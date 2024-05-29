@@ -12,8 +12,6 @@ import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
-import Checkbox from '@mui/material/Checkbox';
-import FormControlLabel from '@mui/material/FormControlLabel';
 import { STATUS } from '../../constants';
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
@@ -29,8 +27,7 @@ function EditBooking(props) {
     startDate: null,
     endDate: null
   });
-  const [datesEnabled, setDatesEnabled] = useState(false);
-
+  
   useEffect(() => {
     if (passedBooking) {
       const safeDate = (dateString) => {
@@ -63,10 +60,6 @@ function EditBooking(props) {
     });
   };
 
-  const toggleDatesEnabled = (event) => {
-    setDatesEnabled(event.target.checked);
-  };
-          
   const handleClose = () => {
     setOpen(false);
   };
