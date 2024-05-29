@@ -7,7 +7,8 @@ import { SERVER_URL } from '../../constants.js'
 
 function StudentInvoice(props) {
   const { selectedPerson } = props;
-  
+  const [student, setStudent] = useState([]);
+
   const today = new Date();
   const formattedDate = `${today.getDate()}/${today.getMonth() + 1}/${today.getFullYear()}`;
  const [invoiceDate, setInvoiceDate] = useState(formattedDate);
@@ -15,6 +16,31 @@ function StudentInvoice(props) {
   const handleInvoiceDateChange = (event) => {
     setInvoiceDate(event.target.value);
   };
+
+  const fetchStudent = useCallback(() => {
+    const token = sessionStorage.getItem('bearer');
+    fetch(`${SERVER_URL}api/students/${selectedPerson.id}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((response) => {
+        if (response.status === 204) {
+          return [];
+        } else if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error('Failed to fetch student');
+        }
+      })
+      .then((data) => {
+        sessionStorage.setItem('bookings', JSON.stringify(data));
+        setStudent(data);
+      })
+      .catch((err) => console.error(err));
+  }, [selectedPerson.id]);
+
+  useEffect(() => {
+    fetchStudent();
+  }, [fetchStudent]);
 
 
  
@@ -209,14 +235,14 @@ function StudentInvoice(props) {
         <hr className="line" style={{ width: '100%' }} />
       </div>
       <div className="student-details-container">
-        <div><strong>{selectedPerson.studentName} {selectedPerson.studentSurname}</strong></div>
-        <div>Student ID: {selectedPerson.mtRef}</div>
-        <div>Check in: {selectedPerson.arrivalDate}</div>
-        <div>Check out: {selectedPerson.departureDate}</div>
+        <div><strong>{student.studentName} {student.studentSurname}</strong></div>
+        <div>Student ID: {student.mtRef}</div>
+        <div>Check in: {student.arrivalDate}</div>
+        <div>Check out: {student.departureDate}</div>
       </div>
       <div style={{ textAlign: 'right' }}>
         <p>Date: {invoiceDate}</p>
-        <p>Invoice number: {selectedPerson.mtRef}-01</p>
+        <p>Invoice number: {student.mtRef}-01</p>
       </div>
       <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
         <div style={{ textAlign: "center" }}>
@@ -232,7 +258,7 @@ function StudentInvoice(props) {
                   <td>{booking.productName}</td>
                   <td>{booking.startDate}</td>
                   <td>{booking.endDate}</td>
-                  <td>£ {booking.commissionable && !gross ? booking.actualCharge * factor : booking.actualCharge} GBP</td>
+                  <td>£ {booking.commissionable && !gross ? (booking.actualCharge * factor).toFixed(2) : booking.actualCharge.toFixed(2)} GBP</td>
                 </tr>
               ))
             ) : (

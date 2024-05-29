@@ -10,6 +10,7 @@ function Login(props) {
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState('');
   const [isError, setIsError] = useState(false);
+  const [username, setUsername] = useState('');
 
   const [user, setUser] = useState({
     email: '', 
@@ -18,6 +19,9 @@ function Login(props) {
   
   const handleChange = (event) => {
     setUser({...user, [event.target.name] : event.target.value});
+    if (event.target.name === 'email') {
+      setUsername(event.target.value);
+    }
   }
       
   const login = () => {
@@ -35,7 +39,7 @@ function Login(props) {
         setMessage('Login successful!');
         setIsError(false);
         setOpen(true);
-        props.onLoginSuccess();
+        props.onLoginSuccess(username);
       } else {
         setMessage('Login failed: Check your username and password');
         setIsError(true);

@@ -6,18 +6,22 @@ import StudentPayments from "../AllTabs/StudentPayments";
 import StudentInvoice from "../AllTabs/StudentInvoice";
 import BookingCreator from "../AllTabs/BookingCreator";
 import StudentTransfers from "../AllTabs/StudentTransfers";
+import StudentStays from "../AllTabs/StudentStays"
 
 const MyTabs = (props) => {
 
     const { selectedPerson, onClose } = props;
     const [activeTab, setActiveTab] = useState("details");
-    //  Functions to handle Tab Switching
+    const [selectedStay, setSelectedStay] = useState(null); // State to hold the selected stay
 
     const handledetails = () => {
         setActiveTab("details");
     };
     const handleagents = () => {
         setActiveTab("agents");
+    };
+    const handlestays = () => {
+        setActiveTab("stays");
     };
     const handletransfers = () => {
         setActiveTab("transfers");
@@ -51,15 +55,20 @@ const MyTabs = (props) => {
                 Details
                 </li>
                 <li
+                    className={activeTab === "stays" ? "active" : ""}
+                    onClick={handlestays}>
+                Stays
+                </li>
+                {/* <li
                     className={activeTab === "agents" ? "active" : ""}
                     onClick={handleagents}>
                 Agents
-                </li>
-                <li
+                </li> */}
+                {/* <li
                     className={activeTab === "transfers" ? "active" : ""}
                     onClick={handletransfers}>
                 Transfers
-                </li>
+                </li> */}
                 <li
                     className={activeTab === "bookingcreator" ? "active" : ""}
                     onClick={handlebookingcreator}>
@@ -70,16 +79,16 @@ const MyTabs = (props) => {
                     onClick={handlebookings}>
                 Bookings
                 </li>
-                <li
+                {/* <li
                     className={activeTab === "payments" ? "active" : ""}
                     onClick={handlepayments}>
                 Payments
-                </li>
-                <li
+                </li> */}
+                {/* <li
                     className={activeTab === "invoice" ? "active" : ""}
                     onClick={handleinvoice}>
                 Invoice/Receipt
-                </li>
+                </li> */}
                 <li
                     className="close-tab"
                     onClick={handleClose}>
@@ -87,11 +96,12 @@ const MyTabs = (props) => {
                 </li>
             </ul>
             <div className="outlet">
-                {activeTab === "details" ? <StudentDetail selectedPerson={selectedPerson}/> : null}
+                {activeTab === "details" ? <StudentDetail selectedPerson={selectedPerson} selectedStay={selectedStay} setSelectedStay={setSelectedStay} /> : null}
+                {activeTab === "stays" && <StudentStays selectedPerson={selectedPerson} selectedStay={selectedStay} setSelectedStay={setSelectedStay} />}
+                {activeTab === "bookingcreator" && <BookingCreator selectedPerson={selectedPerson} selectedStay={selectedStay} />}
+                {activeTab === "bookings" ? <StudentBookings selectedPerson={selectedPerson}/> : null}
                 {activeTab === "agents" ? <StudentAgents selectedPerson={selectedPerson}/> : null}
                 {activeTab === "transfers" ? <StudentTransfers selectedPerson={selectedPerson}/> : null}
-                {activeTab === "bookings" ? <StudentBookings selectedPerson={selectedPerson}/> : null}
-                {activeTab === "bookingcreator" ? <BookingCreator selectedPerson={selectedPerson}/> : null}
                 {activeTab === "payments" ? <StudentPayments selectedPerson={selectedPerson}/> : null}
                 {activeTab === "invoice" ? <StudentInvoice selectedPerson={selectedPerson}/> : null}
             </div>

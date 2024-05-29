@@ -17,7 +17,6 @@ function AddTransfer(props) {
 
     const [open, setOpen] = useState(false);
     const { direction, passedStudent } = props;
-
     const [transfer, setTransfer] = useState(() => {
       const defaultTransferDate =
         direction === 'IN' ? passedStudent.arrivalDate : passedStudent.departureDate;
@@ -44,6 +43,7 @@ function AddTransfer(props) {
     };
 
     const handleSave = () => {
+      console.log(passedStudent)
         props.addTransfer(transfer, passedStudent.id)
         handleClose();
     }

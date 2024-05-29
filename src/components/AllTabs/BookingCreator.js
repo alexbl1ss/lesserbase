@@ -3,15 +3,18 @@ import { SERVER_URL } from '../../constants.js'
 import '../BookingCard.css';
 
 function BookingCreator(props) {
-  const { selectedPerson } = props;
+  const { selectedPerson, selectedStay } = props;
   const [eligableProducts, setEligableProducts] = useState([]);
-  const [campus, setCampus] = useState('Kilgraston');
+  const [stayId, setStayId] = useState(selectedStay ? selectedStay.stayId : '0');
   const [selectedProducts, setSelectedProducts] = useState([]);
-  const [searchPath, setSearchPath] = useState('UnselectedEligableProducts');
+  const [searchPath, setSearchPath] = useState('eligableProducts');
+
+  //console.log("Received selectedStay in BookingCreator:", selectedStay);
+  //console.log(stayId);
 
   const fetchEligableProducts = useCallback(() => {
     const token = sessionStorage.getItem('bearer');
-    fetch(`${SERVER_URL}api/products/${searchPath}/student/${selectedPerson.id}/campus/${campus}`, {
+    fetch(`${SERVER_URL}api/products/${searchPath}/stay/${stayId}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((response) => {
@@ -28,7 +31,7 @@ function BookingCreator(props) {
         setEligableProducts(data);
       })
       .catch((err) => console.error(err));
-  }, [selectedPerson.id, campus, searchPath]);
+  }, [selectedPerson.id, stayId, searchPath]);
 
   useEffect(() => {
     fetchEligableProducts();
@@ -39,15 +42,7 @@ function BookingCreator(props) {
   });
   
   
-  const handleCampusChangeKilgraston = () => {
-    setCampus('Kilgraston');
-  }
-
-  const handleCampusChangeStrathallan = () => {
-    setCampus('Strathallan');
-  }
-
-  const handleProductSelect = useCallback((product) => {
+   const handleProductSelect = useCallback((product) => {
     if (selectedProducts.some((p) => p.id === product.id)) {
         setSelectedProducts(selectedProducts.filter((p) => p.id !== product.id));
     } else {
@@ -85,16 +80,15 @@ const handleBookings = () => {
   }
 
   const widenSearch = () => {
-    setSearchPath('UnselectedEligableProductsWide');
+    console.log("widen search");
+    setSearchPath('eligableProductsWide');
   }
   const normalSearch = () => {
-    setSearchPath('UnselectedEligableProducts');
+    setSearchPath('eligableProducts');
   }
     
   return(
     <React.Fragment>
-    <button onClick={handleCampusChangeKilgraston}  type="button">Kilgraston</button>
-    <button onClick={handleCampusChangeStrathallan}  type="button">Strathallan</button>
     <button onClick={widenSearch} type="button">Wide Search</button>
     <button onClick={normalSearch} type="button">Normal Search</button>
     <button onClick={handleBookings} type="button">Book</button>
@@ -139,6 +133,7 @@ const handleBookings = () => {
     <button onClick={handleBookings}  type="button">Create Bookings</button>
     <div>
         <p style={{ color: '#999999', fontSize: '10px' }}>Student: {selectedPerson.id}</p>
+        <p style={{ color: '#999999', fontSize: '10px' }}>Selected Stay: {selectedStay ? selectedStay.stayId : 'None'}</p>
         <p style={{ color: '#999999', fontSize: '10px' }}>Is authenticated: {sessionStorage.getItem('isAuthenticated').toString()}</p>
       </div>
     </React.Fragment>
