@@ -11,6 +11,9 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import EditTransfer from './AddsEdits/EditTransfer.js';
 import AddTransfer from './AddsEdits/AddTransfer.js';
+import { CAMPUSES } from '../constants';
+import { Select, MenuItem, FormControl, InputLabel } from '@mui/material';
+
 
 function Transfers() {
   const [selectedDate, setSelectedDate] = useState(dayjs());
@@ -96,18 +99,6 @@ function Transfers() {
     link.click();
   };
 
-  const handleCampusChangeKilgraston = () => {
-    setCampus('Kilgraston');
-  };
-
-  const handleCampusChangeStrathallan = () => {
-    setCampus('Strathallan');
-  };
-
-  const handleCampusChangeGlenalmond = () => {
-    setCampus('Glenalmond');
-  };
-
   const editTransfer = (transfer, id) => {
     const { student, ...updatedTransfer } = transfer; // Destructure the `student` field from `transfer`
   
@@ -161,15 +152,6 @@ function Transfers() {
   return (
     <section className="garamond">
       <div className="pa2"></div>
-      <button onClick={handleCampusChangeKilgraston} type="button">
-        Kilgraston
-      </button>
-      <button onClick={handleCampusChangeStrathallan} type="button">
-        Strathallan
-      </button>
-      <button onClick={handleCampusChangeGlenalmond} type="button">
-        Glenalmond
-      </button>
       <div style={{ marginBottom: '10px' }}></div>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DatePicker
@@ -179,7 +161,21 @@ function Transfers() {
           renderInput={(params) => <TextField {...params} variant="standard" helperText="" />}
         />
       </LocalizationProvider>
-
+      <FormControl variant="standard" style={{ minWidth: 120 }}>
+        <InputLabel id="campus-select-label">Campus</InputLabel>
+        <Select
+          labelId="campus-select-label"
+          id="campus-select"
+          value={campus}
+          onChange={(e) => setCampus(e.target.value)}
+          >
+          {CAMPUSES.map((campusOption) => (
+          <MenuItem key={campusOption.value} value={campusOption.value}>
+          {campusOption.label}
+          </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
       <div style={{ marginLeft: '50px' }}>
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <span>Transfers In</span>
@@ -217,16 +213,16 @@ function Transfers() {
                   <td>{arriver.departing}</td>
                   <td>{arriver.flightId}</td>
                   <td>{arriver.arrivalTime}</td>
-                  <td>SCHEDULED</td>
-                  {arriver.transferId === 0 ? (
-            <AddTransfer direction="IN" passedStudent={arriver} addTransfer={addTransfer} />
-          ) : (
-            <EditTransfer
-              person_id={arriver.studentId}
-              transfer_id={arriver.transferId}
-              editTransfer={editTransfer}
-            />
-          )}
+                  <td>{arriver.transferId === 0 || arriver.transferId === null ? 'UNKNOWN' : 'SCHEDULED'}</td>
+                  {arriver.transferId === 0 || arriver.transferId === null ? (
+                    <AddTransfer direction="IN" passedStudent={arriver} addTransfer={addTransfer} />
+                  ) : (
+                    <EditTransfer
+                      person_id={arriver.studentId}
+                      transfer_id={arriver.transferId}
+                      editTransfer={editTransfer}
+                    />
+                  )}
                 </tr>
               ))}
             </tbody>
