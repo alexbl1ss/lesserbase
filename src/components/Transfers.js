@@ -33,7 +33,7 @@ function Transfers() {
   useEffect(() => {
     console.log("selectedDate set in Transfers:", selectedDate);
   }, [selectedDate]);
-  
+
   // Fetch data whenever formattedDate changes
   useEffect(() => {
     fetchArrivers(formattedDate);
@@ -200,11 +200,11 @@ function Transfers() {
               <tr>
                 <th>Student Id</th>
                 <th>Name</th>
-                <th>transferId</th>
                 <th>Campus</th>
-                <th>Airport</th>
                 <th>Flight</th>
-                <th>Time</th>
+                <th>Departure Airport</th>
+                <th>Arrival Airport</th>
+                <th>Arrival Time</th>
                 <th>Status</th>
               </tr>
             </thead>
@@ -213,10 +213,10 @@ function Transfers() {
                 <tr key={arriver.studentId}>
                   <td>{arriver.studentId}</td>
                   <td>{arriver.name}</td>
-                  <td>{arriver.transferId}</td>
-                  <td>{arriver.destination}</td>
-                  <td>{arriver.departing}</td>
+                  <td>{arriver.campus}</td>
                   <td>{arriver.flightId}</td>
+                  <td>{arriver.departing}</td>
+                  <td>{arriver.destination}</td>
                   <td>{arriver.arrivalTime}</td>
                   <td>{arriver.transferId === 0 || arriver.transferId === null ? 'UNKNOWN' : 'SCHEDULED'}</td>
                   {arriver.transferId === 0 || arriver.transferId === null ? (
