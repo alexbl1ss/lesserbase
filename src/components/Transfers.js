@@ -30,6 +30,10 @@ function Transfers() {
     setFormattedDate(newFormattedDate);
   }, [selectedDate]);
 
+  useEffect(() => {
+    console.log("selectedDate set in Transfers:", selectedDate);
+  }, [selectedDate]);
+  
   // Fetch data whenever formattedDate changes
   useEffect(() => {
     fetchArrivers(formattedDate);
@@ -142,6 +146,7 @@ function Transfers() {
     })
     .catch(err => console.error(err))
   }
+  
 
   const sortedArrivers = arrivers.sort((a, b) => {
     const timeA = new Date(`1970/01/01 ${a.arrivalTime}`);
@@ -215,7 +220,12 @@ function Transfers() {
                   <td>{arriver.arrivalTime}</td>
                   <td>{arriver.transferId === 0 || arriver.transferId === null ? 'UNKNOWN' : 'SCHEDULED'}</td>
                   {arriver.transferId === 0 || arriver.transferId === null ? (
-                    <AddTransfer direction="IN" passedStudent={arriver} addTransfer={addTransfer} />
+                    <AddTransfer
+                    transferDate={selectedDate.toDate()} // Converts Dayjs object to Date
+                    direction="IN"
+                    passedStudent={arriver}
+                    addTransfer={addTransfer}
+                  />
                   ) : (
                     <EditTransfer
                       person_id={arriver.studentId}

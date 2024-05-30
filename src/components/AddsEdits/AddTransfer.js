@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
@@ -12,27 +12,30 @@ import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
+import { LocalizationProvider, DatePicker, TimePicker } from '@mui/x-date-pickers';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { format } from 'date-fns';
 
 function AddTransfer(props) {
 
   const [open, setOpen] = useState(false);
-  const { direction, passedStudent } = props;
-  const [transfer, setTransfer] = useState(() => {
-  const defaultTransferDate =
+  const [transfer, setTransfer] = useState({});
+  const { direction, passedStudent, transferDate } = props;
+
+  useEffect(() => {
     
-    direction === 'IN' ? passedStudent.arrivalDate : passedStudent.departureDate;
-    
-    return {
+  setTransfer({
       direction: direction || 'IN',
-      transferDate: defaultTransferDate,
+      transferDate: transferDate,
       depart: null,
       arrive: null,
       privatePickup: null,
       departureTime: null,
       arrivalTime: null,
-      flightId: null,
-    };
-  });
+      flightId: null
+    });
+  }, [direction, passedStudent, transferDate]);
+  
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -42,18 +45,30 @@ function AddTransfer(props) {
     setOpen(false);
   };
 
-  const handleSave = () => {
-    console.log(passedStudent)
-    props.addTransfer(transfer, passedStudent.id)
-    handleClose();
-  }
-
+  const handleDateChange = (date, name) => {
+    setTransfer(prevTransfer => ({
+      ...prevTransfer,
+      [name]: date
+    }));
+  };
+  
   const handleChange = (event) => {
     const { name, value, type, checked } = event.target;
-      
     const updatedValue = type === 'checkbox' ? checked : value;
-      
     setTransfer({ ...transfer, [name]: updatedValue });
+  };
+
+  const handleSave = () => {
+    const formattedData = {
+      ...transfer,
+      transferDate: transfer.transferDate ? format(new Date(transfer.transferDate), 'yyyy-MM-dd') : null,
+      departureTime: transfer.departureTime ? format(new Date(transfer.departureTime), 'HH:mm:ss') : null,
+      arrivalTime: transfer.arrivalTime ? format(new Date(transfer.arrivalTime), 'HH:mm:ss') : null,
+    };
+    
+    console.log("Formatted data for backend:", formattedData);
+    props.addTransfer(formattedData, passedStudent.studentId);
+    handleClose();
   };
   
   return(
@@ -62,6 +77,7 @@ function AddTransfer(props) {
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Add Transfer</DialogTitle>
         <DialogContent>
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
           <Stack spacing={2} mt={1}> 
             <FormControl>
               <InputLabel id="direction-label">Direction</InputLabel>
@@ -76,13 +92,16 @@ function AddTransfer(props) {
                 <MenuItem value="OUT">OUT</MenuItem>
               </Select>
             </FormControl>                  
-            <TextField label="Date" name="transferDate" 
-              variant="standard" value={transfer.transferDate} 
-              onChange={handleChange}/> 
-            <TextField label="Leaving" name="depart" 
+            <DatePicker
+                label="Date"
+                value={transfer.transferDate}
+                onChange={(date) => handleDateChange(date, 'transferDate')}
+                renderInput={(params) => <TextField {...params} />}
+            />
+            <TextField label="Departure Airport" name="depart" 
               variant="standard" value={transfer.depart} 
               onChange={handleChange}/> 
-            <TextField label="Arriving" name="arrive" 
+            <TextField label="Arrival Airport" name="arrive" 
               variant="standard" value={transfer.arrive} 
               onChange={handleChange}/> 
             <FormControlLabel
@@ -95,16 +114,23 @@ function AddTransfer(props) {
               }
               label="Self Transfer"
             />                  
-            <TextField label="Depart" name="departureTime" 
-              variant="standard" value={transfer.departureTime} 
-              onChange={handleChange}/> 
-            <TextField label="Arrive" name="arrivalTime" 
-              variant="standard" value={transfer.arrivalTime} 
-              onChange={handleChange}/> 
-            <TextField label="Flight" name="flightId" 
+            <TimePicker
+                  label="Departure Time"
+                  value={transfer.departureTime}
+                  onChange={(time) => handleDateChange(time, 'departureTime')}
+                  renderInput={(params) => <TextField {...params} />}
+              />
+              <TimePicker
+                  label="Arrival Time"
+                  value={transfer.arrivalTime}
+                  onChange={(time) => handleDateChange(time, 'arrivalTime')}
+                  renderInput={(params) => <TextField {...params} />}
+              /> 
+            <TextField label="Flight Number" name="flightId" 
               variant="standard" value={transfer.flightId} 
               onChange={handleChange}/> 
           </Stack>
+        </LocalizationProvider>
         </DialogContent>    
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>

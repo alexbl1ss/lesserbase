@@ -1,0 +1,27 @@
+Bliss database:
+
+run in stored proc - whoIsArriving.sql
+
+Bliss Bill View:
+
+Merge transfers to main
+deploy main on the test aws env
+
+
+test -->
+
+on main update constants.js to point to prod
+Merge Main to Prod
+watch logs on aws amplify
+
+test -->
+
+Test
+Add student - check dates
+edit student - check dates
+add stay
+edit stay
+open booker 
+select wide search
+add booking
+edit booking
