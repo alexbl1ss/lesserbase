@@ -20,9 +20,18 @@ import { format } from 'date-fns';
 
 function AddTransfer(props) {
   const [open, setOpen] = useState(false);
-  const [transfer, setTransfer] = useState({});
   const { direction, passedStudent, transferDate } = props;
-
+  const [transfer, setTransfer] = useState({
+    direction: direction || 'IN',  // Default direction
+    transferDate: transferDate || new Date(),  // Ensure this is always a Date object
+    depart: '',  // Use empty string for text fields
+    arrive: '',
+    privatePickup: false,  // Default checkbox state
+    departureTime: new Date(),  // Default to current time, adjust as necessary
+    arrivalTime: new Date(),  // Default to current time, adjust as necessary
+    flightId: ''
+  });
+  
   useEffect(() => {
     
   setTransfer({
@@ -49,9 +58,10 @@ function AddTransfer(props) {
   const handleDateChange = (date, name) => {
     setTransfer(prevTransfer => ({
       ...prevTransfer,
-      [name]: date
+      [name]: date || new Date()  // Fallback to a new Date if date is null
     }));
   };
+  
   
   const handleChange = (event) => {
     const { name, value, type, checked } = event.target;
@@ -67,7 +77,6 @@ function AddTransfer(props) {
       arrivalTime: transfer.arrivalTime ? format(new Date(transfer.arrivalTime), 'HH:mm:ss') : null,
     };
     
-    console.log("Formatted data for backend:", formattedData);
     props.addTransfer(formattedData, passedStudent.studentId);
     handleClose();
   };
@@ -99,7 +108,7 @@ function AddTransfer(props) {
                 label="Date"
                 value={transfer.transferDate}
                 onChange={(date) => handleDateChange(date, 'transferDate')}
-                renderInput={(params) => <TextField {...params} />}
+                renderInput={(params) => <TextField {...params} value={params.inputProps.value || ''} />}
             />
             <TextField label="Departure Airport" name="depart" 
               variant="standard" value={transfer.depart} 
@@ -121,13 +130,13 @@ function AddTransfer(props) {
                   label="Departure Time"
                   value={transfer.departureTime}
                   onChange={(time) => handleDateChange(time, 'departureTime')}
-                  renderInput={(params) => <TextField {...params} />}
+                  renderInput={(params) => <TextField {...params} value={params.inputProps.value || ''} />}
               />
               <TimePicker
                   label="Arrival Time"
                   value={transfer.arrivalTime}
                   onChange={(time) => handleDateChange(time, 'arrivalTime')}
-                  renderInput={(params) => <TextField {...params} />}
+                  renderInput={(params) => <TextField {...params} value={params.inputProps.value || ''} />}
               /> 
             <TextField label="Flight Number" name="flightId" 
               variant="standard" value={transfer.flightId} 

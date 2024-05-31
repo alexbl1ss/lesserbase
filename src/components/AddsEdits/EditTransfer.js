@@ -36,30 +36,58 @@ function EditTransfer(props) {
 
   useEffect(() => {
     const fetchTransfer = async () => {
-      if (open) {
-        try {
-          const token = sessionStorage.getItem('bearer');
-          const response = await fetch(`${SERVER_URL}api/transfers/${person_id}`, {
-            headers: { Authorization: `Bearer ${token}` },
+      try {
+        const token = sessionStorage.getItem('bearer');
+        const response = await fetch(`${SERVER_URL}api/transfers/${person_id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await response.json();
+        const selectedTransfer = data.find((transfer) => transfer.id === transfer_id);
+        if (selectedTransfer) {
+          setTransfer({
+            direction: selectedTransfer.direction || 'IN', // Default to 'IN' if undefined
+            transferDate: selectedTransfer.transferDate ? new Date(selectedTransfer.transferDate) : new Date(),
+            depart: selectedTransfer.depart || '', // Default to empty string if undefined
+            arrive: selectedTransfer.arrive || '', // Default to empty string if undefined
+            privatePickup: selectedTransfer.privatePickup || false, // Default to false if undefined
+            departureTime: selectedTransfer.departureTime ? new Date(`1970-01-01T${selectedTransfer.departureTime}`) : new Date(),
+            arrivalTime: selectedTransfer.arrivalTime ? new Date(`1970-01-01T${selectedTransfer.arrivalTime}`) : new Date(),
+            flightId: selectedTransfer.flightId || '' // Default to empty string if undefined
           });
-          const data = await response.json();
-          const selectedTransfer = data.find((t) => t.id === transfer_id);
-          if (selectedTransfer) {
-            setTransfer({
-              ...selectedTransfer,
-              transferDate: selectedTransfer.transferDate ? new Date(selectedTransfer.transferDate) : new Date(),
-              departureTime: selectedTransfer.departureTime ? new Date(`1970-01-01T${selectedTransfer.departureTime}`) : null,
-              arrivalTime: selectedTransfer.arrivalTime ? new Date(`1970-01-01T${selectedTransfer.arrivalTime}`) : null
-            });
-          }
-        } catch (error) {
-          console.error('Error fetching transfer:', error);
+        } else {
+          // Handle case where no transfer is found or the data array is empty
+          setTransfer({
+            direction: 'IN',
+            transferDate: new Date(),
+            depart: '',
+            arrive: '',
+            privatePickup: false,
+            departureTime: new Date(),
+            arrivalTime: new Date(),
+            flightId: ''
+          });
         }
+      } catch (error) {
+        console.error('Error fetching transfer:', error);
+        // Initialize with default values in case of error
+        setTransfer({
+          direction: 'IN',
+          transferDate: new Date(),
+          depart: '',
+          arrive: '',
+          privatePickup: false,
+          departureTime: new Date(),
+          arrivalTime: new Date(),
+          flightId: ''
+        });
       }
     };
   
-    fetchTransfer();
-  }, [open, person_id, transfer_id]);  
+    if (open) {
+      fetchTransfer();
+    }
+  }, [open, person_id, transfer_id]);
+    
 
 const handleClickOpen = () => {
     setOpen(true);
