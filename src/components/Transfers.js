@@ -31,11 +31,6 @@ function Transfers() {
   }, [selectedDate]);
 
   useEffect(() => {
-    console.log("selectedDate set in Transfers:", selectedDate);
-  }, [selectedDate]);
-
-  // Fetch data whenever formattedDate changes
-  useEffect(() => {
     fetchArrivers(formattedDate);
     fetchLeavers(formattedDate);
   }, [formattedDate]);

@@ -4,6 +4,8 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
+import AddIcon from '@mui/icons-material/Add';
 import TextField from '@mui/material/TextField';
 import Stack from '@mui/material/Stack';
 import Checkbox from '@mui/material/Checkbox';
@@ -17,7 +19,6 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { format } from 'date-fns';
 
 function AddTransfer(props) {
-
   const [open, setOpen] = useState(false);
   const [transfer, setTransfer] = useState({});
   const { direction, passedStudent, transferDate } = props;
@@ -73,7 +74,9 @@ function AddTransfer(props) {
   
   return(
     <div>
-      <Button variant="contained" onClick={handleClickOpen}>Add Transfer {direction}</Button>
+      <IconButton color="primary" onClick={handleClickOpen}>
+        <AddIcon />
+      </IconButton>
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Add Transfer</DialogTitle>
         <DialogContent>
