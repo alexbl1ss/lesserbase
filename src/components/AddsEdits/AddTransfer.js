@@ -21,14 +21,19 @@ import { format } from 'date-fns';
 function AddTransfer(props) {
   const [open, setOpen] = useState(false);
   const { direction, passedStudent, transferDate } = props;
+  const currentHour = new Date();
+  currentHour.setMinutes(0);
+  currentHour.setSeconds(0);  
+  currentHour.setMilliseconds(0);
+
   const [transfer, setTransfer] = useState({
-    direction: direction || 'IN',  // Default direction
-    transferDate: transferDate || new Date(),  // Ensure this is always a Date object
-    depart: '',  // Use empty string for text fields
+    direction: direction || 'IN',
+    transferDate: transferDate || currentHour,
+    depart: '', 
     arrive: '',
-    privatePickup: false,  // Default checkbox state
-    departureTime: new Date(),  // Default to current time, adjust as necessary
-    arrivalTime: new Date(),  // Default to current time, adjust as necessary
+    privatePickup: false,
+    departureTime: currentHour,
+    arrivalTime: currentHour,
     flightId: ''
   });
   

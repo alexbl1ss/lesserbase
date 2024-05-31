@@ -113,6 +113,7 @@ function Transfers() {
       .then((response) => {
         if (response.ok) {
           fetchArrivers(formattedDate);
+          fetchLeavers(formattedDate);
         } else {
           alert('Something went wrong!');
         }
@@ -264,31 +265,42 @@ function Transfers() {
           >
             <thead>
               <tr>
-                <th>Student Id</th>
-                <th>Master Tracker Ref</th>
+              <th>Student Id</th>
                 <th>Name</th>
-                <th>Departing</th>
-                <th>Transfer Id</th>
-                <th>Departure Time</th>
-                <th>Self Transfer</th>
+                <th>Campus</th>
                 <th>Flight</th>
-                <th>Destination</th>
-                <th>Arrival Time</th>
+                <th>Departure Airport</th>
+                <th>Arrival Airport</th>
+                <th>Departure Time</th>
+                <th>Status</th>
               </tr>
             </thead>
             <tbody>
               {leavers.map((leaver) => (
-                <tr key={leaver.id}>
-                  <td>{leaver.id}</td>
-                  <td>{leaver.mtRef}</td>
+                <tr key={leaver.studentId}>
+                  <td>{leaver.studentId}</td>
                   <td>{leaver.name}</td>
-                  <td>{leaver.departing}</td>
-                  <td>{leaver.transferId}</td>
-                  <td>{leaver.departureTime}</td>
-                  <td>{leaver.privatePickup}</td>
+                  <td>{leaver.campus}</td>
                   <td>{leaver.flightId}</td>
+                  <td>{leaver.departing}</td>
                   <td>{leaver.destination}</td>
-                  <td>{leaver.arrivalTime}</td>
+                  <td>{leaver.departureTime}</td>
+                  <td>{leaver.transferId === 0 || leaver.transferId === null ? 'UNKNOWN' : 'SCHEDULED'}</td>
+                  {leaver.transferId === 0 || leaver.transferId === null ? (
+                    <AddTransfer
+                    transferDate={selectedDate.toDate()} // Converts Dayjs object to Date
+                    direction="OUT"
+                    passedStudent={leaver}
+                    addTransfer={addTransfer}
+                  />
+                  ) : (
+                    <EditTransfer
+                      transferDate={selectedDate.toDate()} // Converts Dayjs object to Date
+                      person_id={leaver.studentId}
+                      transfer_id={leaver.transferId}
+                      editTransfer={editTransfer}
+                    />
+                  )}
                 </tr>
               ))}
             </tbody>

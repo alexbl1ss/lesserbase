@@ -21,16 +21,20 @@ import { SERVER_URL } from '../../constants.js';
 
 function EditTransfer(props) {
   const [open, setOpen] = useState(false);
-  const { person_id, transfer_id } = props;
+  const { person_id, transfer_id, transferDate } = props;
+  const currentHour = new Date();
+  currentHour.setMinutes(0);
+  currentHour.setSeconds(0);  
+  currentHour.setMilliseconds(0);
 
   const [transfer, setTransfer] = useState({
-    direction: '',
-    transferDate: null,
-    depart: '',
+    direction: 'IN',
+    transferDate: transferDate || currentHour,
+    depart: '', 
     arrive: '',
     privatePickup: false,
-    departureTime: null,
-    arrivalTime: null,
+    departureTime: currentHour,
+    arrivalTime: currentHour,
     flightId: ''
   });
 
@@ -43,27 +47,28 @@ function EditTransfer(props) {
         });
         const data = await response.json();
         const selectedTransfer = data.find((transfer) => transfer.id === transfer_id);
+        
         if (selectedTransfer) {
           setTransfer({
             direction: selectedTransfer.direction || 'IN', // Default to 'IN' if undefined
-            transferDate: selectedTransfer.transferDate ? new Date(selectedTransfer.transferDate) : new Date(),
+            transferDate: selectedTransfer.transferDate ? new Date(selectedTransfer.transferDate) : currentHour,
             depart: selectedTransfer.depart || '', // Default to empty string if undefined
             arrive: selectedTransfer.arrive || '', // Default to empty string if undefined
             privatePickup: selectedTransfer.privatePickup || false, // Default to false if undefined
-            departureTime: selectedTransfer.departureTime ? new Date(`1970-01-01T${selectedTransfer.departureTime}`) : new Date(),
-            arrivalTime: selectedTransfer.arrivalTime ? new Date(`1970-01-01T${selectedTransfer.arrivalTime}`) : new Date(),
+            departureTime: selectedTransfer.departureTime ? new Date(`1970-01-01T${selectedTransfer.departureTime}`) : currentHour,
+            arrivalTime: selectedTransfer.arrivalTime ? new Date(`1970-01-01T${selectedTransfer.arrivalTime}`) : currentHour,
             flightId: selectedTransfer.flightId || '' // Default to empty string if undefined
           });
         } else {
           // Handle case where no transfer is found or the data array is empty
           setTransfer({
             direction: 'IN',
-            transferDate: new Date(),
+            transferDate: currentHour,
             depart: '',
             arrive: '',
             privatePickup: false,
-            departureTime: new Date(),
-            arrivalTime: new Date(),
+            departureTime: currentHour,
+            arrivalTime: currentHour,
             flightId: ''
           });
         }
