@@ -146,15 +146,9 @@ function StudentTransfers(props) {
           <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px'  }}>
           <Stack direction="row" spacing={2}>
             <AddTransfer
-                passedStudent={selectedPerson}
+                passedStudent={selectedPerson.id}
                 addTransfer={addTransfer}
-                direction={'IN'}
             />
-            <AddTransfer
-                passedStudent={selectedPerson}
-                addTransfer={addTransfer}
-                direction={'OUT'}
-                />
             </Stack>
             </div>
         <p style={{ color: '#999999', fontSize: '10px' }}>Student: {selectedPerson.id}</p>

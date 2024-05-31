@@ -53,6 +53,7 @@ function AddTransfer(props) {
   
 
   const handleClickOpen = () => {
+    console.log("hello, person: " + passedStudent);
     setOpen(true);
   };
   
@@ -82,7 +83,7 @@ function AddTransfer(props) {
       arrivalTime: transfer.arrivalTime ? format(new Date(transfer.arrivalTime), 'HH:mm:ss') : null,
     };
     
-    props.addTransfer(formattedData, passedStudent.studentId);
+    props.addTransfer(formattedData, passedStudent);
     handleClose();
   };
   
