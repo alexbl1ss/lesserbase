@@ -1,6 +1,10 @@
 Bliss database:
 
+Merge Transfers into Main
+
 run in stored proc - whoIsArriving.sql
+run in stored proc - whoIsLeaving.sql
+
 
 Bliss Bill View:
 
@@ -17,11 +21,18 @@ watch logs on aws amplify
 test -->
 
 Test
-Add student - check dates
-edit student - check dates
-add stay
-edit stay
-open booker 
-select wide search
-add booking
-edit booking
+add transfers for 2402 via student details page
+set return to be self transfer
+check the transfers are in place on transfers page for correct dates
+edit the transfers from the transfer page
+check the transfer changes are in place on the student details page
+delete the transfers from student details page
+add the transfers back in on the transfers page
+check that the transfers are in place on the student details page
+edit the transfers and check that the changes are persisted on the transfers page
+
+
+Shutdown mains
+repoint main at prod
+merge mains into prod
+repeat test
