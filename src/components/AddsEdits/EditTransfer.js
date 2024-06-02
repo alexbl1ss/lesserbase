@@ -111,8 +111,19 @@ const handleClickOpen = () => {
   
   const handleChange = (event) => {
     const { name, value, type, checked } = event.target;
-    const updatedValue = type === 'checkbox' ? checked : value;
-    setTransfer({ ...transfer, [name]: updatedValue });
+  
+    if (name === "privatePickup") {
+      setTransfer((prevTransfer) => ({
+        ...prevTransfer,
+        [name]: checked,
+        flightId: checked ? "SELFTRANSFER" : ''
+      }));
+    } else {
+      setTransfer((prevTransfer) => ({
+        ...prevTransfer,
+        [name]: value
+      }));
+    }
   };
                 
   const handleSave = () => {
@@ -183,8 +194,10 @@ const handleClickOpen = () => {
               renderInput={(params) => <TextField {...params} />}
             /> 
             <TextField label="Flight Number" name="flightId" 
-              variant="standard" value={transfer.flightId} 
-              onChange={handleChange}/> 
+              variant="standard"
+              value={transfer.flightId}
+              onChange={handleChange}
+              disabled={transfer.privatePickup}/> 
           </Stack>
         </LocalizationProvider>
         </DialogContent>    

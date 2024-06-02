@@ -145,10 +145,48 @@ function Transfers() {
   
 
   const sortedArrivers = arrivers.sort((a, b) => {
-    const timeA = new Date(`1970/01/01 ${a.arrivalTime}`);
-    const timeB = new Date(`1970/01/01 ${b.arrivalTime}`);
-    return timeA - timeB;
+    // Convert times to Date objects for comparison; assume times are in HH:mm format
+    const timeA = a.arrivalTime ? new Date(`1970/01/01 ${a.arrivalTime}`) : null;
+    const timeB = b.arrivalTime ? new Date(`1970/01/01 ${b.arrivalTime}`) : null;
+  
+    if (timeA && timeB) {
+      return timeA - timeB; // First, compare by arrivalTime
+    } else if (!timeA && !timeB) {
+      // Check if studentId is numeric or string and compare appropriately
+      if (typeof a.studentId === 'number' && typeof b.studentId === 'number') {
+        return a.studentId - b.studentId; // If numeric, subtract to sort
+      } else {
+        return (a.studentId || "").toString().localeCompare((b.studentId || "").toString()); // If not, convert to string and compare
+      }
+    } else if (!timeA) {
+      return 1; // Null times go to the end
+    } else if (!timeB) {
+      return -1; // Null times go to the end
+    }
   });
+
+  const sortedLeavers = leavers.sort((a, b) => {
+    // Convert times to Date objects for comparison; assume times are in HH:mm format
+    const timeA = a.departureTime ? new Date(`1970/01/01 ${a.departureTime}`) : null;
+    const timeB = b.departureTime ? new Date(`1970/01/01 ${b.departureTime}`) : null;
+  
+    if (timeA && timeB) {
+      return timeA - timeB; // First, compare by departureTime
+    } else if (!timeA && !timeB) {
+      // Check if studentId is numeric or string and compare appropriately
+      if (typeof a.studentId === 'number' && typeof b.studentId === 'number') {
+        return a.studentId - b.studentId; // If numeric, subtract to sort
+      } else {
+        return (a.studentId || "").toString().localeCompare((b.studentId || "").toString()); // If not, convert to string and compare
+      }
+    } else if (!timeA) {
+      return 1; // Null times go to the end
+    } else if (!timeB) {
+      return -1; // Null times go to the end
+    }
+  });
+  
+  
   
   return (
     <section className="garamond">
@@ -276,7 +314,7 @@ function Transfers() {
               </tr>
             </thead>
             <tbody>
-              {leavers.map((leaver) => (
+              {sortedLeavers.map((leaver) => (
                 <tr key={leaver.studentId}>
                   <td>{leaver.studentId}</td>
                   <td>{leaver.name}</td>
