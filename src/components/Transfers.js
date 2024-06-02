@@ -328,7 +328,7 @@ function Transfers() {
                     <AddTransfer
                     transferDate={selectedDate.toDate()} // Converts Dayjs object to Date
                     direction="OUT"
-                    passedStudent={leaver}
+                    passedStudent={leaver.studentId}
                     addTransfer={addTransfer}
                   />
                   ) : (
