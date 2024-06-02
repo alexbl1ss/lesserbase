@@ -134,7 +134,10 @@ function StudentTransfers(props) {
                   <td>{transfer.arrivalTime}</td>
                   <td>{transfer.flightId}</td>
                   <td>
-                    <EditTransfer passedTransfer={transfer} editTransfer={editTransfer} />
+                    <EditTransfer 
+                      person_id={selectedPerson.id}
+                      transfer_id={transfer.id} 
+                      editTransfer={editTransfer} />
                   </td>
                   <td>
                     <IconButton onClick={(event) => deleteTransfer(event, transfer)}><Delete color="primary"/></IconButton>
