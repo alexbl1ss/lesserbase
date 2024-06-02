@@ -11,6 +11,9 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import EditTransfer from './AddsEdits/EditTransfer.js';
 import AddTransfer from './AddsEdits/AddTransfer.js';
+import { CAMPUSES } from '../constants';
+import { Select, MenuItem, FormControl, InputLabel } from '@mui/material';
+
 
 function Transfers() {
   const [selectedDate, setSelectedDate] = useState(dayjs());
@@ -27,7 +30,6 @@ function Transfers() {
     setFormattedDate(newFormattedDate);
   }, [selectedDate]);
 
-  // Fetch data whenever formattedDate changes
   useEffect(() => {
     fetchArrivers(formattedDate);
     fetchLeavers(formattedDate);
@@ -96,18 +98,6 @@ function Transfers() {
     link.click();
   };
 
-  const handleCampusChangeKilgraston = () => {
-    setCampus('Kilgraston');
-  };
-
-  const handleCampusChangeStrathallan = () => {
-    setCampus('Strathallan');
-  };
-
-  const handleCampusChangeGlenalmond = () => {
-    setCampus('Glenalmond');
-  };
-
   const editTransfer = (transfer, id) => {
     const { student, ...updatedTransfer } = transfer; // Destructure the `student` field from `transfer`
   
@@ -123,6 +113,7 @@ function Transfers() {
       .then((response) => {
         if (response.ok) {
           fetchArrivers(formattedDate);
+          fetchLeavers(formattedDate);
         } else {
           alert('Something went wrong!');
         }
@@ -151,25 +142,55 @@ function Transfers() {
     })
     .catch(err => console.error(err))
   }
+  
 
   const sortedArrivers = arrivers.sort((a, b) => {
-    const timeA = new Date(`1970/01/01 ${a.arrivalTime}`);
-    const timeB = new Date(`1970/01/01 ${b.arrivalTime}`);
-    return timeA - timeB;
+    // Convert times to Date objects for comparison; assume times are in HH:mm format
+    const timeA = a.arrivalTime ? new Date(`1970/01/01 ${a.arrivalTime}`) : null;
+    const timeB = b.arrivalTime ? new Date(`1970/01/01 ${b.arrivalTime}`) : null;
+  
+    if (timeA && timeB) {
+      return timeA - timeB; // First, compare by arrivalTime
+    } else if (!timeA && !timeB) {
+      // Check if studentId is numeric or string and compare appropriately
+      if (typeof a.studentId === 'number' && typeof b.studentId === 'number') {
+        return a.studentId - b.studentId; // If numeric, subtract to sort
+      } else {
+        return (a.studentId || "").toString().localeCompare((b.studentId || "").toString()); // If not, convert to string and compare
+      }
+    } else if (!timeA) {
+      return 1; // Null times go to the end
+    } else if (!timeB) {
+      return -1; // Null times go to the end
+    }
   });
+
+  const sortedLeavers = leavers.sort((a, b) => {
+    // Convert times to Date objects for comparison; assume times are in HH:mm format
+    const timeA = a.departureTime ? new Date(`1970/01/01 ${a.departureTime}`) : null;
+    const timeB = b.departureTime ? new Date(`1970/01/01 ${b.departureTime}`) : null;
+  
+    if (timeA && timeB) {
+      return timeA - timeB; // First, compare by departureTime
+    } else if (!timeA && !timeB) {
+      // Check if studentId is numeric or string and compare appropriately
+      if (typeof a.studentId === 'number' && typeof b.studentId === 'number') {
+        return a.studentId - b.studentId; // If numeric, subtract to sort
+      } else {
+        return (a.studentId || "").toString().localeCompare((b.studentId || "").toString()); // If not, convert to string and compare
+      }
+    } else if (!timeA) {
+      return 1; // Null times go to the end
+    } else if (!timeB) {
+      return -1; // Null times go to the end
+    }
+  });
+  
+  
   
   return (
     <section className="garamond">
       <div className="pa2"></div>
-      <button onClick={handleCampusChangeKilgraston} type="button">
-        Kilgraston
-      </button>
-      <button onClick={handleCampusChangeStrathallan} type="button">
-        Strathallan
-      </button>
-      <button onClick={handleCampusChangeGlenalmond} type="button">
-        Glenalmond
-      </button>
       <div style={{ marginBottom: '10px' }}></div>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DatePicker
@@ -179,7 +200,21 @@ function Transfers() {
           renderInput={(params) => <TextField {...params} variant="standard" helperText="" />}
         />
       </LocalizationProvider>
-
+      <FormControl variant="standard" style={{ minWidth: 120 }}>
+        <InputLabel id="campus-select-label">Campus</InputLabel>
+        <Select
+          labelId="campus-select-label"
+          id="campus-select"
+          value={campus}
+          onChange={(e) => setCampus(e.target.value)}
+          >
+          {CAMPUSES.map((campusOption) => (
+          <MenuItem key={campusOption.value} value={campusOption.value}>
+          {campusOption.label}
+          </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
       <div style={{ marginLeft: '50px' }}>
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <span>Transfers In</span>
@@ -199,11 +234,11 @@ function Transfers() {
               <tr>
                 <th>Student Id</th>
                 <th>Name</th>
-                <th>transferId</th>
                 <th>Campus</th>
-                <th>Airport</th>
                 <th>Flight</th>
-                <th>Time</th>
+                <th>Departure Airport</th>
+                <th>Arrival Airport</th>
+                <th>Arrival Time</th>
                 <th>Status</th>
               </tr>
             </thead>
@@ -212,21 +247,26 @@ function Transfers() {
                 <tr key={arriver.studentId}>
                   <td>{arriver.studentId}</td>
                   <td>{arriver.name}</td>
-                  <td>{arriver.transferId}</td>
-                  <td>{arriver.destination}</td>
-                  <td>{arriver.departing}</td>
+                  <td>{arriver.campus}</td>
                   <td>{arriver.flightId}</td>
+                  <td>{arriver.departing}</td>
+                  <td>{arriver.destination}</td>
                   <td>{arriver.arrivalTime}</td>
-                  <td>SCHEDULED</td>
-                  {arriver.transferId === 0 ? (
-            <AddTransfer direction="IN" passedStudent={arriver} addTransfer={addTransfer} />
-          ) : (
-            <EditTransfer
-              person_id={arriver.studentId}
-              transfer_id={arriver.transferId}
-              editTransfer={editTransfer}
-            />
-          )}
+                  <td>{arriver.transferId === 0 || arriver.transferId === null ? 'UNKNOWN' : 'SCHEDULED'}</td>
+                  {arriver.transferId === 0 || arriver.transferId === null ? (
+                    <AddTransfer
+                    transferDate={selectedDate.toDate()} // Converts Dayjs object to Date
+                    direction="IN"
+                    passedStudent={arriver.studentId}
+                    addTransfer={addTransfer}
+                  />
+                  ) : (
+                    <EditTransfer
+                      person_id={arriver.studentId}
+                      transfer_id={arriver.transferId}
+                      editTransfer={editTransfer}
+                    />
+                  )}
                 </tr>
               ))}
             </tbody>
@@ -263,31 +303,42 @@ function Transfers() {
           >
             <thead>
               <tr>
-                <th>Student Id</th>
-                <th>Master Tracker Ref</th>
+              <th>Student Id</th>
                 <th>Name</th>
-                <th>Departing</th>
-                <th>Transfer Id</th>
-                <th>Departure Time</th>
-                <th>Self Transfer</th>
+                <th>Campus</th>
                 <th>Flight</th>
-                <th>Destination</th>
-                <th>Arrival Time</th>
+                <th>Departure Airport</th>
+                <th>Arrival Airport</th>
+                <th>Departure Time</th>
+                <th>Status</th>
               </tr>
             </thead>
             <tbody>
-              {leavers.map((leaver) => (
-                <tr key={leaver.id}>
-                  <td>{leaver.id}</td>
-                  <td>{leaver.mtRef}</td>
+              {sortedLeavers.map((leaver) => (
+                <tr key={leaver.studentId}>
+                  <td>{leaver.studentId}</td>
                   <td>{leaver.name}</td>
-                  <td>{leaver.departing}</td>
-                  <td>{leaver.transferId}</td>
-                  <td>{leaver.departureTime}</td>
-                  <td>{leaver.privatePickup}</td>
+                  <td>{leaver.campus}</td>
                   <td>{leaver.flightId}</td>
+                  <td>{leaver.departing}</td>
                   <td>{leaver.destination}</td>
-                  <td>{leaver.arrivalTime}</td>
+                  <td>{leaver.departureTime}</td>
+                  <td>{leaver.transferId === 0 || leaver.transferId === null ? 'UNKNOWN' : 'SCHEDULED'}</td>
+                  {leaver.transferId === 0 || leaver.transferId === null ? (
+                    <AddTransfer
+                    transferDate={selectedDate.toDate()} // Converts Dayjs object to Date
+                    direction="OUT"
+                    passedStudent={leaver}
+                    addTransfer={addTransfer}
+                  />
+                  ) : (
+                    <EditTransfer
+                      transferDate={selectedDate.toDate()} // Converts Dayjs object to Date
+                      person_id={leaver.studentId}
+                      transfer_id={leaver.transferId}
+                      editTransfer={editTransfer}
+                    />
+                  )}
                 </tr>
               ))}
             </tbody>
