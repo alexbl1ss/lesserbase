@@ -2,10 +2,6 @@ Bliss database:
 
 Merge Transfers into Main
 
-run in stored proc - whoIsArriving.sql
-run in stored proc - whoIsLeaving.sql
-
-
 Bliss Bill View:
 
 Merge transfers to main
@@ -35,4 +31,10 @@ edit the transfers and check that the changes are persisted on the transfers pag
 Shutdown mains
 repoint main at prod
 merge mains into prod
+
+ON DB:
+run in stored proc - whoIsArriving.sql
+run in stored proc - whoIsLeaving.sql
+
+
 repeat test
