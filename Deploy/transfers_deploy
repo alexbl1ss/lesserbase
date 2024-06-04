@@ -26,6 +26,7 @@ delete the transfers from student details page
 add the transfers back in on the transfers page
 check that the transfers are in place on the student details page
 edit the transfers and check that the changes are persisted on the transfers page
+go back to student details and delete the transfers
 
 
 Shutdown mains
