@@ -161,7 +161,7 @@ function StudentSearch(props) {
 
   const showTabs = () => {
     if (selectedPerson !== null) {
-      return <MyTabs selectedPerson={selectedPerson} onClose={handleCloseTabs} />;
+      return <MyTabs selectedPerson={selectedPerson} onClose={handleCloseTabs} showPaymentsTab={props.showPaymentsTab} />;
     }
     return null;
   };

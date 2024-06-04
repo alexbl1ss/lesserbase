@@ -1,5 +1,5 @@
-export const SERVER_URL='https://blissdb.herokuapp.com/';
-//export const SERVER_URL='https://blissdbtest.herokuapp.com/';
+//export const SERVER_URL='https://blissdb.herokuapp.com/';
+export const SERVER_URL='https://blissdbtest.herokuapp.com/';
 //export const SERVER_URL='http://localhost:8080/'
 //export const SERVER_URL='https://blissalex.herokuapp.com/';
 
@@ -17,3 +17,10 @@ export const CAMPUSES = [
     { value: 'CONFIRMED', label: 'CONFIRMED' },
     { value: 'PAID', label: 'PAID' },
     ];
+
+  export const ACCOUNTS = [
+    { value: 'WISE', label: 'WISE' },
+    { value: 'MONZO', label: 'MONZO' },
+    { value: 'HSBC', label: 'HSBC' },
+  ];
+  
