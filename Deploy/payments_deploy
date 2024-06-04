@@ -1,0 +1,32 @@
+Bliss database:
+
+Merge payments into Main
+no db changes
+
+Bliss Bill View:
+
+Merge payments to main
+deploy main on the test aws env
+
+
+test -->
+
+login as admin
+verify that payments page is shown on student tabs
+add a payment
+verify that it is persisted
+logout
+login in as just.a.user
+verify that payments are not visible
+
+test -->
+
+turn off main autodeploy on both aws and heroku
+
+repoint mains at prod
+application.properties
+constants.js
+
+merge mains into prod
+
+repeat test
