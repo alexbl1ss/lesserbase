@@ -23,9 +23,8 @@ function App() {
   const [showTransfers, setShowTransfers] = useState(false);
 
 
-  const onLoginSuccess = (username) => {
-    setShowRentOption(username === 'alex.brown@bliss.com');
-    console.log("username: ", username);
+  const onLoginSuccess = (role) => {
+    setShowRentOption(role === 'ADMIN');
     setAuth(true);
   };
 

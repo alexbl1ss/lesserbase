@@ -79,11 +79,11 @@ const MyTabs = (props) => {
                     onClick={handletransfers}>
                 Transfers
                 </li>
-                {/* <li
+                { <li
                     className={activeTab === "payments" ? "active" : ""}
                     onClick={handlepayments}>
                 Payments
-                </li> */}
+                </li> }
                 {/* <li
                     className={activeTab === "invoice" ? "active" : ""}
                     onClick={handleinvoice}>

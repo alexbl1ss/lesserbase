@@ -33,13 +33,12 @@ function Login(props) {
     .then(response => response.json())
     .then(data => {
       if (data.access_token !== undefined) {
-        //setAccessToken(data.access_token);
         sessionStorage.setItem('bearer', data.access_token);
         sessionStorage.setItem('isAuthenticated', true);
         setMessage('Login successful!');
         setIsError(false);
         setOpen(true);
-        props.onLoginSuccess(username);
+        props.onLoginSuccess(data.role);
       } else {
         setMessage('Login failed: Check your username and password');
         setIsError(true);
