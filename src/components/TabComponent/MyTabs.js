@@ -12,7 +12,7 @@ const MyTabs = (props) => {
 
     const { selectedPerson, onClose } = props;
     const [activeTab, setActiveTab] = useState("details");
-    const [selectedStay, setSelectedStay] = useState(null); // State to hold the selected stay
+    const [selectedStay, setSelectedStay] = useState(null);
 
     const handledetails = () => {
         setActiveTab("details");
@@ -79,11 +79,13 @@ const MyTabs = (props) => {
                     onClick={handletransfers}>
                 Transfers
                 </li>
-                { <li
+                {props.showPaymentsTab && (
+                <li
                     className={activeTab === "payments" ? "active" : ""}
                     onClick={handlepayments}>
                 Payments
-                </li> }
+                </li>
+            )}
                 {/* <li
                     className={activeTab === "invoice" ? "active" : ""}
                     onClick={handleinvoice}>

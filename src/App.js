@@ -18,13 +18,15 @@ import Rent from './components/Rent';
 function App() {
   const [isAuthenticated, setAuth] = useState(false);
   const [showWhoIsDoing, setShowWhoIsDoing] = useState(false);
-  const [showRentOption, setShowRentOption] = useState(false); // New state variable
+  const [showRentOption, setShowRentOption] = useState(false);
+  const [showPaymentsTab, setShowPaymentsTab] = useState(false);
   const [showRentPage, setShowRentPage] = useState(false);
   const [showTransfers, setShowTransfers] = useState(false);
 
 
   const onLoginSuccess = (role) => {
     setShowRentOption(role === 'ADMIN');
+    setShowPaymentsTab(role === 'ADMIN');
     setAuth(true);
   };
 
@@ -107,7 +109,7 @@ function App() {
           ) : showTransfers ? (
             <Transfers />
           ) : (
-            <StudentSearch />
+            <StudentSearch showPaymentsTab={showPaymentsTab} />
           )
         ) : (
           <Login onLoginSuccess={onLoginSuccess} />
