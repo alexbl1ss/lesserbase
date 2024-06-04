@@ -17,3 +17,10 @@ export const CAMPUSES = [
     { value: 'CONFIRMED', label: 'CONFIRMED' },
     { value: 'PAID', label: 'PAID' },
     ];
+
+  export const ACCOUNTS = [
+    { value: 'WISE', label: 'WISE' },
+    { value: 'MONZO', label: 'MONZO' },
+    { value: 'HSBC', label: 'HSBC' },
+  ];
+  
