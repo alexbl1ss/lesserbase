@@ -165,7 +165,7 @@ function StudentInvoice(props) {
     });
   }
 
-  const generatePDF2 = () => {
+  const generatePDF2 = (invoiceDate, studentId) => {
     // Get the report element
     const report = document.getElementById('report');
   
@@ -207,7 +207,7 @@ function StudentInvoice(props) {
           }
   
           // Save the PDF
-          pdf.save('report.pdf');
+          pdf.save(`${studentId}_${invoiceDate}.pdf`);
         };
       })
       .catch(function (error) {
@@ -294,8 +294,7 @@ function StudentInvoice(props) {
     </div>
     <p>Date: <input type="text" value={invoiceDate} onChange={handleInvoiceDateChange} /></p>
     <button onClick={() => setGross(!gross)} type="button">Gross/Net</button>
-    <button onClick={generatePDF} type="button">Save PDF</button>
-    <button onClick={generatePDF2} type="button">Save PDF2</button>
+    <button onClick={() => generatePDF2(invoiceDate, student.id)} type="button">Save PDF</button>
     <div>
         <p style={{ color: '#999999', fontSize: '10px' }}>Student: {selectedPerson.id}</p>
         <p style={{ color: '#999999', fontSize: '10px' }}>Is authenticated: {sessionStorage.getItem('isAuthenticated').toString()}</p>

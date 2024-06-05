@@ -6,6 +6,7 @@ import StudentPayments from "../AllTabs/StudentPayments";
 import StudentInvoice from "../AllTabs/StudentInvoice";
 import BookingCreator from "../AllTabs/BookingCreator";
 import StudentTransfers from "../AllTabs/StudentTransfers";
+import StudentSummary from "../AllTabs/StudentSummary";
 import StudentStays from "../AllTabs/StudentStays"
 
 const MyTabs = (props) => {
@@ -37,6 +38,9 @@ const MyTabs = (props) => {
     };
     const handleinvoice = () => {
         setActiveTab("invoice");
+    };
+    const handleSummary = () => {
+        setActiveTab("summary");
     };
   
     const handleClose = () => {
@@ -94,6 +98,11 @@ const MyTabs = (props) => {
                 </li>
                )}
                 <li
+                    className={activeTab === "summary" ? "active" : ""}
+                    onClick={handleSummary}>
+                    Booking Summary
+                </li>
+               <li
                     className="close-tab"
                     onClick={handleClose}>
                 Close
@@ -108,6 +117,7 @@ const MyTabs = (props) => {
                 {activeTab === "transfers" ? <StudentTransfers selectedPerson={selectedPerson}/> : null}
                 {activeTab === "payments" ? <StudentPayments selectedPerson={selectedPerson}/> : null}
                 {activeTab === "invoice" ? <StudentInvoice selectedPerson={selectedPerson}/> : null}
+                {activeTab === "summary" ? <StudentSummary selectedPerson={selectedPerson} selectedStay={selectedStay}/> : null}
             </div>
         </div>
   );
