@@ -7,7 +7,7 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Stack from '@mui/material/Stack';
 import AddIcon from '@mui/icons-material/Add';
-import IconButton from '@mui/material/IconButton'; // Import IconButton from Material-UI
+import IconButton from '@mui/material/IconButton';
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { ACCOUNTS } from '../../constants';

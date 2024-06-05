@@ -18,15 +18,13 @@ import Rent from './components/Rent';
 function App() {
   const [isAuthenticated, setAuth] = useState(false);
   const [showWhoIsDoing, setShowWhoIsDoing] = useState(false);
-  const [showRentOption, setShowRentOption] = useState(false);
-  const [showPaymentsTab, setShowPaymentsTab] = useState(false);
+  const [showFinancials, setShowFinancials] = useState(false);
   const [showRentPage, setShowRentPage] = useState(false);
   const [showTransfers, setShowTransfers] = useState(false);
 
 
   const onLoginSuccess = (role) => {
-    setShowRentOption(role === 'ADMIN');
-    setShowPaymentsTab(role === 'ADMIN');
+    setShowFinancials(role === 'ADMIN');
     setAuth(true);
   };
 
@@ -82,7 +80,7 @@ function App() {
                 >
                   Transfers
                 </Button>
-                {showRentOption && (
+                {showFinancials && (
                   <Button
                     color="inherit"
                     onClick={() => {
@@ -109,7 +107,7 @@ function App() {
           ) : showTransfers ? (
             <Transfers />
           ) : (
-            <StudentSearch showPaymentsTab={showPaymentsTab} />
+            <StudentSearch showFinancials={showFinancials} />
           )
         ) : (
           <Login onLoginSuccess={onLoginSuccess} />
