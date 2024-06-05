@@ -92,7 +92,7 @@ ul.nav li {
   border-bottom-left-radius: 2rem;
   border-top-left-radius: 2rem;
 }
-ul.nav li:nth-child(n+2):nth-child(-n+7) {
+ul.nav li:nth-child(n+2):nth-child(-n+8) {
   border-radius: 0;
 }
 ul.nav li:nth-child(9) {

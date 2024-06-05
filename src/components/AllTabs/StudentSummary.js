@@ -5,8 +5,8 @@ import jsPDF from 'jspdf';
 import '../InvoicePage.css';
 import { SERVER_URL } from '../../constants.js'
 
-function StudentInvoice(props) {
-  const { selectedPerson } = props;
+function StudentSummary(props) {
+  const { selectedPerson, selectedStay } = props;
   const [student, setStudent] = useState([]);
 
   const today = new Date();
@@ -83,13 +83,43 @@ function StudentInvoice(props) {
       })
       .catch((err) => console.error(err));
   }, [selectedPerson.id]);
- useEffect(() => {
+ 
+  useEffect(() => {
     fetchBookings();
   }, [fetchBookings]);
     const sortedBookings = bookings.sort((a, b) => {
     return new Date(a.startDate) - new Date(b.startDate);
   });
 
+  const [stays, setStays] = useState([]);
+  const fetchStays = useCallback(() => {
+    const token = sessionStorage.getItem('bearer');
+    fetch(`${SERVER_URL}api/student/${selectedPerson.id}/stays`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((response) => {
+        if (response.status === 204) {
+          return [];
+        } else if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error('Failed to fetch stays');
+        }
+      })
+      .then((data) => {
+        sessionStorage.setItem('stays', JSON.stringify(data));
+        setStays(data);
+      })
+      .catch((err) => console.error(err));
+  }, [selectedPerson.id]);
+ 
+  useEffect(() => {
+    fetchStays();
+  }, [fetchStays]);
+    const sortedStays = stays.sort((a, b) => {
+    return new Date(a.arrivalDate) - new Date(b.arrivalDate);
+  });
+  
   const [payments, setPayments] = useState([]);
   const fetchPayments = useCallback(() => {
     const token = sessionStorage.getItem('bearer');
@@ -145,25 +175,13 @@ function StudentInvoice(props) {
   const outstandingBalanceNet = totalNetCharge - totalAlreadyPaid;
   const [gross, setGross] = useState(true);
 
-  let rcpinv;
-  let rcpinvalt;
-  if(totalAlreadyPaid===0){
-    rcpinv = process.env.PUBLIC_URL + "/assets/img/Invoice.png";
-    rcpinvalt="Invoice";
-  } else {
-    rcpinv = process.env.PUBLIC_URL + "/assets/img/receipt.png";
-    rcpinvalt="Receipt";
-  }
-
+  let summary;
+  let summaryalt;
+  summary = process.env.PUBLIC_URL + "/assets/img/summary.png";
+  summaryalt="Summary";
+  
   let footer;
   footer = process.env.PUBLIC_URL + "/assets/img/footer.png";
-
-  const generatePDF = () => {
-    const report = new jsPDF('portrait','pt','a4');
-     report.html(document.querySelector('#report')).then(() => {
-        report.save('report.pdf');
-    });
-  }
 
   const generatePDF2 = (invoiceDate, studentId) => {
     // Get the report element
@@ -207,15 +225,27 @@ function StudentInvoice(props) {
           }
   
           // Save the PDF
-          pdf.save(`${studentId}_${invoiceDate}.pdf`);
+          pdf.save(`Summary_${studentId}_${invoiceDate}.pdf`);
         };
       })
       .catch(function (error) {
         console.error('Error generating PDF', error);
       });
   }
+
+  const calculateAgeAtCamp = (dob, arrivalDate) => {
+    const birthDate = new Date(dob);
+    const arrival = new Date(arrivalDate);
+    let age = arrival.getFullYear() - birthDate.getFullYear();
+    const m = arrival.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && arrival.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    return age;
+  };
+  
     
-  return (
+return (
 <Container
   fixed
   style={{
@@ -230,62 +260,77 @@ function StudentInvoice(props) {
      <div className="images-container">
         <div className="logo-container" style={{ display: 'flex', justifyContent: 'space-between' }}>
           <img alt="Bliss" src={blissLogoPath} style={{ height: '80px' }} />
-          <img alt={rcpinvalt} src={rcpinv} style={{ height: '35px', marginTop: '35px' }} />
+          <img alt={summaryalt} src={summary} style={{ height: '35px', marginTop: '35px' }} />
         </div>
         <hr className="line" style={{ width: '100%' }} />
       </div>
       <div className="student-details-container">
         <div><strong>{student.studentName} {student.studentSurname}</strong></div>
-        <div>Student ID: {student.mtRef}</div>
-        <div>Check in: {student.arrivalDate}</div>
-        <div>Check out: {student.departureDate}</div>
+        <div>Student ID: {student.id}</div>
       </div>
       <div style={{ textAlign: 'right' }}>
         <p>Date: {invoiceDate}</p>
-        <p>Invoice number: {student.mtRef}-01</p>
       </div>
       <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
         <div style={{ textAlign: "center" }}>
-          <h2>Booked Items</h2>
+          <h2>Booking Summary</h2>
         </div>
       </div>
       <div className="bookings-container">
-        <table className="bookings-table">
-          <tbody>
-            {sortedBookings ? (
-              sortedBookings.map((booking) => (
-                <tr key={booking.bookingId}>
-                  <td>{booking.productName}</td>
-                  <td>{booking.startDate}</td>
-                  <td>{booking.endDate}</td>
-                  <td>£ {booking.commissionable && !gross ? (booking.actualCharge * factor).toFixed(2) : booking.actualCharge.toFixed(2)} GBP</td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="4">No bookings found</td>
-              </tr>
-            )}
-            <tr>
-              <td colSpan="3" style={{ textAlign: 'right' }}><strong>Total:</strong></td>
-              <td>£ {gross ? totalGrossCharge: totalNetCharge} GBP</td>
-            </tr>
-            {payments ? (
-              payments.map((payment) => (
-                <tr key={payment.id}>
-                  <td colSpan="3" style={{ textAlign: 'right' }}>Payment Received {payment.paymentdate}</td>
-                  <td>£ {payment.paymentamount} GBP</td>
-                </tr>
-              ))
-            ) : (
-              <tr></tr>
-            )}
-            <tr>
-              <td colSpan="3" style={{ textAlign: 'right' }}><strong>Balance Due 15th May:</strong></td>
-              <td>£ {gross ? outstandingBalanceGross: outstandingBalanceNet} GBP</td>
-            </tr>
-          </tbody>
-        </table>
+      <table className="bookings-table">
+  <tbody>
+    <tr><td colspan="2" style={{fontWeight: 'bold'}}>First Name:</td><td>{student.studentName}</td><td style={{fontWeight: 'bold'}}>Surname:</td><td>{student.studentSurname}</td>
+    <td colspan="2" style={{fontWeight: 'bold'}}>Nationality:</td><td>{student.studentNationality}</td></tr>
+    <tr><td colspan="2" style={{fontWeight: 'bold'}}>English Level:</td><td>{student.englishLevel}</td>
+    <td colspan="2" style={{fontWeight: 'bold'}}>Age at camp:</td><td>{sortedStays && sortedStays.length > 0 ? calculateAgeAtCamp(student.studentDob, sortedStays[0].arrivalDate) : 'N/A'}</td>
+    <td style={{fontWeight: 'bold'}}>Gender:</td><td>{student.studentGender}</td></tr>
+    <tr><td colSpan ="8" style={{fontWeight: 'bold', textAlign: 'center' }}>Locations</td></tr>
+    <tr style={{fontWeight: 'bold'}}><td colSpan="2">Campus</td><td>Arrival</td><td>Departure</td><td colspan="4"></td></tr>
+    {sortedStays && sortedStays.length > 0 ? (
+      sortedStays.map((stay) => (
+        <tr key={stay.stayId}>
+          <td colSpan="2">{stay.campus}</td>
+          <td>{stay.arrivalDate}</td>
+          <td>{stay.departureDate}</td>
+          <td colspan="4"></td>
+        </tr>
+      ))
+    ) : (
+      <tr>
+        <td colSpan="8">No Stays found</td>
+      </tr>
+    )}
+    <tr><td colSpan ="8" style={{fontWeight: 'bold', textAlign: 'center' }}>Bookings</td></tr>
+    <tr style={{fontWeight: 'bold'}}><td colSpan="4">Activity</td><td colspan="2">Start</td><td colspan="2">Finish</td></tr>
+    {sortedBookings && sortedBookings.length > 0 ? (
+      sortedBookings.map((booking) => (
+        <tr key={booking.bookingId}>
+          <td colSpan="4">{booking.productName}</td>
+          <td colSpan="2">{booking.startDate}</td>
+          <td colSpan="2">{booking.endDate}</td>
+        </tr>
+      ))
+    ) : (
+      <tr>
+        <td colSpan="8">No bookings found</td>
+      </tr>
+    )}
+    <tr><td colSpan ="8"></td></tr>
+    <tr><td colSpan="2" style={{fontWeight: 'bold'}}>Class Requirements:</td><td colSpan="6">{student.classRequirements}</td></tr>
+    <tr><td colSpan="2" style={{fontWeight: 'bold'}}>Room Requirements:</td><td colSpan="6">{student.roomRequirements}</td></tr>
+    <tr><td colSpan="2" style={{fontWeight: 'bold'}}>Allergies:</td><td colSpan="6">{student.allergies}</td></tr>
+    <tr><td colSpan="2" style={{fontWeight: 'bold'}}>Notes:</td><td colSpan="6">{student.notes}</td></tr>
+    <tr><td colSpan ="8"></td></tr>
+    <tr><td style={{fontWeight: 'bold'}}>Pool</td><td>{student.hasPoolPermission ? 'Yes' : 'No'}</td>
+    <td style={{fontWeight: 'bold'}}>Photo</td><td>{student.hasPhotoPermission ? 'Yes' : 'No'}</td>
+    <td style={{fontWeight: 'bold'}}>Medical</td><td>{student.hasMedicalPermission ? 'Yes' : 'No'}</td>
+    <td style={{fontWeight: 'bold'}}>Hospital</td><td>{student.hasHospitalPermission ? 'Yes' : 'No'}</td></tr>
+    <tr><td style={{fontWeight: 'bold'}}>Excursion</td><td>{student.hasExcursionPermission ? 'Yes' : 'No'}</td>
+    <td style={{fontWeight: 'bold'}}>Activity</td><td>{student.hasActivityPermission ? 'Yes' : 'No'}</td>
+    <td style={{fontWeight: 'bold'}}>Supervision</td><td>{student.hasSupervisionPermission ? 'Yes' : 'No'}</td><td colSpan="2"></td></tr>
+  </tbody>
+</table>
+
       </div>
       <hr className="line" />
       <div className="footer-container">
@@ -293,7 +338,6 @@ function StudentInvoice(props) {
       </div>
     </div>
     <p>Date: <input type="text" value={invoiceDate} onChange={handleInvoiceDateChange} /></p>
-    <button onClick={() => setGross(!gross)} type="button">Gross/Net</button>
     <button onClick={() => generatePDF2(invoiceDate, student.id)} type="button">Save PDF</button>
     <div>
         <p style={{ color: '#999999', fontSize: '10px' }}>Student: {selectedPerson.id}</p>
@@ -304,4 +348,4 @@ function StudentInvoice(props) {
   );
 }
 
-export default StudentInvoice;
+export default StudentSummary;
