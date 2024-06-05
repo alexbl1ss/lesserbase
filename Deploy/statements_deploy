@@ -1,0 +1,38 @@
+Bliss database:
+
+no db changes
+
+Bliss Bill View:
+
+Merge payments to main
+deploy main on the test aws env
+
+
+test -->
+
+login as admin
+select user 2352
+verify that payments and invoice pages are available
+make bookings - verify that prices are shown
+edit price on booking, verify that it is saved
+verify that invoice page is updated
+record a payment
+verify that invoice page is updated
+logout
+login in as just.a.user
+verify that payments are not visible
+verify that invoice/receipt is not visible
+verify that prices are not visible on booker
+verify that prices are not visible or editable on bookings
+
+test -->
+
+turn off main autodeploy on aws
+
+repoint billview main at prod
+application.properties
+constants.js
+
+merge main into prod
+
+repeat test on prod

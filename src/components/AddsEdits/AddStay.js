@@ -10,9 +10,9 @@ import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
-import AddIcon from '@mui/icons-material/Add'; // Import Add Icon
-import IconButton from '@mui/material/IconButton'; // Import IconButton from Material-UI
-import { CAMPUSES } from '../../constants'; // Import your campuses
+import AddIcon from '@mui/icons-material/Add';
+import IconButton from '@mui/material/IconButton';
+import { CAMPUSES } from '../../constants';
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 

@@ -3,7 +3,7 @@ import { SERVER_URL } from '../../constants.js'
 import '../BookingCard.css';
 
 function BookingCreator(props) {
-  const { selectedPerson, selectedStay } = props;
+  const { selectedPerson, selectedStay, showFinancials } = props;
   const [eligableProducts, setEligableProducts] = useState([]);
   const [stayId] = useState(selectedStay ? selectedStay.stayId : '0');
   const [selectedProducts, setSelectedProducts] = useState([]);
@@ -100,7 +100,7 @@ const handleBookings = () => {
             <th>End Date</th>
             <th>Capacity</th>
             <th>Allocated</th>
-            <th>Default Rate</th>
+            {showFinancials && <th>Default Rate</th>}
             <th>book?</th>
           </tr>
         </thead>
@@ -114,7 +114,7 @@ const handleBookings = () => {
           <td>{eligableProduct.endDate}</td>
           <td>{eligableProduct.capacity}</td>
           <td>{eligableProduct.allocated}</td>
-          <td>{eligableProduct.defaultRate}</td>
+          {showFinancials && <td>{eligableProduct.defaultRate}</td>}
           <td>
           <input
             type="checkbox"
