@@ -17,7 +17,7 @@ import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 
 function EditBooking(props) {
-  const { passedBooking } = props;
+  const { passedBooking, showFinancials } = props;
   const [open, setOpen] = useState(false);
   const [booking, setBooking] = useState({
     bookingId: '',
@@ -77,8 +77,8 @@ function EditBooking(props) {
         <DialogContent>
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <Stack spacing={2}>
-              <TextField label="Actual Charge (£)" name="actualCharge" type="number" value={booking.actualCharge} onChange={handleChange} variant="standard" />
-              <FormControl fullWidth>
+            {showFinancials && <TextField label="Actual Charge (£)" name="actualCharge" type="number" value={booking.actualCharge} onChange={handleChange} variant="standard" />}
+            {showFinancials && <FormControl fullWidth>
                 <InputLabel id="booking-status-label">Booking Status</InputLabel>
                 <Select
                   labelId="booking-status-label"
@@ -92,7 +92,7 @@ function EditBooking(props) {
                     <MenuItem key={status.value} value={status.value}>{status.label}</MenuItem>
                   ))}
                 </Select>
-              </FormControl>
+              </FormControl>}
               <TextField label="Notes" name="notes" value={booking.notes} onChange={handleChange} variant="standard" />
               <DatePicker
                 label="Start Date"

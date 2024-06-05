@@ -129,7 +129,7 @@ function StudentBookings(props) {
               <td>{booking.bookingStatus}</td>
               <td>{booking.notes}</td>
               <td>
-                <EditBooking passedBooking={booking} editBooking={editBooking} />
+                <EditBooking passedBooking={booking} editBooking={editBooking}  showFinancials={props.showFinancials}/>
               </td>
               <td>
               <IconButton onClick={(event) => deleteBooking(event, booking.bookingId)}><Delete color="primary"/></IconButton>
