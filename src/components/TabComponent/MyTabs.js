@@ -86,11 +86,13 @@ const MyTabs = (props) => {
                     Payments
                     </li>
                 )}
-                {/* <li
+                {props.showFinancials && (
+                <li
                     className={activeTab === "invoice" ? "active" : ""}
                     onClick={handleinvoice}>
-                Invoice/Receipt
-                </li> */}
+                    Invoice/Receipt
+                </li>
+               )}
                 <li
                     className="close-tab"
                     onClick={handleClose}>
@@ -100,8 +102,8 @@ const MyTabs = (props) => {
             <div className="outlet">
                 {activeTab === "details" ? <StudentDetail selectedPerson={selectedPerson} selectedStay={selectedStay} setSelectedStay={setSelectedStay} /> : null}
                 {activeTab === "stays" && <StudentStays selectedPerson={selectedPerson} selectedStay={selectedStay} setSelectedStay={setSelectedStay} />}
-                {activeTab === "bookingcreator" && <BookingCreator selectedPerson={selectedPerson} selectedStay={selectedStay} />}
-                {activeTab === "bookings" ? <StudentBookings selectedPerson={selectedPerson}/> : null}
+                {activeTab === "bookingcreator" && <BookingCreator selectedPerson={selectedPerson} selectedStay={selectedStay} showFinancials={props.showFinancials}/>}
+                {activeTab === "bookings" ? <StudentBookings selectedPerson={selectedPerson} showFinancials={props.showFinancials}/> : null}
                 {activeTab === "agents" ? <StudentAgents selectedPerson={selectedPerson}/> : null}
                 {activeTab === "transfers" ? <StudentTransfers selectedPerson={selectedPerson}/> : null}
                 {activeTab === "payments" ? <StudentPayments selectedPerson={selectedPerson}/> : null}

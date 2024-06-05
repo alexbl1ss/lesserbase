@@ -6,7 +6,7 @@ import IconButton from '@mui/material/IconButton';
 import { Delete } from '@mui/icons-material';
 
 function StudentBookings(props) {
-  const { selectedPerson } = props;
+  const { selectedPerson, showFinancials } = props;
   const [bookings, setBookings] = useState([]);
 
   const fetchBookings = useCallback(() => {
@@ -111,8 +111,8 @@ function StudentBookings(props) {
             <th>Product Name</th>
             <th>Start Date</th>
             <th>End Date</th>
-            <th>Default Rate</th>
-            <th>Actual Charge</th>
+            {showFinancials && <th>Default Rate</th>}
+            {showFinancials && <th>Actual Charge</th>}
             <th>Booking Status</th>
             <th>Booking Notes</th>
           </tr>
@@ -124,8 +124,8 @@ function StudentBookings(props) {
               <td>{booking.productName}</td>
               <td>{booking.startDate}</td>
               <td>{booking.endDate}</td>
-              <td>{booking.defaultRate}</td>
-              <td>{booking.actualCharge}</td>
+              {showFinancials && <td>{booking.defaultRate}</td>}
+              {showFinancials && <td>{booking.actualCharge}</td>}
               <td>{booking.bookingStatus}</td>
               <td>{booking.notes}</td>
               <td>
