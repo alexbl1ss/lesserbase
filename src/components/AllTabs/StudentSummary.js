@@ -42,26 +42,6 @@ function StudentSummary(props) {
     fetchStudent();
   }, [fetchStudent]);
 
-
- 
-  const [agents, setAgents] = useState([]);
-  const fetchAgents = useCallback(() => {
-    const token = sessionStorage.getItem('bearer');
-    fetch(`${SERVER_URL}api/students/${selectedPerson.id}/agents`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        sessionStorage.setItem('agents', JSON.stringify(data));
-        setAgents(data);
-      })
-      .catch((err) => console.error(err));
-  }, [selectedPerson.id]);
-
-  useEffect(() => {
-    fetchAgents();
-  }, [fetchAgents]);
-
   const [bookings, setBookings] = useState([]);
   const fetchBookings = useCallback(() => {
     const token = sessionStorage.getItem('bearer');
@@ -119,61 +99,38 @@ function StudentSummary(props) {
     const sortedStays = stays.sort((a, b) => {
     return new Date(a.arrivalDate) - new Date(b.arrivalDate);
   });
-  
-  const [payments, setPayments] = useState([]);
-  const fetchPayments = useCallback(() => {
+
+  const [transfers, setTransfers] = useState([]);
+  const fetchTransfers = useCallback(() => {
     const token = sessionStorage.getItem('bearer');
-    fetch(`${SERVER_URL}api/payments/${selectedPerson.id}`, {
+    fetch(`${SERVER_URL}api/transfers/${selectedPerson.id}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((response) => {
-        if (response.status === 204) { 
+        if (response.status === 204) {
           return [];
         } else if (response.ok) {
           return response.json();
         } else {
-          throw new Error('Failed to fetch payments');
+          throw new Error('Failed to fetch transfers');
         }
       })
       .then((data) => {
-        sessionStorage.setItem('payments', JSON.stringify(data));
-        setPayments(data);
+        sessionStorage.setItem('transfers', JSON.stringify(data));
+        setTransfers(data);
       })
       .catch((err) => console.error(err));
   }, [selectedPerson.id]);
+ 
   useEffect(() => {
-    fetchPayments();
-  }, [fetchPayments]);
+    fetchTransfers();
+  }, [fetchTransfers]);
+    const sortedTransfers = transfers.sort((a, b) => {
+    return new Date(a.transferDate) - new Date(b.transferDate);
+  });
   
   let blissLogoPath;
   blissLogoPath = process.env.PUBLIC_URL + "/assets/img/blissLogo.png";
-
-  const totalCommission = agents && agents.length ? agents.reduce((acc, agent) => {
-    return acc + agent.commissionRate;
-  }, 0) : 0;
-  const factor = (100 - totalCommission) / 100;
-
-
-  const totalGrossCharge = bookings && bookings.length ? bookings.reduce((acc, booking) => {
-    return acc + booking.actualCharge;
-  }, 0) : 0;
-  
-  const totalNetCharge = bookings && bookings.length ? bookings.reduce((acc, booking) => {
-    if (booking.commissionable) 
-    {
-      return acc + booking.actualCharge * factor;
-    } else {
-      return acc + booking.actualCharge;
-    }
-  }, 0) : 0;
-  
-  const totalAlreadyPaid = payments && payments.length ? payments.reduce((acc, payment) => {
-    return acc + payment.paymentamount;
-  }, 0) : 0;  
-  
-  const outstandingBalanceGross = totalGrossCharge - totalAlreadyPaid;
-  const outstandingBalanceNet = totalNetCharge - totalAlreadyPaid;
-  const [gross, setGross] = useState(true);
 
   let summary;
   let summaryalt;
@@ -320,7 +277,6 @@ return (
     <tr><td colSpan="2" style={{fontWeight: 'bold'}}>Room Requirements:</td><td colSpan="6">{student.roomRequirements}</td></tr>
     <tr><td colSpan="2" style={{fontWeight: 'bold'}}>Allergies:</td><td colSpan="6">{student.allergies}</td></tr>
     <tr><td colSpan="2" style={{fontWeight: 'bold'}}>Notes:</td><td colSpan="6">{student.notes}</td></tr>
-    <tr><td colSpan ="8"></td></tr>
     <tr><td style={{fontWeight: 'bold'}}>Pool</td><td>{student.hasPoolPermission ? 'Yes' : 'No'}</td>
     <td style={{fontWeight: 'bold'}}>Photo</td><td>{student.hasPhotoPermission ? 'Yes' : 'No'}</td>
     <td style={{fontWeight: 'bold'}}>Medical</td><td>{student.hasMedicalPermission ? 'Yes' : 'No'}</td>
@@ -328,6 +284,23 @@ return (
     <tr><td style={{fontWeight: 'bold'}}>Excursion</td><td>{student.hasExcursionPermission ? 'Yes' : 'No'}</td>
     <td style={{fontWeight: 'bold'}}>Activity</td><td>{student.hasActivityPermission ? 'Yes' : 'No'}</td>
     <td style={{fontWeight: 'bold'}}>Supervision</td><td>{student.hasSupervisionPermission ? 'Yes' : 'No'}</td><td colSpan="2"></td></tr>
+    <tr><td colSpan ="8" style={{fontWeight: 'bold', textAlign: 'center' }}>Flights</td></tr>
+    <tr style={{fontWeight: 'bold'}}><td>Direction</td><td colspan="2">Date</td><td>Time</td><td colspan="2">Destination</td><td colspan="2">Flight</td></tr>
+    {sortedTransfers && sortedTransfers.length > 0 ? (
+      sortedTransfers.map((transfer) => (
+        <tr key={transfer.id}>
+          <td>{transfer.direction}</td>
+          <td colSpan="2">{transfer.transferDate}</td>
+          <td>{transfer.direction === "IN" ? transfer.arrivalTime : transfer.departureTime}</td>
+          <td colSpan="2">{transfer.arrive}</td>
+          <td colSpan="2">{transfer.flightId}</td>
+        </tr>
+      ))
+    ) : (
+      <tr>
+        <td colSpan="8">No bookings found</td>
+      </tr>
+    )}
   </tbody>
 </table>
 
