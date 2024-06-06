@@ -1,6 +1,6 @@
 import React from 'react';
 
-function Card({person, onClick}) {
+function StudentClassroomCard({person, onClick}) {
   let imgPath;
   if (person.studentGender === 'male') {
     const maleImgPaths = [
@@ -24,12 +24,12 @@ function Card({person, onClick}) {
       <img className="br-100 h3 w3 dib" alt={person.id} src={imgPath} />
       <div>
         <h2>{person.studentName}</h2>
-        <p>{person.studentSurname}</p>
-        <p>{person.id}</p>
+        <p>Level: {person.englishLevel}</p>
+        <p>Age: {person.studentAge}</p>
         <p>{person.studentNationality}</p>
       </div>
     </div>
   );
 }
 
-export default Card;
+export default StudentClassroomCard;

@@ -3,13 +3,13 @@ import { DndContext } from '@dnd-kit/core';
 
 import Draggable from './Draggable';
 import Droppable from './Droppable';
-import Card from './Card';
+import StudentClassroomCard from './StudentClassroomCard';
 
 function Rooms() {
     const [students, setStudents] = useState([
-        { id: 1, name: "Alice", studentGender: "female", studentName: "Alice", studentSurname: "Johnson", mtRef: "MT001", studentNationality: "American" },
-        { id: 2, name: "Bob", studentGender: "male", studentName: "Bob", studentSurname: "Smith", mtRef: "MT002", studentNationality: "British" },
-        { id: 3, name: "Charlie", studentGender: "male", studentName: "Charlie", studentSurname: "Brown", mtRef: "MT003", studentNationality: "Canadian" }
+        { id: 1, studentName: "Alice Johnson", studentGender: "female", mtRef: "MT001", englishLevel: "B1", studentAge: 13, studentNationality: "Italian" },
+        { id: 2, studentName: "Bob Smith", studentGender: "male", mtRef: "MT002", englishLevel: "A2", studentAge: 7, studentNationality: "Spanish"  },
+        { id: 3, studentName: "Charlie Brown", studentGender: "male", mtRef: "MT003", englishLevel: "A1", studentAge: 16, studentNationality: "Chinese" }
     ]);
     
 
@@ -76,7 +76,7 @@ function Rooms() {
                             !classrooms.some(room => room.students.some(s => s.id === student.id))
                         ).map(student => (
                             <Draggable key={student.id} id={student.id.toString()}>
-                                <Card person={student} />
+                                <StudentClassroomCard person={student} />
                             </Draggable>
                         ))}
                     </div>
@@ -91,7 +91,7 @@ function Rooms() {
                             <h4>{classroom.name}</h4>
                             {classroom.students.map(student => (
                                 <Draggable key={student.id} id={student.id.toString()}>
-                                    <Card person={student} />
+                                    <StudentClassroomCard person={student} />
                                 </Draggable>
                             ))}
                             {classroom.students.length === 0 && <p>No students assigned</p>}
