@@ -37,22 +37,6 @@
   }
 }
 
-/* Remove browser defaults */
-/* * {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
- } */
-
- /* .App {
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
- }
-  */
  /* Tab Container */
 .Tabs {
   width: 90%;
@@ -203,12 +187,34 @@ ul.nav li.active {
   font-family: 'Arial, sans-serif'; /* Example font */
 }
 
+.classrooms-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  align-items: center;
+}
+
+
 .droppable-area {
-  border: 2px dashed gray;
+  font-family: 'Arial, sans-serif';
+  border: 2px solid gray;
+  background-color: #dbe2e3;
   padding: 10px;
   margin: 10px;
   min-height: 100px; /* Ensures the droppable area is visible even if it's empty */
 }
+
+.classroom {
+  flex: 1 1 48%; /* Adjust size to manage how many can fit per row, here it's roughly half to fit two per row */
+  margin: 10px; /* Adds space between classrooms */
+}
+
+.spacer {
+  height: 20px;
+  min-height: 100px; /* Adjust the height as needed for visual space */
+  width: 100%;
+}
+
 
 
 
