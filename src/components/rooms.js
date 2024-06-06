@@ -1,37 +1,81 @@
-import {React, useState} from 'react';
-import {DndContext} from '@dnd-kit/core';
+import React, { useState } from 'react';
+import { DndContext } from '@dnd-kit/core';
 
 import Draggable from './Draggable';
 import Droppable from './Droppable';
 
 function Rooms() {
-    const containers = ['A', 'B', 'C'];
-    const [parent, setParent] = useState(null);
-    const draggableMarkup = (
-        <Draggable id="draggable">Drag me</Draggable>
-    );
+    const [students, setStudents] = useState([
+        { id: 1, name: "Alice" },
+        { id: 2, name: "Bob" },
+        { id: 3, name: "Charlie" }
+    ]);
+
+    const [classrooms, setClassrooms] = useState([
+        { id: 'A', name: "Room A", students: [] },
+        { id: 'B', name: "Room B", students: [] },
+        { id: 'C', name: "Room C", students: [] }
+    ]);
+
+    function handleDragEnd(event) {
+        const { active, over } = event;
+        if (!over) return;
+
+        const { id: draggedId } = active;
+        const fromClassroom = classrooms.find(room => room.students.some(s => s.id === parseInt(draggedId)));
+        const toClassroom = classrooms.find(room => room.id === over.id);
+
+        if (fromClassroom === toClassroom) {
+            return; // No move needed if it's the same room
+        }
+
+        const student = fromClassroom ? fromClassroom.students.find(s => s.id === parseInt(draggedId)) : students.find(s => s.id === parseInt(draggedId));
+
+        // Update the rooms
+        const updatedClassrooms = classrooms.map(room => {
+            if (fromClassroom && room.id === fromClassroom.id) {
+                // Remove from current classroom
+                return { ...room, students: room.students.filter(s => s.id !== parseInt(draggedId)) };
+            } else if (room.id === over.id) {
+                // Add to new classroom
+                return { ...room, students: [...room.students, student] };
+            }
+            return room;
+        });
+
+        setClassrooms(updatedClassrooms);
+
+        // If moving from unassigned, update the main students list
+        if (!fromClassroom) {
+            setStudents(students.filter(s => s.id !== parseInt(draggedId)));
+        }
+    }
 
     return (
         <DndContext onDragEnd={handleDragEnd}>
-            {parent === null ? draggableMarkup : null}
-
-            {containers.map((id) => (
-            // We updated the Droppable component so it would accept an `id`
-            // prop and pass it to `useDroppable`
-            <Droppable key={id} id={id}>
-                {parent === id ? draggableMarkup : 'Drop here'}
-            </Droppable>
+            <div className="unassigned-students">
+                <h3>Unassigned Students</h3>
+                {students.map(student => (
+                    <Draggable key={student.id} id={student.id.toString()}>
+                        {student.name}
+                    </Draggable>
+                ))}
+            </div>
+            {classrooms.map((classroom) => (
+                <Droppable key={classroom.id} id={classroom.id} className="classroom">
+                    <div className={ "droppable-area" }>
+                    <h4>{classroom.name}</h4>
+                    {classroom.students.map(student => (
+                        <Draggable key={student.id} id={student.id.toString()}>
+                            {student.name}
+                        </Draggable>
+                    ))}
+                    {classroom.students.length === 0}
+                    </div>
+                </Droppable>
             ))}
         </DndContext>
     );
-
-    function handleDragEnd(event) {
-        const {over} = event;
-
-        // If the item is dropped over a container, set it as the parent
-        // otherwise reset the parent to `null`
-        setParent(over ? over.id : null);
-    };
-};
+}
 
 export default Rooms;

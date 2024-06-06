@@ -203,6 +203,12 @@ ul.nav li.active {
   font-family: 'Arial, sans-serif'; /* Example font */
 }
 
+.droppable-area {
+  border: 2px dashed gray;
+  padding: 10px;
+  margin: 10px;
+  min-height: 100px; /* Ensures the droppable area is visible even if it's empty */
+}
 
 
 
