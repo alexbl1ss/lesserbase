@@ -13,6 +13,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import 'dayjs/locale/en-gb';
 import Rent from './components/Rent';
+import Rooms from './components/rooms.js'
 
 
 function App() {
@@ -21,7 +22,7 @@ function App() {
   const [showFinancials, setShowFinancials] = useState(false);
   const [showRentPage, setShowRentPage] = useState(false);
   const [showTransfers, setShowTransfers] = useState(false);
-
+  const [showRooms, setShowRooms] = useState(false);
 
   const onLoginSuccess = (role) => {
     setShowFinancials(role === 'ADMIN');
@@ -56,9 +57,20 @@ function App() {
                     setShowWhoIsDoing(false);
                     setShowRentPage(false);
                     setShowTransfers(false);
+                    setShowRooms(false);
                   }}
                 >
                   Students
+                </Button><Button
+                  color="inherit"
+                  onClick={() => {
+                    setShowWhoIsDoing(false);
+                    setShowRentPage(false);
+                    setShowTransfers(false);
+                    setShowRooms(true);
+                  }}
+                >
+                  Rooms
                 </Button>
                 <Button
                   color="inherit"
@@ -66,6 +78,7 @@ function App() {
                     setShowWhoIsDoing(true);
                     setShowRentPage(false);
                     setShowTransfers(false);
+                    setShowRooms(false);
                   }}
                 >
                   Planner
@@ -76,6 +89,7 @@ function App() {
                     setShowWhoIsDoing(false);
                     setShowRentPage(false);
                     setShowTransfers(true);
+                    setShowRooms(false);
                   }}
                 >
                   Transfers
@@ -87,7 +101,8 @@ function App() {
                       setShowWhoIsDoing(false);
                       setShowRentPage(true);
                       setShowTransfers(false);
-                      }}
+                      setShowRooms(false);
+                    }}
                   >
                     Costs
                   </Button>
@@ -106,6 +121,8 @@ function App() {
             <Rent />
           ) : showTransfers ? (
             <Transfers />
+          ) : showRooms ? (
+            <Rooms />
           ) : (
             <StudentSearch showFinancials={showFinancials} />
           )
