@@ -1,6 +1,6 @@
 //export const SERVER_URL='https://blissdb.herokuapp.com/';
-export const SERVER_URL='https://blissdbtest.herokuapp.com/';
-//export const SERVER_URL='http://localhost:8080/'
+//export const SERVER_URL='https://blissdbtest.herokuapp.com/';
+export const SERVER_URL='http://localhost:8080/'
 //export const SERVER_URL='https://blissalex.herokuapp.com/';
 
 export const CAMPUSES = [
@@ -18,9 +18,23 @@ export const CAMPUSES = [
     { value: 'PAID', label: 'PAID' },
     ];
 
-  export const ACCOUNTS = [
-    { value: 'WISE', label: 'WISE' },
-    { value: 'MONZO', label: 'MONZO' },
-    { value: 'HSBC', label: 'HSBC' },
-  ];
-  
+    export const ACCOUNTS = [
+      { value: 'WISE', label: 'WISE' },
+      { value: 'MONZO', label: 'MONZO' },
+      { value: 'HSBC', label: 'HSBC' },
+    ];
+    
+    export const ROLES = [
+      { value: 'TEACHER', label: 'TEACHER' },
+      { value: 'ACTIVITIES', label: 'ACTIVITIES' },
+      { value: 'NIGHT', label: 'NIGHT' },
+    ];
+
+    export const GROUPTYPES = [
+      { value: 'ROOM', label: 'ROOM' },
+      { value: 'CLASS', label: 'CLASS' },
+      { value: 'AFTERNOON', label: 'AFTERNOON' },
+      { value: 'EXCURSION', label: 'EXCURSION' },
+    ];
+    
+    
