@@ -2,12 +2,12 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { SERVER_URL } from '../../constants.js'
 import AddGroup from '../AddsEdits/AddGroup.js';
 import EditGroup from '../AddsEdits/EditGroup.js';
+import IconButton from '@mui/material/IconButton';
+import { Delete } from '@mui/icons-material';
 
-function Groups(props) {
-    const { selectedPerson, selectedStay } = props;
+function Groups() {
     const [groups, setGroups] = useState([]);
-    const [editOpen, setEditOpen] = useState(false);
-
+    
     const fetchGroups = useCallback(() => {
         const token = sessionStorage.getItem('bearer');
         fetch(`${SERVER_URL}api/campgroups`, {
@@ -64,6 +64,42 @@ function Groups(props) {
         .catch(err => console.error('Error updating group', err));
     };
 
+    const deleteGroup = (event, groupId) => {
+        event.preventDefault();
+      
+        const token = sessionStorage.getItem("bearer");
+        
+        fetch(`${SERVER_URL}api/campgroups/${groupId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          method: 'GET'
+        })
+          .then(response => response.json())
+          .then(data => {
+            const groupId = data.id;
+            
+            return fetch(`${SERVER_URL}api/campgroup/delete/${groupId}`, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json'
+              },
+              method: 'DELETE'
+            })
+          })
+          .then(response => {
+    
+            if (response.ok) {
+              fetchGroups();
+            }
+            else {
+              alert('Something went wrong!');
+            }
+          })
+          .catch(err => console.error(err))
+      }
+
     useEffect(() => {
         fetchGroups();
     }, [fetchGroups]);
@@ -93,6 +129,9 @@ function Groups(props) {
                                 <td>{group.groupType}</td>
                                 <td>
                                     <EditGroup groupToEdit={group} updateGroup={updateGroup}/>
+                                </td>
+                                <td>
+                                    <IconButton onClick={(event) => deleteGroup(event, group.id)}><Delete color="primary"/></IconButton>
                                 </td>
                             </tr>
                         ))}

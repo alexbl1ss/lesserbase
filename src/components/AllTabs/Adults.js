@@ -2,6 +2,8 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { SERVER_URL } from '../../constants.js';
 import AddAdult from '../AddsEdits/AddAdult.js';
 import EditAdult from '../AddsEdits/EditAdult.js';
+import IconButton from '@mui/material/IconButton';
+import { Delete } from '@mui/icons-material';
 
 function Adults(props) {
     const [adults, setAdults] = useState([]);
@@ -52,6 +54,42 @@ function Adults(props) {
         .catch(err => console.error('Error updating adult', err));
     };
 
+    const deleteAdult = (event, adultId) => {
+        event.preventDefault();
+      
+        const token = sessionStorage.getItem("bearer");
+        
+        fetch(`${SERVER_URL}api/adults/${adultId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          method: 'GET'
+        })
+          .then(response => response.json())
+          .then(data => {
+            const adultId = data.id;
+            
+            return fetch(`${SERVER_URL}api/adult/delete/${adultId}`, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json'
+              },
+              method: 'DELETE'
+            })
+          })
+          .then(response => {
+    
+            if (response.ok) {
+              fetchAdults();
+            }
+            else {
+              alert('Something went wrong!');
+            }
+          })
+          .catch(err => console.error(err))
+      }
+
     return (
         <React.Fragment>
             <div className="detail-card payments-card" style={{ padding: '20px 0' }}>
@@ -80,6 +118,9 @@ function Adults(props) {
                                 <td>{adult.notes}</td>
                                 <td>
                                     <EditAdult adultToEdit={adult} updateAdult={editAdult}/>
+                                </td>
+                                <td>
+                                    <IconButton onClick={(event) => deleteAdult(event, adult.id)}><Delete color="primary"/></IconButton>
                                 </td>
                             </tr>
                         ))}

@@ -133,7 +133,6 @@ function StudentBookings(props) {
               </td>
               <td>
               <IconButton onClick={(event) => deleteBooking(event, booking.bookingId)}><Delete color="primary"/></IconButton>
-
               </td>
             </tr>
           ))}
