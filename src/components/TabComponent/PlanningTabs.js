@@ -22,12 +22,6 @@ const PlanningTabs = (props) => {
         setActiveTab("groups");
     };
   
-    const handleClose = () => {
-        if (onClose) {
-            onClose();
-        }
-    };
-  
     return (
         <div className="Tabs">
             {/* Tab nav */}
@@ -47,11 +41,6 @@ const PlanningTabs = (props) => {
                     onClick={handleagents}>
                 Agents
                 </li> */}
-               <li
-                    className="close-tab"
-                    onClick={handleClose}>
-                Close
-                </li>
             </ul>
             <div className="outlet">
                 {activeTab === "adults" ? <Adults selectedPerson={selectedPerson} selectedStay={selectedStay} setSelectedStay={setSelectedStay} /> : null}
