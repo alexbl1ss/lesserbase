@@ -1,43 +1,30 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { SERVER_URL } from '../../constants.js'
-import AddAdult from '../AddsEdits/AddStay.js';
-import EditIcon from '@mui/icons-material/Edit'; // Import Edit Icon
-import EditStay from '../AddsEdits/EditStay.js';
-import IconButton from '@mui/material/IconButton'; // Import IconButton from Material-UI
+import { SERVER_URL } from '../../constants.js';
+import AddAdult from '../AddsEdits/AddAdult.js';
+import EditAdult from '../AddsEdits/EditAdult.js';
 
 function Adults(props) {
-    const { selectedPerson, selectedStay } = props;
     const [adults, setAdults] = useState([]);
-    const [editOpen, setEditOpen] = useState(false);
 
     const fetchAdults = useCallback(() => {
         const token = sessionStorage.getItem('bearer');
         fetch(`${SERVER_URL}api/adults`, {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: { Authorization: `Bearer ${token}` }
         })
-            .then((response) => {
-                if (response.status === 204) {
-                    return [];
-                } else if (response.ok) {
-                    return response.json();
-                } else {
-                    throw new Error('Failed to fetch adults');
-                }
-            })
-            .then((data) => {
-                sessionStorage.setItem('adults', JSON.stringify(data));
-                setAdults(data);
-            })
-            .catch((err) => console.error(err));
+        .then(response => response.json())
+        .then(data => {
+            setAdults(data);
+            sessionStorage.setItem('adults', JSON.stringify(data));
+        })
+        .catch(err => console.error('Failed to fetch adults', err));
     }, []);
 
     useEffect(() => {
         fetchAdults();
     }, [fetchAdults]);
 
-    const addAdult = (adult) => {
+    const addAdult = adult => {
         const token = sessionStorage.getItem("bearer");
-
         fetch(`${SERVER_URL}api/adults`, {
             method: 'POST',
             headers: {
@@ -46,15 +33,24 @@ function Adults(props) {
             },
             body: JSON.stringify(adult)
         })
-            .then(response => {
-                if (response.ok) {
-                    fetchAdults();
-                } else {
-                    alert('Something went wrong!');
-                }
-            })
-            .catch(err => console.error(err))
-    }
+        .then(response => response.ok ? fetchAdults() : alert('Something went wrong!'))
+        .catch(err => console.error('Error posting adult', err));
+    };
+
+    const editAdult = updatedAdult => {
+        console.log(updatedAdult)
+        const token = sessionStorage.getItem("bearer");
+        fetch(`${SERVER_URL}api/adults/${updatedAdult.id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(updatedAdult)
+        })
+        .then(response => response.ok ? fetchAdults() : alert('Something went wrong!'))
+        .catch(err => console.error('Error updating adult', err));
+    };
 
     return (
         <React.Fragment>
@@ -69,10 +65,11 @@ function Adults(props) {
                             <th>Allergies</th>
                             <th>Role</th>
                             <th>Notes</th>
+                            <th>Edit</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {adults.map((adult) => (
+                        {adults.map(adult => (
                             <tr key={adult.id}>
                                 <td>{adult.id}</td>
                                 <td>{adult.adultName}</td>
@@ -81,14 +78,15 @@ function Adults(props) {
                                 <td>{adult.allergies}</td>
                                 <td>{adult.role}</td>
                                 <td>{adult.notes}</td>
+                                <td>
+                                    <EditAdult adultToEdit={adult} updateAdult={editAdult}/>
+                                </td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
             </div>
-            <AddAdult
-                addAdult={addAdult}
-            />
+            <AddAdult addAdult={addAdult} />
             <div>
                 <p style={{ color: '#999999', fontSize: '10px' }}>Is authenticated: {sessionStorage.getItem('isAuthenticated').toString()}</p>
             </div>

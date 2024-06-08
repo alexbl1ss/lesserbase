@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
@@ -10,14 +10,15 @@ import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
-import AddIcon from '@mui/icons-material/Add';
+import EditIcon from '@mui/icons-material/Edit';
 import IconButton from '@mui/material/IconButton';
 import { ROLES } from '../../constants';
 
-
-function AddAdult(props) {
+function EditAdult(props) {
+    const { adultToEdit, updateAdult } = props;
     const [open, setOpen] = useState(false);
     const [adult, setAdult] = useState({
+        id: '',
         adultName: '',
         adultSurname: '',
         adultGender: '',
@@ -26,8 +27,21 @@ function AddAdult(props) {
         notes: '',
     });
 
+    useEffect(() => {
+        if (adultToEdit) {
+            setAdult({
+                id: adultToEdit.id,
+                adultName: adultToEdit.adultName,
+                adultSurname: adultToEdit.adultSurname,
+                adultGender: adultToEdit.adultGender,
+                allergies: adultToEdit.allergies,
+                role: adultToEdit.role,
+                notes: adultToEdit.notes,
+            });
+        }
+    }, [adultToEdit]);
+
     const handleClickOpen = () => {
-        
         setOpen(true);
     };
 
@@ -37,7 +51,7 @@ function AddAdult(props) {
 
     const handleSave = () => {
         console.log(adult);
-        props.addAdult(adult);
+        updateAdult(adult); // This method should handle the PUT request.
         handleClose();
     };
 
@@ -51,9 +65,11 @@ function AddAdult(props) {
 
     return (
         <div>
-            <IconButton onClick={handleClickOpen}color="primary"> <AddIcon/></IconButton>
+            <IconButton onClick={handleClickOpen} color="primary">
+                <EditIcon />
+            </IconButton>
             <Dialog open={open} onClose={handleClose}>
-                <DialogTitle>Add Adult</DialogTitle>
+                <DialogTitle>Edit Adult</DialogTitle>
                 <DialogContent>
                     <Stack spacing={2} mt={1}>
                         <TextField 
@@ -123,4 +139,4 @@ function AddAdult(props) {
     );
 }
 
-export default AddAdult;
+export default EditAdult;

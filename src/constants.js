@@ -27,7 +27,7 @@ export const CAMPUSES = [
     export const ROLES = [
       { value: 'TEACHER', label: 'TEACHER' },
       { value: 'ACTIVITIES', label: 'ACTIVITIES' },
-      { value: 'NIGHT', label: 'NIGHT' },
+      { value: 'NIGHSHIFT', label: 'NIGHSHIFT' },
     ];
 
     export const GROUPTYPES = [

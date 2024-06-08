@@ -1,9 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { SERVER_URL } from '../../constants.js'
-import AddGroup from '../AddsEdits/AddStay.js';
-import EditIcon from '@mui/icons-material/Edit'; // Import Edit Icon
-import EditStay from '../AddsEdits/EditStay.js';
-import IconButton from '@mui/material/IconButton'; // Import IconButton from Material-UI
+import AddGroup from '../AddsEdits/AddGroup.js';
+import EditGroup from '../AddsEdits/EditGroup.js';
 
 function Groups(props) {
     const { selectedPerson, selectedStay } = props;
@@ -52,6 +50,20 @@ function Groups(props) {
             .catch(err => console.error(err))
     }
 
+    const updateGroup = updatedGroup => {
+        const token = sessionStorage.getItem("bearer");
+        fetch(`${SERVER_URL}api/campgroup/${updatedGroup.id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(updatedGroup)
+        })
+        .then(response => response.ok ? fetchGroups() : alert('Something went wrong!'))
+        .catch(err => console.error('Error updating group', err));
+    };
+
     useEffect(() => {
         fetchGroups();
     }, [fetchGroups]);
@@ -79,13 +91,16 @@ function Groups(props) {
                                 <td>{group.capacity}</td>
                                 <td>{group.notes}</td>
                                 <td>{group.groupType}</td>
+                                <td>
+                                    <EditGroup groupToEdit={group} updateGroup={updateGroup}/>
+                                </td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
             </div>
             <AddGroup
-                addGroup={AddGroup}
+                addGroup={addGroup}
             />
             <div>
                 <p style={{ color: '#999999', fontSize: '10px' }}>Is authenticated: {sessionStorage.getItem('isAuthenticated').toString()}</p>
