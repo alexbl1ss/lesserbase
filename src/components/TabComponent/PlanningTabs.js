@@ -1,17 +1,10 @@
 import React, { useState } from "react";
 import Adults from "../AllTabs/Adults";
 import Groups from "../AllTabs/Groups";
-import StudentBookings from "../AllTabs/StudentBookings";
-import StudentPayments from "../AllTabs/StudentPayments";
-import StudentInvoice from "../AllTabs/StudentInvoice";
-import BookingCreator from "../AllTabs/BookingCreator";
-import StudentTransfers from "../AllTabs/StudentTransfers";
-import StudentSummary from "../AllTabs/StudentSummary";
-import StudentStays from "../AllTabs/StudentStays"
+import Scheduler from "../AllTabs/Scheduler"
 
-const PlanningTabs = (props) => {
+const PlanningTabs = () => {
 
-    const { selectedPerson, onClose } = props;
     const [activeTab, setActiveTab] = useState("details");
     const [selectedStay, setSelectedStay] = useState(null);
 
@@ -21,7 +14,10 @@ const PlanningTabs = (props) => {
     const handlegroups = () => {
         setActiveTab("groups");
     };
-  
+    const handlescheduler = () => {
+        setActiveTab("scheduler");
+    };
+
     return (
         <div className="Tabs">
             {/* Tab nav */}
@@ -35,6 +31,10 @@ const PlanningTabs = (props) => {
                     className={activeTab === "groups" ? "active" : ""}
                     onClick={handlegroups}>
                 Groups
+                </li><li
+                    className={activeTab === "scheduler" ? "active" : ""}
+                    onClick={handlescheduler}>
+                Scheduler
                 </li>
                 {/* <li
                     className={activeTab === "agents" ? "active" : ""}
@@ -43,8 +43,9 @@ const PlanningTabs = (props) => {
                 </li> */}
             </ul>
             <div className="outlet">
-                {activeTab === "adults" ? <Adults selectedPerson={selectedPerson} selectedStay={selectedStay} setSelectedStay={setSelectedStay} /> : null}
-                {activeTab === "groups" && <Groups selectedPerson={selectedPerson} selectedStay={selectedStay} setSelectedStay={setSelectedStay} />}
+                {activeTab === "adults" ? <Adults/> : null}
+                {activeTab === "groups" && <Groups/>}
+                {activeTab === "scheduler" && <Scheduler/>}
             </div>
         </div>
   );
