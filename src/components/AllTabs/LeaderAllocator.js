@@ -8,26 +8,13 @@ import MenuItem from '@mui/material/MenuItem';
 
 function LeaderAllocator(props) {
     const [adults, setAdults] = useState([]);
-    const [campGroups, setCampGroups] = useState([]);
-    const [selectedLeader, setSelectedLeader] = useState({
-        id: '',
-        adultName: '',
-        adultSurname: '',
-        adultGender: '',
-        allergies: '',
-        notes: '',
-        role: ''
-    });
-    const [selectedGroup, setSelectedGroup] = useState({
-        id: '',
-        groupName: '',
-        leader: '',
-        campus: '',
-        capacity: '',
-        notes: '',
-        groupType: '',
-        leaderIdOnly: ''
-    });
+    const [allGroups, setAllGroups] = useState([]);  // All groups fetched from the server
+    const [filteredGroups, setFilteredGroups] = useState([]); // Groups filtered based on campus and group type
+      const [selectedLeader, setSelectedLeader] = useState('');
+    const [selectedGroup, setSelectedGroup] = useState('');
+    const [selectedCampus, setSelectedCampus] = useState('');
+    const [selectedGroupType, setSelectedGroupType] = useState('');
+
 
     const fetchleaders = useCallback(() => {
         const token = sessionStorage.getItem('bearer');
@@ -58,7 +45,8 @@ function LeaderAllocator(props) {
       })
       .then((data) => {
         sessionStorage.setItem('campgroups', JSON.stringify(data));
-        setCampGroups(data);
+        setAllGroups(data);
+        setFilteredGroups(data);  // Initially no filter, so show all groups
       })
       .catch((err) => console.error(err));
   }, []);
@@ -83,6 +71,25 @@ function LeaderAllocator(props) {
     }
 };
 
+const filterGroups = (campus, groupType) => {
+  const filtered = allGroups.filter(group => {
+      return (!campus || group.campus === campus) && (!groupType || group.groupType === groupType);
+  });
+  setFilteredGroups(filtered);
+
+};
+
+const handleCampusChange = (event) => {
+  const campus = event.target.value;
+  setSelectedCampus(campus);
+  filterGroups(campus, selectedGroupType);
+};
+
+const handleGroupTypeChange = (event) => {
+  const groupType = event.target.value;
+  setSelectedGroupType(groupType);
+  filterGroups(selectedCampus, groupType);
+};
   
   const handleAllocate = async () => {
     if (!selectedGroup.id || !selectedLeader.id) {
@@ -136,16 +143,16 @@ const handleChange = (event) => {
     <React.Fragment>
     <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', margin: '20px 0' }}>
         
-        <FormControl variant="standard" style={{ minWidth: 240 }}>
+    <FormControl variant="standard" style={{ minWidth: 240 }}>
             <InputLabel id="campus-label">Campus</InputLabel>
             <Select
                 labelId="campus-label"
                 id="campus-select"
-                name="campus"
-                onChange={handleChange}
+                value={selectedCampus}
+                onChange={handleCampusChange}
             >
                 {CAMPUSES.map((campus) => (
-                    <MenuItem key={campus.id} value={campus.value}>
+                    <MenuItem key={campus.value} value={campus.value}>
                         {campus.value}
                     </MenuItem>
                 ))}
@@ -153,20 +160,20 @@ const handleChange = (event) => {
         </FormControl>
         
         <FormControl variant="standard" style={{ minWidth: 240 }}>
-            <InputLabel id="type-label">Group Type</InputLabel>
-            <Select
-                labelId="type-label"
-                id="type-select"
-                name="type"
-                onChange={handleChange}
-            >
-                {GROUPTYPES.map((grouptypes) => (
-                    <MenuItem key={grouptypes.id} value={grouptypes.value}>
-                        {grouptypes.value}
-                    </MenuItem>
-                ))}
-            </Select>
-        </FormControl>
+                    <InputLabel id="type-label">Group Type</InputLabel>
+                    <Select
+                        labelId="type-label"
+                        id="type-select"
+                        value={selectedGroupType}
+                        onChange={handleGroupTypeChange}
+                    >
+                        {GROUPTYPES.map((type) => (
+                            <MenuItem key={type.value} value={type.value}>
+                                {type.value}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
 
         <FormControl variant="standard" style={{ minWidth: 240 }}>
     <InputLabel id="leader-label">Leader</InputLabel>
@@ -201,7 +208,7 @@ const handleChange = (event) => {
           </tr>
         </thead>
         <tbody>
-        {campGroups.map((campgroup) => (
+        {filteredGroups.map((campgroup) => (
           <tr key={campgroup.id}>
           <td>{campgroup.id}</td>
           <td>{campgroup.groupName}</td>
