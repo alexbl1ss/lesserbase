@@ -7,19 +7,18 @@ import LeaderAllocator from "../AllTabs/LeaderAllocator";
 const PlanningTabs = () => {
 
     const [activeTab, setActiveTab] = useState("details");
-    const [selectedStay, setSelectedStay] = useState(null);
 
     const handleadults = () => {
-        setActiveTab("adults");
+        setActiveTab("adultstab");
     };
     const handlegroups = () => {
-        setActiveTab("groups");
+        setActiveTab("groupstab");
     };
     const handlescheduler = () => {
-        setActiveTab("scheduler");
+        setActiveTab("schedulertab");
     };
     const handleLeaderAllocator = () => {
-        setActiveTab("leaderallocator");
+        setActiveTab("leaderallocatortab");
     };
 
     return (
@@ -27,22 +26,22 @@ const PlanningTabs = () => {
             {/* Tab nav */}
             <ul className="nav">
                 <li
-                    className={activeTab === "adults" ? "active" : ""}
+                    className={activeTab === "adultstab" ? "active" : ""}
                     onClick={handleadults}>
                 Adults
                 </li>
                 <li
-                    className={activeTab === "groups" ? "active" : ""}
+                    className={activeTab === "groupstab" ? "active" : ""}
                     onClick={handlegroups}>
                 Groups
                 </li>
                 <li
-                    className={activeTab === "scheduler" ? "active" : ""}
+                    className={activeTab === "schedulertab" ? "active" : ""}
                     onClick={handlescheduler}>
                 Scheduler
                 </li>
                 <li
-                    className={activeTab === "leaderallocator" ? "active" : ""}
+                    className={activeTab === "leaderallocatortab" ? "active" : ""}
                     onClick={handleLeaderAllocator}>
                 Leader Allocator
                 </li>
@@ -53,10 +52,10 @@ const PlanningTabs = () => {
                 </li> */}
             </ul>
             <div className="outlet">
-                {activeTab === "adults" ? <Adults/> : null}
-                {activeTab === "groups" && <Groups/>}
-                {activeTab === "scheduler" && <Scheduler/>}
-                {activeTab === "leaderallocator" && <LeaderAllocator/>}
+                {activeTab === "adultstab" ? <Adults/> : null}
+                {activeTab === "groupstab" && <Groups/>}
+                {activeTab === "schedulertab" && <Scheduler/>}
+                {activeTab === "leaderallocatortab" && <LeaderAllocator/>}
             </div>
         </div>
   );

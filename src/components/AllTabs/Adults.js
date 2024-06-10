@@ -9,6 +9,7 @@ function Adults(props) {
     const [adults, setAdults] = useState([]);
 
     const fetchAdults = useCallback(() => {
+        console.log('Fetching adults...');
         const token = sessionStorage.getItem('bearer');
         fetch(`${SERVER_URL}api/adults`, {
             headers: { Authorization: `Bearer ${token}` }
@@ -22,6 +23,7 @@ function Adults(props) {
     }, []);
 
     useEffect(() => {
+        console.log('Component mounted or updated');
         fetchAdults();
     }, [fetchAdults]);
 

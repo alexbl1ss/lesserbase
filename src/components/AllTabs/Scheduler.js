@@ -7,19 +7,13 @@ import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 
 function Scheduler(props) {
-    const [campDates, setCampDates] = useState([]);
-    const [campGroups, setCampGroups] = useState([]);
-    const [selectedDates, setSelectedDates] = useState([]);
-    const [selectedGroup, setSelectedGroup] = useState({
-        id: '',
-        groupName: '',
-        leader: '',
-        campus: '',
-        capacity: '',
-        notes: '',
-        groupType: '',
-        leaderIdOnly: ''
-    });
+  const [campDates, setCampDates] = useState([]);
+  const [allGroups, setAllGroups] = useState([]);  // All groups fetched from the server
+  const [filteredGroups, setFilteredGroups] = useState([]); // Groups filtered based on campus and group type
+  const [selectedDates, setSelectedDates] = useState([]);
+  const [selectedGroup, setSelectedGroup] = useState('');
+  const [selectedCampus, setSelectedCampus] = useState('');
+  const [selectedGroupType, setSelectedGroupType] = useState('');
 
     const fetchDates = useCallback(() => {
     const token = sessionStorage.getItem('bearer');
@@ -45,36 +39,71 @@ function Scheduler(props) {
   const fetchGroups = useCallback(() => {
     const token = sessionStorage.getItem('bearer');
     fetch(`${SERVER_URL}api/campgroups`, {
-      headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${token}` },
     })
-      .then((response) => {
-        if (response.status === 204) {
-          return [];
-        } else if (response.ok) {
-          return response.json();
-        } else {
-          throw new Error('Failed to fetch campgroups');
-        }
-      })
-      .then((data) => {
-        sessionStorage.setItem('campgroups', JSON.stringify(data));
-        setCampGroups(data);
-      })
-      .catch((err) => console.error(err));
-  }, []);
+        .then(response => response.json())
+        .then(data => {
+            sessionStorage.setItem('campgroups', JSON.stringify(data));
+            setAllGroups(data);
+            setFilteredGroups(data);  // Initially no filter, so show all groups
+        })
+        .catch(err => console.error(err));
+}, []);
 
-  useEffect(() => {
-    fetchDates();
-    fetchGroups();
-  }, []);
+useEffect(() => {
+  fetchDates();
+  fetchGroups();
+}, [fetchDates, fetchGroups]);
 
-  useEffect(() => {
-    // This will log every time selectedGroup changes, showing the latest state after updates
-    console.log("in effect ");
-    console.log(selectedGroup);
-}, [selectedGroup]); // useEffect to log changes correctly
+useEffect(() => {
+  // Automatically select the first group if there's only one after filtering
+  if (filteredGroups.length === 1) {
+    const groupToSelect = filteredGroups[0];
+    setSelectedGroup(groupToSelect);
+    handleGroupChangeAfterSelection(groupToSelect);  // handle side effects
+  } else if (filteredGroups.length === 0) {
+    setSelectedGroup('');
+  }
+}, [filteredGroups]);
 
-  const sortedDates = campDates.sort((a, b) => {
+// Function to handle additional logic when a group is automatically selected
+const handleGroupChangeAfterSelection = (group) => {
+  // Assuming you need to filter or set dates or other related state changes
+  const datesWithGroup = campDates.filter(date => 
+    date.groups.some(g => g.id === group.id)
+  );
+  setSelectedDates(datesWithGroup);
+};
+
+const handleGroupTypeChange = (event) => {
+  const groupType = event.target.value;
+  setSelectedGroupType(groupType);
+  filterGroups(selectedCampus, groupType);
+};
+
+const handleCampusChange = (event) => {
+  const campus = event.target.value;
+  setSelectedCampus(campus);
+  filterGroups(campus, selectedGroupType);
+};
+
+const filterGroups = (campus, groupType) => {
+  const filtered = allGroups.filter(group => {
+      return (!campus || group.campus === campus) && (!groupType || group.groupType === groupType);
+  });
+  setFilteredGroups(filtered);
+
+  // Set the first group in the filtered list as the selected group, or reset if no groups match
+  if (filtered.length > 0) {
+    const firstGroup = filtered[0];
+    setSelectedGroup(firstGroup); // Ensure this updates the Select component
+    handleGroupChangeAfterSelection(firstGroup);
+  } else {
+    setSelectedGroup(''); // Reset if no groups are available after filter
+  }
+};
+
+const sortedDates = campDates.sort((a, b) => {
     return new Date(a.campDate) - new Date(b.campDate);
   });
   
@@ -127,23 +156,13 @@ const handleSchedule = () => {
       .catch(err => console.error('Error with scheduling operations:', err));
 };
 
-
-
-  const handleGroupChange = (event) => {
-    const selectedGroup = event.target.value;
-    setSelectedGroup(selectedGroup);
-
-    const datesWithGroup = campDates.filter(date => 
-        date.groups.some(group => group.id === selectedGroup.id)
-    );
-    setSelectedDates(datesWithGroup);
+const handleGroupChange = (event) => {
+  const group = event.target.value;
+  setSelectedGroup(group);
+  handleGroupChangeAfterSelection(group);
 };
 
-const handleChange = (event) => {
-  console.log(event);
-}
-
-  return(
+return(
     <React.Fragment>
     <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', margin: '20px 0' }}>
         
@@ -152,11 +171,11 @@ const handleChange = (event) => {
             <Select
                 labelId="campus-label"
                 id="campus-select"
-                name="campus"
-                onChange={handleChange}
+                value={selectedCampus}
+                onChange={handleCampusChange}
             >
                 {CAMPUSES.map((campus) => (
-                    <MenuItem key={campus.id} value={campus.value}>
+                    <MenuItem key={campus.value} value={campus.value}>
                         {campus.value}
                     </MenuItem>
                 ))}
@@ -164,31 +183,31 @@ const handleChange = (event) => {
         </FormControl>
         
         <FormControl variant="standard" style={{ minWidth: 240 }}>
-            <InputLabel id="type-label">Group Type</InputLabel>
-            <Select
-                labelId="type-label"
-                id="type-select"
-                name="type"
-                onChange={handleChange}
-            >
-                {GROUPTYPES.map((grouptypes) => (
-                    <MenuItem key={grouptypes.id} value={grouptypes.value}>
-                        {grouptypes.value}
-                    </MenuItem>
-                ))}
-            </Select>
-        </FormControl>
+                    <InputLabel id="type-label">Group Type</InputLabel>
+                    <Select
+                        labelId="type-label"
+                        id="type-select"
+                        value={selectedGroupType}
+                        onChange={handleGroupTypeChange}
+                    >
+                        {GROUPTYPES.map((type) => (
+                            <MenuItem key={type.value} value={type.value}>
+                                {type.value}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
 
         <FormControl variant="standard" style={{ minWidth: 240 }}>
             <InputLabel id="group-label">Group</InputLabel>
             <Select
-                labelId="group-label"
-                id="group-select"
-                name="group"
-                renderValue={(selected) => selected ? selected.groupName : ''}
-                onChange={handleGroupChange}
+                abelId="group-label"
+                        id="group-select"
+                        value={selectedGroup}
+                        onChange={handleGroupChange}
+                        renderValue={(selected) => selected ? selected.groupName : ''}
             >
-                {campGroups.map((group) => (
+                {filteredGroups.map((group) => (
                     <MenuItem key={group.id} value={group}>
                         {group.groupName}
                     </MenuItem>

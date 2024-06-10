@@ -6,27 +6,20 @@ import IconButton from '@mui/material/IconButton';
 import { Delete } from '@mui/icons-material';
 
 function Groups() {
-    const [groups, setGroups] = useState([]);
+    const [campGroups, setCampGroups] = useState([]);
     
     const fetchGroups = useCallback(() => {
+        console.log('Fetching groups...');
         const token = sessionStorage.getItem('bearer');
         fetch(`${SERVER_URL}api/campgroups`, {
             headers: { Authorization: `Bearer ${token}` },
         })
-            .then((response) => {
-                if (response.status === 204) {
-                    return [];
-                } else if (response.ok) {
-                    return response.json();
-                } else {
-                    throw new Error('Failed to fetch groups');
-                }
-            })
-            .then((data) => {
-                sessionStorage.setItem('groups', JSON.stringify(data));
-                setGroups(data);
-            })
-            .catch((err) => console.error(err));
+        .then(response => response.json())
+    .then(data => {
+        sessionStorage.setItem('campgroups', JSON.stringify(data));
+        setCampGroups(data);
+    })
+    .catch(err => console.error(err));
     }, []);
 
     const addGroup = (group) => {
@@ -100,9 +93,11 @@ function Groups() {
           .catch(err => console.error(err))
       }
 
-    useEffect(() => {
+      useEffect(() => {
+        console.log('Component mounted or updated');
         fetchGroups();
     }, [fetchGroups]);
+    
 
     return (
         <React.Fragment>
@@ -119,7 +114,7 @@ function Groups() {
                         </tr>
                     </thead>
                     <tbody>
-                        {groups.map((group) => (
+                        {campGroups.map((group) => (
                             <tr key={group.id}>
                                 <td>{group.id}</td>
                                 <td>{group.groupName}</td>
