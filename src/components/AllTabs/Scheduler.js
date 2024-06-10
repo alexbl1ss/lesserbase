@@ -79,40 +79,66 @@ function Scheduler(props) {
   });
   
   
-   const handleDatesSelect = useCallback((campdate) => {
-    if (selectedDates.some((p) => p.id === campdate.id)) {
-        setSelectedDates(selectedDates.filter((p) => p.id !== campdate.id));
+  const handleDatesSelect = useCallback((campdate) => {
+    const isSelected = selectedDates.some(date => date.id === campdate.id);
+    if (isSelected) {
+        setSelectedDates(selectedDates.filter(date => date.id !== campdate.id));
     } else {
-      setSelectedDates([...selectedDates, campdate]);
+        setSelectedDates([...selectedDates, campdate]);
     }
 }, [selectedDates]);
 
-const handleSchedule = (campdate) => {
-    const token = sessionStorage.getItem('bearer');
-  
-    Promise.all(selectedDates.map((campdate) => {
-      return fetch(`${SERVER_URL}api/campgroup/${selectedGroup.id}/camptime/${campdate.id}`, {
-        method: 'PUT',
-        headers: { 
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
+
+const handleSchedule = () => {
+  const token = sessionStorage.getItem('bearer');
+
+  // Create promises for PUT and DELETE requests
+  const requests = campDates.map(campdate => {
+      const isSelected = selectedDates.some(date => date.id === campdate.id);
+
+      if (isSelected) {
+          // Send PUT request if the date is selected
+          return fetch(`${SERVER_URL}api/campgroup/${selectedGroup.id}/camptime/${campdate.id}`, {
+              method: 'PUT',
+              headers: { 
+                  Authorization: `Bearer ${token}`,
+                  'Content-Type': 'application/json'
+              },
+          });
+      } else {
+          // Send DELETE request if the date is not selected
+          return fetch(`${SERVER_URL}api/campgroup/${selectedGroup.id}/camptime/${campdate.id}`, {
+              method: 'DELETE',
+              headers: { 
+                  Authorization: `Bearer ${token}`,
+                  'Content-Type': 'application/json'
+              },
+          });
+      }
+  });
+
+  // Execute all requests and handle results
+  Promise.all(requests)
+      .then(responses => {
+          // Handle responses here, e.g., check for errors, reload data, etc.
+          console.log('All operations completed');
+          fetchDates(); // Refresh dates after changes
       })
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error('Failed to create booking');
-          }
-        });
-    }))
-      .then(() => {
-        fetchDates();
-      })
-      .catch((err) => console.error(err));
-  }
-  const handleChange = (event) => {
-    setSelectedGroup(event.target.value);
-    console.log(selectedGroup);
+      .catch(err => console.error('Error with scheduling operations:', err));
 };
+
+
+
+  const handleChange = (event) => {
+    const selectedGroup = event.target.value;
+    setSelectedGroup(selectedGroup);
+
+    const datesWithGroup = campDates.filter(date => 
+        date.groups.some(group => group.id === selectedGroup.id)
+    );
+    setSelectedDates(datesWithGroup);
+};
+
 
   return(
     <React.Fragment>
@@ -149,9 +175,11 @@ const handleSchedule = (campdate) => {
           <td>{campdate.campDate}</td>
           <td>
           <input
-            type="checkbox"
-            onChange={() => handleDatesSelect(campdate)}
-          />
+    type="checkbox"
+    checked={selectedDates.some(date => date.id === campdate.id)}
+    onChange={() => handleDatesSelect(campdate)}
+/>
+
         </td>
       </tr>
     ))}
