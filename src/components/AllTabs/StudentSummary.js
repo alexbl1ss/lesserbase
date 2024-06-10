@@ -3,7 +3,7 @@ import Container from '@mui/material/Container';
 import { toPng } from 'html-to-image';
 import jsPDF from 'jspdf';
 import '../InvoicePage.css';
-import { SERVER_URL } from '../../constants.js'
+import { SERVER_URL, CUTOFF_DATE } from '../../constants.js'
 
 function StudentSummary(props) {
   const { selectedPerson, selectedStay } = props;
@@ -58,8 +58,11 @@ function StudentSummary(props) {
         }
       })
       .then((data) => {
-        sessionStorage.setItem('bookings', JSON.stringify(data));
-        setBookings(data);
+        const filteredData = data.filter(booking => 
+          new Date(booking.startDate) > new Date(CUTOFF_DATE)
+        );
+        sessionStorage.setItem('bookings', JSON.stringify(filteredData));
+        setBookings(filteredData);
       })
       .catch((err) => console.error(err));
   }, [selectedPerson.id]);
@@ -87,8 +90,11 @@ function StudentSummary(props) {
         }
       })
       .then((data) => {
-        sessionStorage.setItem('stays', JSON.stringify(data));
-        setStays(data);
+        const filteredData = data.filter(stay => 
+          new Date(stay.arrivalDate) > new Date(CUTOFF_DATE)
+        );
+        sessionStorage.setItem('stays', JSON.stringify(filteredData));
+        setStays(filteredData);
       })
       .catch((err) => console.error(err));
   }, [selectedPerson.id]);
@@ -116,8 +122,12 @@ function StudentSummary(props) {
         }
       })
       .then((data) => {
-        sessionStorage.setItem('transfers', JSON.stringify(data));
-        setTransfers(data);
+
+        const filteredData = data.filter(transfer => 
+          new Date(transfer.transferDate) > new Date(CUTOFF_DATE)
+        );
+        sessionStorage.setItem('stays', JSON.stringify(filteredData));
+        setTransfers(filteredData);
       })
       .catch((err) => console.error(err));
   }, [selectedPerson.id]);

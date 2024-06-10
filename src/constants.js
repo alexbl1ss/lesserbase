@@ -36,5 +36,7 @@ export const CAMPUSES = [
       { value: 'AFTERNOON', label: 'AFTERNOON' },
       { value: 'EXCURSION', label: 'EXCURSION' },
     ];
+
+    export const CUTOFF_DATE = '2023-08-15'; // Format: YYYY-MM-DD
     
     

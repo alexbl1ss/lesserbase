@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { SERVER_URL } from '../../constants.js'
+import { SERVER_URL, CUTOFF_DATE } from '../../constants.js'
 import '../BookingCard.css';
 import EditBooking from '../AddsEdits/EditBooking.js';
 import IconButton from '@mui/material/IconButton';
@@ -24,8 +24,11 @@ function StudentBookings(props) {
         }
       })
       .then((data) => {
-        sessionStorage.setItem('bookings', JSON.stringify(data));
-        setBookings(data);
+        const filteredData = data.filter(booking => 
+          new Date(booking.startDate) > new Date(CUTOFF_DATE)
+        );
+        sessionStorage.setItem('bookings', JSON.stringify(filteredData));
+        setBookings(filteredData);
       })
       .catch((err) => console.error(err));
   }, [selectedPerson.id]);

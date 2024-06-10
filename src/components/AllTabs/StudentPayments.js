@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { SERVER_URL } from '../../constants.js'
+import { SERVER_URL, CUTOFF_DATE } from '../../constants.js'
 import '../PaymentsCard.css';
 import AddPayment from '../AddsEdits/AddPayment.js';
 import IconButton from '@mui/material/IconButton';
@@ -24,8 +24,12 @@ function StudentPayments(props) {
         }
       })
       .then((data) => {
-        sessionStorage.setItem('payments', JSON.stringify(data));
-        setPayments(data);
+        // Filter payments that are newer than the cutoff date
+      const filteredPayments = data.filter(payment =>
+        new Date(payment.paymentDate) >= new Date(CUTOFF_DATE)
+      );
+      sessionStorage.setItem('payments', JSON.stringify(filteredPayments));
+      setPayments(filteredPayments);
       })
       .catch((err) => console.error(err));
   }, [selectedPerson.id]);

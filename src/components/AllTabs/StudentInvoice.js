@@ -3,7 +3,7 @@ import Container from '@mui/material/Container';
 import { toPng } from 'html-to-image';
 import jsPDF from 'jspdf';
 import '../InvoicePage.css';
-import { SERVER_URL } from '../../constants.js'
+import { SERVER_URL, CUTOFF_DATE } from '../../constants.js'
 
 function StudentInvoice(props) {
   const { selectedPerson } = props;
@@ -78,8 +78,11 @@ function StudentInvoice(props) {
         }
       })
       .then((data) => {
-        sessionStorage.setItem('bookings', JSON.stringify(data));
-        setBookings(data);
+        const filteredData = data.filter(booking => 
+          new Date(booking.startDate) > new Date(CUTOFF_DATE)
+        );
+        sessionStorage.setItem('bookings', JSON.stringify(filteredData));
+        setBookings(filteredData);
       })
       .catch((err) => console.error(err));
   }, [selectedPerson.id]);
@@ -106,8 +109,12 @@ function StudentInvoice(props) {
         }
       })
       .then((data) => {
-        sessionStorage.setItem('payments', JSON.stringify(data));
-        setPayments(data);
+        // Filter payments that are newer than the cutoff date
+      const filteredPayments = data.filter(payment =>
+        new Date(payment.paymentDate) >= new Date(CUTOFF_DATE)
+      );
+      sessionStorage.setItem('payments', JSON.stringify(filteredPayments));
+      setPayments(filteredPayments);
       })
       .catch((err) => console.error(err));
   }, [selectedPerson.id]);
