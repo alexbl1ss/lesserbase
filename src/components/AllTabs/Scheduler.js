@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { SERVER_URL } from '../../constants.js'
+import { SERVER_URL, CAMPUSES, GROUPTYPES } from '../../constants.js'
 import '../BookingCard.css';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
@@ -129,7 +129,7 @@ const handleSchedule = () => {
 
 
 
-  const handleChange = (event) => {
+  const handleGroupChange = (event) => {
     const selectedGroup = event.target.value;
     setSelectedGroup(selectedGroup);
 
@@ -139,25 +139,63 @@ const handleSchedule = () => {
     setSelectedDates(datesWithGroup);
 };
 
+const handleChange = (event) => {
+  console.log(event);
+}
 
   return(
     <React.Fragment>
-    <FormControl variant="standard" fullWidth>
-        <InputLabel id="group-label">Group</InputLabel>
-        <Select
-            labelId="group-label"
-            id="group-select"
-            name="group"
-            renderValue={(selected) => selected ? selected.groupName : ''}
-            onChange={handleChange}
+    <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', margin: '20px 0' }}>
+        
+        <FormControl variant="standard" style={{ minWidth: 240 }}>
+            <InputLabel id="campus-label">Campus</InputLabel>
+            <Select
+                labelId="campus-label"
+                id="campus-select"
+                name="campus"
+                onChange={handleChange}
             >
-            {campGroups.map((group) => (
-                <MenuItem key={group.id} value={group}>
-                    {group.groupName}
-                </MenuItem>
-             ))}
-        </Select>
-    </FormControl>
+                {CAMPUSES.map((campus) => (
+                    <MenuItem key={campus.id} value={campus.value}>
+                        {campus.value}
+                    </MenuItem>
+                ))}
+            </Select>
+        </FormControl>
+        
+        <FormControl variant="standard" style={{ minWidth: 240 }}>
+            <InputLabel id="type-label">Group Type</InputLabel>
+            <Select
+                labelId="type-label"
+                id="type-select"
+                name="type"
+                onChange={handleChange}
+            >
+                {GROUPTYPES.map((grouptypes) => (
+                    <MenuItem key={grouptypes.id} value={grouptypes.value}>
+                        {grouptypes.value}
+                    </MenuItem>
+                ))}
+            </Select>
+        </FormControl>
+
+        <FormControl variant="standard" style={{ minWidth: 240 }}>
+            <InputLabel id="group-label">Group</InputLabel>
+            <Select
+                labelId="group-label"
+                id="group-select"
+                name="group"
+                renderValue={(selected) => selected ? selected.groupName : ''}
+                onChange={handleGroupChange}
+            >
+                {campGroups.map((group) => (
+                    <MenuItem key={group.id} value={group}>
+                        {group.groupName}
+                    </MenuItem>
+                ))}
+            </Select>
+        </FormControl>
+    </div>
     <button onClick={handleSchedule} type="button">Schedule</button>
     <div className="detail-card booking-card" style={{ padding: '20px 0' }}>
       <table style={{ width: '80%', textAlign: 'left', margin: 'auto', borderCollapse: 'collapse' }}>

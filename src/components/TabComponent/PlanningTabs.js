@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Adults from "../AllTabs/Adults";
 import Groups from "../AllTabs/Groups";
 import Scheduler from "../AllTabs/Scheduler"
+import LeaderAllocator from "../AllTabs/LeaderAllocator";
 
 const PlanningTabs = () => {
 
@@ -17,6 +18,9 @@ const PlanningTabs = () => {
     const handlescheduler = () => {
         setActiveTab("scheduler");
     };
+    const handleLeaderAllocator = () => {
+        setActiveTab("leaderallocator");
+    };
 
     return (
         <div className="Tabs">
@@ -31,10 +35,16 @@ const PlanningTabs = () => {
                     className={activeTab === "groups" ? "active" : ""}
                     onClick={handlegroups}>
                 Groups
-                </li><li
+                </li>
+                <li
                     className={activeTab === "scheduler" ? "active" : ""}
                     onClick={handlescheduler}>
                 Scheduler
+                </li>
+                <li
+                    className={activeTab === "leaderallocator" ? "active" : ""}
+                    onClick={handleLeaderAllocator}>
+                Leader Allocator
                 </li>
                 {/* <li
                     className={activeTab === "agents" ? "active" : ""}
@@ -46,6 +56,7 @@ const PlanningTabs = () => {
                 {activeTab === "adults" ? <Adults/> : null}
                 {activeTab === "groups" && <Groups/>}
                 {activeTab === "scheduler" && <Scheduler/>}
+                {activeTab === "leaderallocator" && <LeaderAllocator/>}
             </div>
         </div>
   );
