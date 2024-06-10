@@ -59,7 +59,8 @@ function StudentSummary(props) {
       })
       .then((data) => {
         const filteredData = data.filter(booking => 
-          new Date(booking.startDate) > new Date(CUTOFF_DATE)
+          new Date(booking.startDate) >= new Date(selectedStay.arrivalDate) &&
+          new Date(booking.endDate) <= new Date(selectedStay.departureDate)       
         );
         sessionStorage.setItem('bookings', JSON.stringify(filteredData));
         setBookings(filteredData);
@@ -91,7 +92,8 @@ function StudentSummary(props) {
       })
       .then((data) => {
         const filteredData = data.filter(stay => 
-          new Date(stay.arrivalDate) > new Date(CUTOFF_DATE)
+          new Date(stay.arrivalDate) >= new Date(selectedStay.arrivalDate) &&
+          new Date(stay.departureDate) >= new Date(selectedStay.departureDate)
         );
         sessionStorage.setItem('stays', JSON.stringify(filteredData));
         setStays(filteredData);
@@ -124,7 +126,7 @@ function StudentSummary(props) {
       .then((data) => {
 
         const filteredData = data.filter(transfer => 
-          new Date(transfer.transferDate) > new Date(CUTOFF_DATE)
+          new Date(transfer.transferDate) >= new Date(selectedStay.arrivalDate)
         );
         sessionStorage.setItem('stays', JSON.stringify(filteredData));
         setTransfers(filteredData);
