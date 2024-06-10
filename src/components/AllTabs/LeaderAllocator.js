@@ -7,10 +7,11 @@ import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 
 function LeaderAllocator(props) {
-    const [adults, setAdults] = useState([]);
+    const [allAdults, setAllAdults] = useState([]);
+    const [filteredAdults, setFilteredAdults] = useState([]);
     const [allGroups, setAllGroups] = useState([]);  // All groups fetched from the server
     const [filteredGroups, setFilteredGroups] = useState([]); // Groups filtered based on campus and group type
-      const [selectedLeader, setSelectedLeader] = useState('');
+    const [selectedLeader, setSelectedLeader] = useState('');
     const [selectedGroup, setSelectedGroup] = useState('');
     const [selectedCampus, setSelectedCampus] = useState('');
     const [selectedGroupType, setSelectedGroupType] = useState('');
@@ -23,8 +24,9 @@ function LeaderAllocator(props) {
         })
         .then(response => response.json())
         .then(data => {
-            setAdults(data);
-            sessionStorage.setItem('adults', JSON.stringify(data));
+          setAllAdults(data);
+          setFilteredAdults(data);
+          sessionStorage.setItem('adults', JSON.stringify(data));
         })
         .catch(err => console.error('Failed to fetch adults', err));
     }, []);
@@ -76,13 +78,21 @@ const filterGroups = (campus, groupType) => {
       return (!campus || group.campus === campus) && (!groupType || group.groupType === groupType);
   });
   setFilteredGroups(filtered);
+};
 
+const filterAdults = (campus, groupType) => {
+  //Placeholder for future adult filtering by campus and role
+  
+  //const filtered = allAdults.filter(group => {
+  //    return (!campus || campus.campus === campus) && (!groupType || group.groupType === groupType);
+  //});
+  //setFilteredAdults(filtered);
 };
 
 const handleCampusChange = (event) => {
   const campus = event.target.value;
   setSelectedCampus(campus);
-  filterGroups(campus, selectedGroupType);
+  filterAdults(campus, selectedGroupType);
 };
 
 const handleGroupTypeChange = (event) => {
@@ -135,11 +145,7 @@ const handleLeaderChange = (event) => {
 };
 
 
-const handleChange = (event) => {
-  console.log(event);
-}
-
-  return(
+return(
     <React.Fragment>
     <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', margin: '20px 0' }}>
         
@@ -185,7 +191,7 @@ const handleChange = (event) => {
         onChange={handleLeaderChange}
         renderValue={(selected) => selected ? `${selected.adultName} ${selected.adultSurname}` : ''}
     >
-        {adults.map((adult) => (
+        {filteredAdults.map((adult) => (
             <MenuItem key={adult.id} value={adult}>
                 {adult.adultName + ' ' + adult.adultSurname}
             </MenuItem>
