@@ -79,6 +79,17 @@ function App() {
                 <Button
                   color="inherit"
                   onClick={() => {
+                    setShowWhoIsDoing(true);
+                    setShowRentPage(false);
+                    setShowTransfers(false);
+                    setShowRooms(false);
+                    setShowPlanner(false)
+                  }}
+                >
+                  Planner
+                </Button><Button
+                  color="inherit"
+                  onClick={() => {
                     setShowWhoIsDoing(false);
                     setShowRentPage(false);
                     setShowTransfers(false);
@@ -86,7 +97,7 @@ function App() {
                     setShowPlanner(true)
                   }}
                 >
-                  Planner
+                  New Planner
                 </Button>
                 <Button
                   color="inherit"
