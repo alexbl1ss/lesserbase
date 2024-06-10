@@ -14,6 +14,8 @@ function Scheduler(props) {
   const [selectedGroup, setSelectedGroup] = useState('');
   const [selectedCampus, setSelectedCampus] = useState('');
   const [selectedGroupType, setSelectedGroupType] = useState('');
+  const [selectAll, setSelectAll] = useState(false);
+
 
     const fetchDates = useCallback(() => {
     const token = sessionStorage.getItem('bearer');
@@ -66,6 +68,29 @@ useEffect(() => {
   }
 }, [filteredGroups]);
 
+useEffect(() => {
+  // Check if all current visible dates are selected
+  if (campDates.length > 0 && selectedDates.length === campDates.length) {
+    setSelectAll(true);
+  } else {
+    setSelectAll(false);
+  }
+}, [selectedDates, campDates]);
+
+
+const handleSelectAll = (event) => {
+  if (event.target.checked) {
+    // Add all displayed dates to selectedDates
+    setSelectedDates(campDates);
+  } else {
+    // Remove all displayed dates from selectedDates
+    setSelectedDates(selectedDates.filter(date => !campDates.some(campDate => campDate.id === date.id)));
+  }
+  setSelectAll(event.target.checked);
+};
+
+
+
 // Function to handle additional logic when a group is automatically selected
 const handleGroupChangeAfterSelection = (group) => {
   // Assuming you need to filter or set dates or other related state changes
@@ -93,15 +118,16 @@ const filterGroups = (campus, groupType) => {
   });
   setFilteredGroups(filtered);
 
-  // Set the first group in the filtered list as the selected group, or reset if no groups match
   if (filtered.length > 0) {
     const firstGroup = filtered[0];
     setSelectedGroup(firstGroup); // Ensure this updates the Select component
     handleGroupChangeAfterSelection(firstGroup);
   } else {
     setSelectedGroup(''); // Reset if no groups are available after filter
+    setSelectedDates([]); // Clear selected dates when no groups match the filter
   }
 };
+
 
 const sortedDates = campDates.sort((a, b) => {
     return new Date(a.campDate) - new Date(b.campDate);
@@ -217,7 +243,14 @@ return(
     </div>
     <button onClick={handleSchedule} type="button">Schedule</button>
     <div className="detail-card booking-card" style={{ padding: '20px 0' }}>
-      <table style={{ width: '80%', textAlign: 'left', margin: 'auto', borderCollapse: 'collapse' }}>
+    <div style={{ margin: '10px' }}>
+    <input
+      type="checkbox"
+      checked={selectAll}
+      onChange={handleSelectAll}
+    />
+    <label>Select All Dates</label>
+  </div><table style={{ width: '80%', textAlign: 'left', margin: 'auto', borderCollapse: 'collapse' }}>
         <thead>
           <tr>
             <th>ID</th>
