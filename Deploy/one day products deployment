@@ -1,0 +1,34 @@
+
+Blissdatabase:
+
+Nothing to merge
+
+Bliss Bill View:
+Merge oneDayProducts into main
+
+Test
+test students are 119, 2353, 2306 - check all bookings
+2709 - add a mid week stay 2nd - 22nd of July - check all bookings
+
+Verify payments showing up, and in invoice
+
+Verify all products showing up in summary
+
+tabs for transfers should be flights
+
+PROD
+
+Bliss database actions:
+
+modified:   SQL/GetStayEligableProductsWide.sql
+
+post man: run in oneDayProducts.csv
+
+run "fix transfer dates.sql" from this directory
+
+Bliss BillView
+merge main into prod
+
+quickly revert src/constants.js back to prod
+
+watch build and repeat tests
