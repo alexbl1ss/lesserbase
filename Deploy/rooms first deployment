@@ -1,0 +1,31 @@
+Bliss database actions:
+
+modified:   SQL/resident_count.sql
+modified:   SQL/whoIsResident.sql
+
+Blissdatabase:
+
+Merge rooms into main
+
+Bliss Bill View:
+Merge rooms into main
+
+Test
+select old planner
+Edit a student
+Add stay to a student
+Edit student Stay
+add bookings
+edit booking
+remove booking
+
+from postman
+create agent
+update agent
+add student to agent
+remove student from agent
+delete agent
+create transfer
+edit transfer
+delete transfer
+delete student

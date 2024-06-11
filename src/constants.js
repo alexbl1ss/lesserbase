@@ -18,9 +18,25 @@ export const CAMPUSES = [
     { value: 'PAID', label: 'PAID' },
     ];
 
-  export const ACCOUNTS = [
-    { value: 'WISE', label: 'WISE' },
-    { value: 'MONZO', label: 'MONZO' },
-    { value: 'HSBC', label: 'HSBC' },
-  ];
-  
+    export const ACCOUNTS = [
+      { value: 'WISE', label: 'WISE' },
+      { value: 'MONZO', label: 'MONZO' },
+      { value: 'HSBC', label: 'HSBC' },
+    ];
+    
+    export const ROLES = [
+      { value: 'TEACHER', label: 'TEACHER' },
+      { value: 'ACTIVITIES', label: 'ACTIVITIES' },
+      { value: 'NIGHSHIFT', label: 'NIGHSHIFT' },
+    ];
+
+    export const GROUPTYPES = [
+      { value: 'ROOM', label: 'ROOM' },
+      { value: 'CLASS', label: 'CLASS' },
+      { value: 'AFTERNOON', label: 'AFTERNOON' },
+      { value: 'EXCURSION', label: 'EXCURSION' },
+    ];
+
+    export const CUTOFF_DATE = '2023-08-15'; // Format: YYYY-MM-DD
+    
+    

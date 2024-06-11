@@ -13,15 +13,18 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import 'dayjs/locale/en-gb';
 import Rent from './components/Rent';
+import Rooms from './components/rooms.js'
+import Planner from './components/Planner.js'
 
 
 function App() {
   const [isAuthenticated, setAuth] = useState(false);
   const [showWhoIsDoing, setShowWhoIsDoing] = useState(false);
+  const [showPlanner, setShowPlanner] = useState(false);
   const [showFinancials, setShowFinancials] = useState(false);
   const [showRentPage, setShowRentPage] = useState(false);
   const [showTransfers, setShowTransfers] = useState(false);
-
+  const [showRooms, setShowRooms] = useState(false);
 
   const onLoginSuccess = (role) => {
     setShowFinancials(role === 'ADMIN');
@@ -56,9 +59,22 @@ function App() {
                     setShowWhoIsDoing(false);
                     setShowRentPage(false);
                     setShowTransfers(false);
+                    setShowRooms(false);
+                    setShowPlanner(false)
                   }}
                 >
                   Students
+                </Button><Button
+                  color="inherit"
+                  onClick={() => {
+                    setShowWhoIsDoing(false);
+                    setShowRentPage(false);
+                    setShowTransfers(false);
+                    setShowRooms(true);
+                    setShowPlanner(false)
+                  }}
+                >
+                  Rooms
                 </Button>
                 <Button
                   color="inherit"
@@ -66,9 +82,22 @@ function App() {
                     setShowWhoIsDoing(true);
                     setShowRentPage(false);
                     setShowTransfers(false);
+                    setShowRooms(false);
+                    setShowPlanner(false)
                   }}
                 >
                   Planner
+                </Button><Button
+                  color="inherit"
+                  onClick={() => {
+                    setShowWhoIsDoing(false);
+                    setShowRentPage(false);
+                    setShowTransfers(false);
+                    setShowRooms(false);
+                    setShowPlanner(true)
+                  }}
+                >
+                  New Planner
                 </Button>
                 <Button
                   color="inherit"
@@ -76,6 +105,8 @@ function App() {
                     setShowWhoIsDoing(false);
                     setShowRentPage(false);
                     setShowTransfers(true);
+                    setShowRooms(false);
+                    setShowPlanner(false)
                   }}
                 >
                   Transfers
@@ -87,7 +118,9 @@ function App() {
                       setShowWhoIsDoing(false);
                       setShowRentPage(true);
                       setShowTransfers(false);
-                      }}
+                      setShowRooms(false);
+                      setShowPlanner(false)
+                    }}
                   >
                     Costs
                   </Button>
@@ -106,6 +139,10 @@ function App() {
             <Rent />
           ) : showTransfers ? (
             <Transfers />
+          ) : showRooms ? (
+            <Rooms />
+          ) : showPlanner ? (
+            <Planner />
           ) : (
             <StudentSearch showFinancials={showFinancials} />
           )

@@ -5,8 +5,6 @@ import EditIcon from '@mui/icons-material/Edit'; // Import Edit Icon
 import EditStay from '../AddsEdits/EditStay.js';
 import IconButton from '@mui/material/IconButton'; // Import IconButton from Material-UI
 
-
-
 function StudentStays(props) {
     const { selectedPerson, selectedStay, setSelectedStay } = props;
     const [stays, setStays] = useState([]);

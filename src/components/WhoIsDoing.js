@@ -20,19 +20,17 @@ function WhoIsDoing() {
   const [activitiesCount, setActivitiesCount] = useState([]);
   const [residents, setResidents] = useState([]);
   const [residentsCount, setResidentsCount] = useState([]);
-  const [arrivers, setArrivers] = useState([]);
-  const [leavers, setLeavers] = useState([]);
   const [residentsTableCollapsed, setResidentsTableCollapsed] = useState(false);
   const [activitiesTableCollapsed, setActivitiesTableCollapsed] = useState(false);
-  const [transfersInTableCollapsed, setTransfersInTableCollapsed] = useState(false);
-  const [transfersOutTableCollapsed, setTransfersOutTableCollapsed] = useState(false);
   const [campus, setCampus] = useState('Kilgraston');
 
 // Update formattedDate whenever selectedDate changes
 useEffect(() => {
   const newFormattedDate = selectedDate.toISOString().split('T')[0];
-  setFormattedDate(newFormattedDate);
-}, [selectedDate]);
+  if (newFormattedDate !== formattedDate) {
+    setFormattedDate(newFormattedDate);
+  }
+}, [selectedDate, formattedDate]); // Include formattedDate to avoid unnecessary updates
 
 const fetchActivities = useCallback((formattedDate) => {
     const token = sessionStorage.getItem('bearer');
@@ -116,60 +114,15 @@ const fetchActivities = useCallback((formattedDate) => {
         setActivitiesCount(data);
       })
       .catch((err) => console.error(err));
-      console.log(activitiesCount)
-  },[activitiesCount, campus]);
+  },[campus]);
 
   // Fetch data whenever formattedDate changes
 useEffect(() => {
   fetchActivities(formattedDate);
   fetchResidents(formattedDate);
-  fetchArrivers(formattedDate);
-  fetchLeavers(formattedDate);
   fetchResidentsCount(formattedDate);
   fetchActivitiesCount(formattedDate);
 }, [formattedDate, fetchActivities, fetchResidents, fetchActivitiesCount, fetchResidentsCount]);
-
-const fetchArrivers = (formattedDate) => {
-    const token = sessionStorage.getItem('bearer');
-    fetch(`${SERVER_URL}api/whoisarriving/${formattedDate}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then((response) => {
-        if (response.status === 204) {
-          return [];
-        } else if (response.ok) {
-          return response.json();
-        } else {
-          throw new Error('Failed to fetch Arrivers');
-        }
-      })
-      .then((data) => {
-        sessionStorage.setItem('students', JSON.stringify(data));
-        setArrivers(data);
-      })
-      .catch((err) => console.error(err));
-  };
-
-  const fetchLeavers = (formattedDate) => {
-    const token = sessionStorage.getItem('bearer');
-    fetch(`${SERVER_URL}api/whoisleaving/${formattedDate}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then((response) => {
-        if (response.status === 204) {
-          return [];
-        } else if (response.ok) {
-          return response.json();
-        } else {
-          throw new Error('Failed to fetch Leavers');
-        }
-      })
-      .then((data) => {
-        sessionStorage.setItem('students', JSON.stringify(data));
-        setLeavers(data);
-      })
-      .catch((err) => console.error(err));
-  };
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
@@ -266,7 +219,6 @@ const fetchArrivers = (formattedDate) => {
       <div className="pa2"></div>
       <button onClick={handleCampusChangeKilgraston}  type="button">Kilgraston</button>
       <button onClick={handleCampusChangeStrathallan}  type="button">Strathallan</button>
-      <button onClick={handleCampusChangeGlenalmond}  type="button">Glenalmond</button>
       <div style={{ marginBottom: '10px' }}></div>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
       <DatePicker
@@ -420,110 +372,6 @@ const fetchArrivers = (formattedDate) => {
 </Collapse>
 </div>
 
-<div style={{ marginLeft: '50px' }}>
-  <div style={{ display: 'flex', alignItems: 'center' }}>
-    <span>Transfers In</span>
-    <IconButton
-      onClick={() => setTransfersInTableCollapsed(!transfersInTableCollapsed)}
-      aria-expanded={transfersInTableCollapsed}
-      aria-label="show more"
-    >
-      {transfersInTableCollapsed ? <ExpandMoreIcon /> : <ExpandLessIcon />}
-    </IconButton>
-  </div>
-  <Collapse in={transfersInTableCollapsed}>
-    <table style={{ width: '80%', textAlign: 'left', margin: '50px auto', borderCollapse: 'collapse' }}>
-        <thead>
-          <tr>
-            <th>Student Id</th>
-            <th>Master Tracker Ref</th>
-            <th>Name</th>
-            <th>Departing</th>
-            <th>Transfer Id</th>
-            <th>Pickup Time</th>
-            <th>Self Transfer</th>
-            <th>Flight</th>
-            <th>Destination</th>
-            <th>Arrival Time</th>
-          </tr>
-        </thead>
-        <tbody>
-          {arrivers.map((arriver) => (
-            <tr key={arriver.studentId}>
-              <td>{arriver.studentId}</td>
-              <td>{arriver.mtRef}</td>
-              <td>{arriver.name}</td>
-              <td>{arriver.departing}</td>
-              <td>{arriver.transferId}</td>
-              <td>{arriver.departureTime}</td>
-              <td>{arriver.privatePickup}</td>
-              <td>{arriver.flightId}</td>
-              <td>{arriver.destination}</td>
-              <td>{arriver.arrivalTime}</td>
-            </tr>
-          ))}
-        </tbody>
-        </table>
-        <button onClick={() => handleTransferExportCSV(arrivers,
-            "Student Id, Master Tracker Ref, Name, Departing, Transfer Id, Departure Time, Self Transfer, Flight, Destination, Arrival Time",
-            "TransfersIn.csv")} type="button">
-  Save Transfers In CSV
-</button>
-</Collapse>
-</div>
-
-<div style={{ marginLeft: '50px' }}>
-  <div style={{ display: 'flex', alignItems: 'center' }}>
-    <span>Transfers Out</span>
-    <IconButton
-      onClick={() => setTransfersOutTableCollapsed(!transfersOutTableCollapsed)}
-      aria-expanded={transfersOutTableCollapsed}
-      aria-label="show more"
-    >
-      {transfersOutTableCollapsed ? <ExpandMoreIcon /> : <ExpandLessIcon />}
-    </IconButton>
-  </div>
-  <Collapse in={transfersOutTableCollapsed}>
-  <table style={{ width: '80%', textAlign: 'left', margin: '50px auto', borderCollapse: 'collapse' }}>
-        <thead>
-          <tr>
-            <th>Student Id</th>
-            <th>Master Tracker Ref</th>
-            <th>Name</th>
-            <th>Departing</th>
-            <th>Transfer Id</th>
-            <th>Departure Time</th>
-            <th>Self Transfer</th>
-            <th>Flight</th>
-            <th>Destination</th>
-            <th>Arrival Time</th>
-          </tr>
-        </thead>
-        <tbody>
-          {leavers.map((leaver) => (
-            <tr key={leaver.studentId}>
-              <td>{leaver.studentId}</td>
-              <td>{leaver.mtRef}</td>
-              <td>{leaver.name}</td>
-              <td>{leaver.departing}</td>
-              <td>{leaver.transferId}</td>
-              <td>{leaver.departureTime}</td>
-              <td>{leaver.privatePickup}</td>
-              <td>{leaver.flightId}</td>
-              <td>{leaver.destination}</td>
-              <td>{leaver.arrivalTime}</td>
-            </tr>
-          ))}
-        </tbody>
-        </table>
-        <button onClick={() => handleTransferExportCSV(leavers,
-            "Student Id, Master Tracker Ref, Name, Departing, Transfer Id, Departure Time, Self Transfer, Flight, Destination, Arrival Time",
-            "TransfersOut.csv")} type="button">
-  Save Transfers Out CSV
-</button>
-</Collapse>
-
-</div>
       <div>
         <p style={{ color: '#999999', fontSize: '10px' }}>
           Is authenticated: {sessionStorage.getItem('isAuthenticated').toString()}
