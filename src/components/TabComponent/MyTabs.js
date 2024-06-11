@@ -81,7 +81,7 @@ const MyTabs = (props) => {
                 <li
                     className={activeTab === "transfers" ? "active" : ""}
                     onClick={handletransfers}>
-                Transfers
+                Flights
                 </li>
                 {props.showFinancials && (
                 <li
@@ -112,7 +112,7 @@ const MyTabs = (props) => {
                 {activeTab === "details" ? <StudentDetail selectedPerson={selectedPerson} selectedStay={selectedStay} setSelectedStay={setSelectedStay} /> : null}
                 {activeTab === "stays" && <StudentStays selectedPerson={selectedPerson} selectedStay={selectedStay} setSelectedStay={setSelectedStay} />}
                 {activeTab === "bookingcreator" && <BookingCreator selectedPerson={selectedPerson} selectedStay={selectedStay} showFinancials={props.showFinancials}/>}
-                {activeTab === "bookings" ? <StudentBookings selectedPerson={selectedPerson} showFinancials={props.showFinancials}/> : null}
+                {activeTab === "bookings" ? <StudentBookings selectedPerson={selectedPerson} showFinancials={props.showFinancials} selectedStay={selectedStay} /> : null}
                 {activeTab === "agents" ? <StudentAgents selectedPerson={selectedPerson}/> : null}
                 {activeTab === "transfers" ? <StudentTransfers selectedPerson={selectedPerson}/> : null}
                 {activeTab === "payments" ? <StudentPayments selectedPerson={selectedPerson}/> : null}

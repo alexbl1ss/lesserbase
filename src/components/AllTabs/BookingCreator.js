@@ -4,11 +4,9 @@ import '../BookingCard.css';
 
 function BookingCreator(props) {
   const { selectedPerson, selectedStay, showFinancials } = props;
-  const [eligableProducts, setEligableProducts] = useState([]);
   const [stayId] = useState(selectedStay ? selectedStay.stayId : '0');
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [searchPath, setSearchPath] = useState('eligableProducts');
-  const [singleDayProducts, setSingleDayProducts] = useState([]);
   const [selectedDate, setSelectedDate] = useState(
     selectedStay && selectedStay.arrivalDate ? selectedStay.arrivalDate : new Date().toISOString().split('T')[0]
   );
@@ -19,6 +17,7 @@ function BookingCreator(props) {
   
 
   const fetchEligableProducts = useCallback(() => {
+    
     const token = sessionStorage.getItem('bearer');
     fetch(`${SERVER_URL}api/products/${searchPath}/stay/${stayId}`, {
         headers: { Authorization: `Bearer ${token}` },
@@ -34,58 +33,61 @@ function BookingCreator(props) {
     })
     .then(data => {
         const singleDay = [];
-        const weekendProducts = [];
         const residentialProducts = [];
         const externalOrAfternoonProducts = [];
         const singleDayExcursion = [];
         const singleDayOther = [];
 
         data.forEach(product => {
-            if (new Date(product.startDate).toDateString() === new Date(product.endDate).toDateString()) {
-                singleDay.push(product);
-                if (product.productType === "WEEKEND" ) {
-                    singleDayExcursion.push(product);
-                } else {
-                    singleDayOther.push(product);
-                }
-            } else {
-                switch (product.productType) {
-                    case "RESIDENTIAL":
-                        residentialProducts.push(product);
-                        break;
-                    case "EXTERNAL":
-                    case "AFTERNOON":
-                        externalOrAfternoonProducts.push(product);
-                        break;
-                    default:
-                        // Handle any products that don't fit the specified categories if necessary
-                        break;
-                }
-            }
-        });
+          const startDate = new Date(product.startDate);
+          const endDate = new Date(product.endDate);
+      
+          // Calculate the time difference and convert it to days
+          const timeDiff = endDate - startDate;
+          const dayDiff = timeDiff / (1000 * 3600 * 24);
+      
+          // Check if the product lasts exactly one day or starts and ends on the same day
+          if (dayDiff === 1 || startDate.toDateString() === endDate.toDateString()) {
+              singleDay.push(product);
+      
+              // Determine which category the single day product belongs to
+              if (product.productType === "WEEKEND") {
+                  singleDayExcursion.push(product);
+              } else {
+                  singleDayOther.push(product);
+              }
+          } else {
+              // Handle products with longer durations
+              switch (product.productType) {
+                  case "RESIDENTIAL":
+                      residentialProducts.push(product);
+                      break;
+                  case "EXTERNAL":
+                  case "AFTERNOON":
+                      externalOrAfternoonProducts.push(product);
+                      break;
+                  default:
+                      // Handle any products that don't fit the specified categories if necessary
+                      break;
+              }
+          }
+      });
+      
 
         // Update state with all product lists
-        setSingleDayProducts(singleDay);
         setResidentialProducts(residentialProducts);
         setExternalOrAfternoonProducts(externalOrAfternoonProducts);
         setSingleDayExcursion(singleDayExcursion);
         setSingleDayOther(singleDayOther);
     })
     .catch(err => console.error(err));
-}, [stayId, searchPath]);
-
-
+  }, [stayId, searchPath]);
 
   useEffect(() => {
     fetchEligableProducts();
   }, [fetchEligableProducts]);
 
-  const sortedProducts = eligableProducts.sort((a, b) => {
-    return new Date(a.startDate) - new Date(b.startDate);
-  });
-  
-  
-   const handleProductSelect = useCallback((product) => {
+  const handleProductSelect = useCallback((product) => {
     if (selectedProducts.some((p) => p.id === product.id)) {
         setSelectedProducts(selectedProducts.filter((p) => p.id !== product.id));
     } else {
@@ -94,6 +96,7 @@ function BookingCreator(props) {
 }, [selectedProducts]);
 
 const handleBookings = () => {
+  
     const token = sessionStorage.getItem('bearer');
   
     Promise.all(selectedProducts.map((product) => {
@@ -125,7 +128,7 @@ const handleBookings = () => {
   }
 
   const widenSearch = () => {
-    console.log("widen search");
+    console.log("widened search");
     setSearchPath('eligableProductsWide');
   }
   const normalSearch = () => {
@@ -147,6 +150,12 @@ const handlePrevDay = (event) => {
 };    
   return(
     <React.Fragment>
+      <div style={{ color: '#999999', fontSize: '10px' }}>
+        <p>
+          Selected Student: {selectedPerson.id} — 
+          Selected Stay: {selectedStay ? `${selectedStay.arrivalDate} to ${selectedStay.departureDate}` : 'None'}
+        </p>
+      </div>
       <h2>Residential</h2>
       <button onClick={widenSearch} type="button">Wide Search</button>
       <button onClick={normalSearch} type="button">Normal Search</button>
@@ -236,8 +245,7 @@ const handlePrevDay = (event) => {
               <th>ID</th>
               <th>Product Name</th>
               <th>Product Base</th>
-              <th>Start Date</th>
-              <th>End Date</th>
+              <th>Date</th>
               <th>Capacity</th>
               <th>Allocated</th>
               {showFinancials && <th>Default Rate</th>}
@@ -251,7 +259,6 @@ const handlePrevDay = (event) => {
                 <td>{eligableProduct.name}</td>
                 <td>{eligableProduct.base}</td>
                 <td>{eligableProduct.startDate}</td>
-                <td>{eligableProduct.endDate}</td>
                 <td>{eligableProduct.capacity}</td>
                 <td>{eligableProduct.allocated}</td>
                 {showFinancials && <td>{eligableProduct.defaultRate}</td>}
@@ -289,8 +296,7 @@ const handlePrevDay = (event) => {
             <th>ID</th>
               <th>Product Name</th>
               <th>Product Base</th>
-              <th>Start Date</th>
-              <th>End Date</th>
+              <th>Date</th>
               <th>Capacity</th>
               <th>Allocated</th>
               {showFinancials && <th>Default Rate</th>}
@@ -301,7 +307,7 @@ const handlePrevDay = (event) => {
             {singleDayOther.filter(product => 
                 new Date(product.startDate).toISOString().split('T')[0] === new Date(selectedDate).toISOString().split('T')[0]
                 ).length > 0 ? (
-              singleDayProducts.filter(product => 
+                  singleDayOther.filter(product => 
                   new Date(product.startDate).toISOString().split('T')[0] === new Date(selectedDate).toISOString().split('T')[0]
                   ).map(eligableProduct => (
                 <tr key={eligableProduct.id}>
@@ -309,7 +315,6 @@ const handlePrevDay = (event) => {
                 <td>{eligableProduct.name}</td>
                 <td>{eligableProduct.base}</td>
                 <td>{eligableProduct.startDate}</td>
-                <td>{eligableProduct.endDate}</td>
                 <td>{eligableProduct.capacity}</td>
                 <td>{eligableProduct.allocated}</td>
                 {showFinancials && <td>{eligableProduct.defaultRate}</td>}
@@ -332,7 +337,12 @@ const handlePrevDay = (event) => {
         </table>
       </div>
       <button onClick={handleBookings}  type="button">Create Bookings</button>
-      </React.Fragment>
+      <div>
+                <p style={{ color: '#999999', fontSize: '10px' }}>Student: {selectedPerson.id}</p>
+                <p style={{ color: '#999999', fontSize: '10px' }}>Selected Stay: {selectedStay ? selectedStay.stayId : 'None'}</p>
+                <p style={{ color: '#999999', fontSize: '10px' }}>Is authenticated: {sessionStorage.getItem('isAuthenticated').toString()}</p>
+            </div>
+            </React.Fragment>
 );
 }
 

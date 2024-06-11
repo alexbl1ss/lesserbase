@@ -111,7 +111,7 @@ function StudentInvoice(props) {
       .then((data) => {
         // Filter payments that are newer than the cutoff date
       const filteredPayments = data.filter(payment =>
-        new Date(payment.paymentDate) >= new Date(CUTOFF_DATE)
+        new Date(payment.paymentdate) >= new Date(CUTOFF_DATE)
       );
       sessionStorage.setItem('payments', JSON.stringify(filteredPayments));
       setPayments(filteredPayments);

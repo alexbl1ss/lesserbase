@@ -1,74 +1,294 @@
 name,base,default_rate,start_date,end_date,capacity,notes,commissionable,productType
-Extra English,Kilgraston,25,2024-07-01,2024-07-01,150,,FALSE,EXTRA
-Extra English,Kilgraston,25,2024-07-02,2024-07-02,150,,FALSE,EXTRA
-Extra English,Kilgraston,25,2024-07-03,2024-07-03,150,,FALSE,EXTRA
-Extra English,Kilgraston,25,2024-07-04,2024-07-04,150,,FALSE,EXTRA
-Extra English,Kilgraston,25,2024-07-05,2024-07-05,150,,FALSE,EXTRA
-Extra English,Kilgraston,25,2024-07-08,2024-07-08,150,,FALSE,EXTRA
-Extra English,Kilgraston,25,2024-07-09,2024-07-09,150,,FALSE,EXTRA
-Extra English,Kilgraston,25,2024-07-10,2024-07-10,150,,FALSE,EXTRA
-Extra English,Kilgraston,25,2024-07-11,2024-07-11,150,,FALSE,EXTRA
-Extra English,Kilgraston,25,2024-07-12,2024-07-12,150,,FALSE,EXTRA
-Extra English,Kilgraston,25,2024-07-15,2024-07-15,150,,FALSE,EXTRA
-Extra English,Kilgraston,25,2024-07-16,2024-07-16,150,,FALSE,EXTRA
-Extra English,Kilgraston,25,2024-07-17,2024-07-17,150,,FALSE,EXTRA
-Extra English,Kilgraston,25,2024-07-18,2024-07-18,150,,FALSE,EXTRA
-Extra English,Kilgraston,25,2024-07-19,2024-07-19,150,,FALSE,EXTRA
-Extra English,Kilgraston,25,2024-07-22,2024-07-22,150,,FALSE,EXTRA
-Extra English,Kilgraston,25,2024-07-23,2024-07-23,150,,FALSE,EXTRA
-Extra English,Kilgraston,25,2024-07-24,2024-07-24,150,,FALSE,EXTRA
-Extra English,Kilgraston,25,2024-07-25,2024-07-25,150,,FALSE,EXTRA
-Extra English,Kilgraston,25,2024-07-26,2024-07-26,150,,FALSE,EXTRA
-Extra English,Kilgraston,25,2024-07-29,2024-07-29,150,,FALSE,EXTRA
-Extra English,Kilgraston,25,2024-07-30,2024-07-30,150,,FALSE,EXTRA
-Extra English,Kilgraston,25,2024-07-31,2024-07-31,150,,FALSE,EXTRA
-Extra English,Kilgraston,25,2024-08-01,2024-08-01,150,,FALSE,EXTRA
-Extra English,Kilgraston,25,2024-08-02,2024-08-02,150,,FALSE,EXTRA
-Extra English,Kilgraston,25,2024-08-05,2024-08-05,150,,FALSE,EXTRA
-Extra English,Kilgraston,25,2024-08-06,2024-08-06,150,,FALSE,EXTRA
-Extra English,Kilgraston,25,2024-08-07,2024-08-07,150,,FALSE,EXTRA
-Extra English,Kilgraston,25,2024-08-08,2024-08-08,150,,FALSE,EXTRA
-Extra English,Kilgraston,25,2024-08-09,2024-08-09,150,,FALSE,EXTRA
-Transfer,Kilgraston,20,2024-06-30,2024-06-30,999,,FALSE,EXTRA
-Transfer,Kilgraston,20,2024-07-01,2024-07-01,999,,FALSE,EXTRA
-Transfer,Kilgraston,20,2024-07-02,2024-07-02,999,,FALSE,EXTRA
-Transfer,Kilgraston,20,2024-07-03,2024-07-03,999,,FALSE,EXTRA
-Transfer,Kilgraston,20,2024-07-04,2024-07-04,999,,FALSE,EXTRA
-Transfer,Kilgraston,20,2024-07-05,2024-07-05,999,,FALSE,EXTRA
-Transfer,Kilgraston,20,2024-07-06,2024-07-06,999,,FALSE,EXTRA
-Transfer,Kilgraston,20,2024-07-07,2024-07-07,999,,FALSE,EXTRA
-Transfer,Kilgraston,20,2024-07-08,2024-07-08,999,,FALSE,EXTRA
-Transfer,Kilgraston,20,2024-07-09,2024-07-09,999,,FALSE,EXTRA
-Transfer,Kilgraston,20,2024-07-10,2024-07-10,999,,FALSE,EXTRA
-Transfer,Kilgraston,20,2024-07-11,2024-07-11,999,,FALSE,EXTRA
-Transfer,Kilgraston,20,2024-07-12,2024-07-12,999,,FALSE,EXTRA
-Transfer,Kilgraston,20,2024-07-13,2024-07-13,999,,FALSE,EXTRA
-Transfer,Kilgraston,20,2024-07-14,2024-07-14,999,,FALSE,EXTRA
-Transfer,Kilgraston,20,2024-07-15,2024-07-15,999,,FALSE,EXTRA
-Transfer,Kilgraston,20,2024-07-16,2024-07-16,999,,FALSE,EXTRA
-Transfer,Kilgraston,20,2024-07-17,2024-07-17,999,,FALSE,EXTRA
-Transfer,Kilgraston,20,2024-07-18,2024-07-18,999,,FALSE,EXTRA
-Transfer,Kilgraston,20,2024-07-19,2024-07-19,999,,FALSE,EXTRA
-Transfer,Kilgraston,20,2024-07-20,2024-07-20,999,,FALSE,EXTRA
-Transfer,Kilgraston,20,2024-07-21,2024-07-21,999,,FALSE,EXTRA
-Transfer,Kilgraston,20,2024-07-22,2024-07-22,999,,FALSE,EXTRA
-Transfer,Kilgraston,20,2024-07-23,2024-07-23,999,,FALSE,EXTRA
-Transfer,Kilgraston,20,2024-07-24,2024-07-24,999,,FALSE,EXTRA
-Transfer,Kilgraston,20,2024-07-25,2024-07-25,999,,FALSE,EXTRA
-Transfer,Kilgraston,20,2024-07-26,2024-07-26,999,,FALSE,EXTRA
-Transfer,Kilgraston,20,2024-07-27,2024-07-27,999,,FALSE,EXTRA
-Transfer,Kilgraston,20,2024-07-28,2024-07-28,999,,FALSE,EXTRA
-Transfer,Kilgraston,20,2024-07-29,2024-07-29,999,,FALSE,EXTRA
-Transfer,Kilgraston,20,2024-07-30,2024-07-30,999,,FALSE,EXTRA
-Transfer,Kilgraston,20,2024-07-31,2024-07-31,999,,FALSE,EXTRA
-Transfer,Kilgraston,20,2024-08-01,2024-08-01,999,,FALSE,EXTRA
-Transfer,Kilgraston,20,2024-08-02,2024-08-02,999,,FALSE,EXTRA
-Transfer,Kilgraston,20,2024-08-03,2024-08-03,999,,FALSE,EXTRA
-Transfer,Kilgraston,20,2024-08-04,2024-08-04,999,,FALSE,EXTRA
-Transfer,Kilgraston,20,2024-08-05,2024-08-05,999,,FALSE,EXTRA
-Transfer,Kilgraston,20,2024-08-06,2024-08-06,999,,FALSE,EXTRA
-Transfer,Kilgraston,20,2024-08-07,2024-08-07,999,,FALSE,EXTRA
-Transfer,Kilgraston,20,2024-08-08,2024-08-08,999,,FALSE,EXTRA
-Transfer,Kilgraston,20,2024-08-09,2024-08-09,999,,FALSE,EXTRA
-Transfer,Kilgraston,20,2024-08-10,2024-08-10,999,,FALSE,EXTRA
-Transfer,Kilgraston,20,2024-08-11,2024-08-11,999,,FALSE,EXTRA
+Extra English,Kilgraston,25,01/07/2024,01/07/2024,150,,FALSE,EXTRA
+Extra English,Kilgraston,25,02/07/2024,02/07/2024,150,,FALSE,EXTRA
+Extra English,Kilgraston,25,03/07/2024,03/07/2024,150,,FALSE,EXTRA
+Extra English,Kilgraston,25,04/07/2024,04/07/2024,150,,FALSE,EXTRA
+Extra English,Kilgraston,25,05/07/2024,05/07/2024,150,,FALSE,EXTRA
+Extra English,Kilgraston,25,08/07/2024,08/07/2024,150,,FALSE,EXTRA
+Extra English,Kilgraston,25,09/07/2024,09/07/2024,150,,FALSE,EXTRA
+Extra English,Kilgraston,25,10/07/2024,10/07/2024,150,,FALSE,EXTRA
+Extra English,Kilgraston,25,11/07/2024,11/07/2024,150,,FALSE,EXTRA
+Extra English,Kilgraston,25,12/07/2024,12/07/2024,150,,FALSE,EXTRA
+Extra English,Kilgraston,25,15/07/2024,15/07/2024,150,,FALSE,EXTRA
+Extra English,Kilgraston,25,16/07/2024,16/07/2024,150,,FALSE,EXTRA
+Extra English,Kilgraston,25,17/07/2024,17/07/2024,150,,FALSE,EXTRA
+Extra English,Kilgraston,25,18/07/2024,18/07/2024,150,,FALSE,EXTRA
+Extra English,Kilgraston,25,19/07/2024,19/07/2024,150,,FALSE,EXTRA
+Extra English,Kilgraston,25,22/07/2024,22/07/2024,150,,FALSE,EXTRA
+Extra English,Kilgraston,25,23/07/2024,23/07/2024,150,,FALSE,EXTRA
+Extra English,Kilgraston,25,24/07/2024,24/07/2024,150,,FALSE,EXTRA
+Extra English,Kilgraston,25,25/07/2024,25/07/2024,150,,FALSE,EXTRA
+Extra English,Kilgraston,25,26/07/2024,26/07/2024,150,,FALSE,EXTRA
+Extra English,Kilgraston,25,29/07/2024,29/07/2024,150,,FALSE,EXTRA
+Extra English,Kilgraston,25,30/07/2024,30/07/2024,150,,FALSE,EXTRA
+Extra English,Kilgraston,25,31/07/2024,31/07/2024,150,,FALSE,EXTRA
+Extra English,Kilgraston,25,01/08/2024,01/08/2024,150,,FALSE,EXTRA
+Extra English,Kilgraston,25,02/08/2024,02/08/2024,150,,FALSE,EXTRA
+Extra English,Kilgraston,25,05/08/2024,05/08/2024,150,,FALSE,EXTRA
+Extra English,Kilgraston,25,06/08/2024,06/08/2024,150,,FALSE,EXTRA
+Extra English,Kilgraston,25,07/08/2024,07/08/2024,150,,FALSE,EXTRA
+Extra English,Kilgraston,25,08/08/2024,08/08/2024,150,,FALSE,EXTRA
+Extra English,Kilgraston,25,09/08/2024,09/08/2024,150,,FALSE,EXTRA
+Airport Transfer,Kilgraston,20,30/06/2024,30/06/2024,999,,FALSE,EXTRA
+Airport Transfer,Kilgraston,20,01/07/2024,01/07/2024,999,,FALSE,EXTRA
+Airport Transfer,Kilgraston,20,02/07/2024,02/07/2024,999,,FALSE,EXTRA
+Airport Transfer,Kilgraston,20,03/07/2024,03/07/2024,999,,FALSE,EXTRA
+Airport Transfer,Kilgraston,20,04/07/2024,04/07/2024,999,,FALSE,EXTRA
+Airport Transfer,Kilgraston,20,05/07/2024,05/07/2024,999,,FALSE,EXTRA
+Airport Transfer,Kilgraston,20,06/07/2024,06/07/2024,999,,FALSE,EXTRA
+Airport Transfer,Kilgraston,20,07/07/2024,07/07/2024,999,,FALSE,EXTRA
+Airport Transfer,Kilgraston,20,08/07/2024,08/07/2024,999,,FALSE,EXTRA
+Airport Transfer,Kilgraston,20,09/07/2024,09/07/2024,999,,FALSE,EXTRA
+Airport Transfer,Kilgraston,20,10/07/2024,10/07/2024,999,,FALSE,EXTRA
+Airport Transfer,Kilgraston,20,11/07/2024,11/07/2024,999,,FALSE,EXTRA
+Airport Transfer,Kilgraston,20,12/07/2024,12/07/2024,999,,FALSE,EXTRA
+Airport Transfer,Kilgraston,20,13/07/2024,13/07/2024,999,,FALSE,EXTRA
+Airport Transfer,Kilgraston,20,14/07/2024,14/07/2024,999,,FALSE,EXTRA
+Airport Transfer,Kilgraston,20,15/07/2024,15/07/2024,999,,FALSE,EXTRA
+Airport Transfer,Kilgraston,20,16/07/2024,16/07/2024,999,,FALSE,EXTRA
+Airport Transfer,Kilgraston,20,17/07/2024,17/07/2024,999,,FALSE,EXTRA
+Airport Transfer,Kilgraston,20,18/07/2024,18/07/2024,999,,FALSE,EXTRA
+Airport Transfer,Kilgraston,20,19/07/2024,19/07/2024,999,,FALSE,EXTRA
+Airport Transfer,Kilgraston,20,20/07/2024,20/07/2024,999,,FALSE,EXTRA
+Airport Transfer,Kilgraston,20,21/07/2024,21/07/2024,999,,FALSE,EXTRA
+Airport Transfer,Kilgraston,20,22/07/2024,22/07/2024,999,,FALSE,EXTRA
+Airport Transfer,Kilgraston,20,23/07/2024,23/07/2024,999,,FALSE,EXTRA
+Airport Transfer,Kilgraston,20,24/07/2024,24/07/2024,999,,FALSE,EXTRA
+Airport Transfer,Kilgraston,20,25/07/2024,25/07/2024,999,,FALSE,EXTRA
+Airport Transfer,Kilgraston,20,26/07/2024,26/07/2024,999,,FALSE,EXTRA
+Airport Transfer,Kilgraston,20,27/07/2024,27/07/2024,999,,FALSE,EXTRA
+Airport Transfer,Kilgraston,20,28/07/2024,28/07/2024,999,,FALSE,EXTRA
+Airport Transfer,Kilgraston,20,29/07/2024,29/07/2024,999,,FALSE,EXTRA
+Airport Transfer,Kilgraston,20,30/07/2024,30/07/2024,999,,FALSE,EXTRA
+Airport Transfer,Kilgraston,20,31/07/2024,31/07/2024,999,,FALSE,EXTRA
+Airport Transfer,Kilgraston,20,01/08/2024,01/08/2024,999,,FALSE,EXTRA
+Airport Transfer,Kilgraston,20,02/08/2024,02/08/2024,999,,FALSE,EXTRA
+Airport Transfer,Kilgraston,20,03/08/2024,03/08/2024,999,,FALSE,EXTRA
+Airport Transfer,Kilgraston,20,04/08/2024,04/08/2024,999,,FALSE,EXTRA
+Airport Transfer,Kilgraston,20,05/08/2024,05/08/2024,999,,FALSE,EXTRA
+Airport Transfer,Kilgraston,20,06/08/2024,06/08/2024,999,,FALSE,EXTRA
+Airport Transfer,Kilgraston,20,07/08/2024,07/08/2024,999,,FALSE,EXTRA
+Airport Transfer,Kilgraston,20,08/08/2024,08/08/2024,999,,FALSE,EXTRA
+Airport Transfer,Kilgraston,20,09/08/2024,09/08/2024,999,,FALSE,EXTRA
+Airport Transfer,Kilgraston,20,10/08/2024,10/08/2024,999,,FALSE,EXTRA
+Airport Transfer,Kilgraston,20,11/08/2024,11/08/2024,999,,FALSE,EXTRA
+Extra English,Strathallan,25,01/07/2024,01/07/2024,150,,FALSE,EXTRA
+Extra English,Strathallan,25,02/07/2024,02/07/2024,150,,FALSE,EXTRA
+Extra English,Strathallan,25,03/07/2024,03/07/2024,150,,FALSE,EXTRA
+Extra English,Strathallan,25,04/07/2024,04/07/2024,150,,FALSE,EXTRA
+Extra English,Strathallan,25,05/07/2024,05/07/2024,150,,FALSE,EXTRA
+Extra English,Strathallan,25,08/07/2024,08/07/2024,150,,FALSE,EXTRA
+Extra English,Strathallan,25,09/07/2024,09/07/2024,150,,FALSE,EXTRA
+Extra English,Strathallan,25,10/07/2024,10/07/2024,150,,FALSE,EXTRA
+Extra English,Strathallan,25,11/07/2024,11/07/2024,150,,FALSE,EXTRA
+Extra English,Strathallan,25,12/07/2024,12/07/2024,150,,FALSE,EXTRA
+Extra English,Strathallan,25,15/07/2024,15/07/2024,150,,FALSE,EXTRA
+Extra English,Strathallan,25,16/07/2024,16/07/2024,150,,FALSE,EXTRA
+Extra English,Strathallan,25,17/07/2024,17/07/2024,150,,FALSE,EXTRA
+Extra English,Strathallan,25,18/07/2024,18/07/2024,150,,FALSE,EXTRA
+Extra English,Strathallan,25,19/07/2024,19/07/2024,150,,FALSE,EXTRA
+Extra English,Strathallan,25,22/07/2024,22/07/2024,150,,FALSE,EXTRA
+Extra English,Strathallan,25,23/07/2024,23/07/2024,150,,FALSE,EXTRA
+Extra English,Strathallan,25,24/07/2024,24/07/2024,150,,FALSE,EXTRA
+Extra English,Strathallan,25,25/07/2024,25/07/2024,150,,FALSE,EXTRA
+Extra English,Strathallan,25,26/07/2024,26/07/2024,150,,FALSE,EXTRA
+Airport Transfer,Strathallan,20,30/06/2024,30/06/2024,999,,FALSE,EXTRA
+Airport Transfer,Strathallan,20,01/07/2024,01/07/2024,999,,FALSE,EXTRA
+Airport Transfer,Strathallan,20,02/07/2024,02/07/2024,999,,FALSE,EXTRA
+Airport Transfer,Strathallan,20,03/07/2024,03/07/2024,999,,FALSE,EXTRA
+Airport Transfer,Strathallan,20,04/07/2024,04/07/2024,999,,FALSE,EXTRA
+Airport Transfer,Strathallan,20,05/07/2024,05/07/2024,999,,FALSE,EXTRA
+Airport Transfer,Strathallan,20,06/07/2024,06/07/2024,999,,FALSE,EXTRA
+Airport Transfer,Strathallan,20,07/07/2024,07/07/2024,999,,FALSE,EXTRA
+Airport Transfer,Strathallan,20,08/07/2024,08/07/2024,999,,FALSE,EXTRA
+Airport Transfer,Strathallan,20,09/07/2024,09/07/2024,999,,FALSE,EXTRA
+Airport Transfer,Strathallan,20,10/07/2024,10/07/2024,999,,FALSE,EXTRA
+Airport Transfer,Strathallan,20,11/07/2024,11/07/2024,999,,FALSE,EXTRA
+Airport Transfer,Strathallan,20,12/07/2024,12/07/2024,999,,FALSE,EXTRA
+Airport Transfer,Strathallan,20,13/07/2024,13/07/2024,999,,FALSE,EXTRA
+Airport Transfer,Strathallan,20,14/07/2024,14/07/2024,999,,FALSE,EXTRA
+Airport Transfer,Strathallan,20,15/07/2024,15/07/2024,999,,FALSE,EXTRA
+Airport Transfer,Strathallan,20,16/07/2024,16/07/2024,999,,FALSE,EXTRA
+Airport Transfer,Strathallan,20,17/07/2024,17/07/2024,999,,FALSE,EXTRA
+Airport Transfer,Strathallan,20,18/07/2024,18/07/2024,999,,FALSE,EXTRA
+Airport Transfer,Strathallan,20,19/07/2024,19/07/2024,999,,FALSE,EXTRA
+Airport Transfer,Strathallan,20,20/07/2024,20/07/2024,999,,FALSE,EXTRA
+Airport Transfer,Strathallan,20,21/07/2024,21/07/2024,999,,FALSE,EXTRA
+Airport Transfer,Strathallan,20,22/07/2024,22/07/2024,999,,FALSE,EXTRA
+Airport Transfer,Strathallan,20,23/07/2024,23/07/2024,999,,FALSE,EXTRA
+Airport Transfer,Strathallan,20,24/07/2024,24/07/2024,999,,FALSE,EXTRA
+Airport Transfer,Strathallan,20,25/07/2024,25/07/2024,999,,FALSE,EXTRA
+Airport Transfer,Strathallan,20,26/07/2024,26/07/2024,999,,FALSE,EXTRA
+Airport Transfer,Strathallan,20,27/07/2024,27/07/2024,999,,FALSE,EXTRA
+Airport Transfer,Strathallan,20,28/07/2024,28/07/2024,999,,FALSE,EXTRA
+1 day Discovery,Kilgraston,25,01/07/2024,01/07/2024,150,,FALSE,EXTRA
+1 day Discovery,Kilgraston,25,02/07/2024,02/07/2024,150,,FALSE,EXTRA
+1 day Discovery,Kilgraston,25,03/07/2024,03/07/2024,150,,FALSE,EXTRA
+1 day Discovery,Kilgraston,25,04/07/2024,04/07/2024,150,,FALSE,EXTRA
+1 day Discovery,Kilgraston,25,05/07/2024,05/07/2024,150,,FALSE,EXTRA
+1 day Discovery,Kilgraston,25,08/07/2024,08/07/2024,150,,FALSE,EXTRA
+1 day Discovery,Kilgraston,25,09/07/2024,09/07/2024,150,,FALSE,EXTRA
+1 day Discovery,Kilgraston,25,10/07/2024,10/07/2024,150,,FALSE,EXTRA
+1 day Discovery,Kilgraston,25,11/07/2024,11/07/2024,150,,FALSE,EXTRA
+1 day Discovery,Kilgraston,25,12/07/2024,12/07/2024,150,,FALSE,EXTRA
+1 day Discovery,Kilgraston,25,15/07/2024,15/07/2024,150,,FALSE,EXTRA
+1 day Discovery,Kilgraston,25,16/07/2024,16/07/2024,150,,FALSE,EXTRA
+1 day Discovery,Kilgraston,25,17/07/2024,17/07/2024,150,,FALSE,EXTRA
+1 day Discovery,Kilgraston,25,18/07/2024,18/07/2024,150,,FALSE,EXTRA
+1 day Discovery,Kilgraston,25,19/07/2024,19/07/2024,150,,FALSE,EXTRA
+1 day Discovery,Kilgraston,25,22/07/2024,22/07/2024,150,,FALSE,EXTRA
+1 day Discovery,Kilgraston,25,23/07/2024,23/07/2024,150,,FALSE,EXTRA
+1 day Discovery,Kilgraston,25,24/07/2024,24/07/2024,150,,FALSE,EXTRA
+1 day Discovery,Kilgraston,25,25/07/2024,25/07/2024,150,,FALSE,EXTRA
+1 day Discovery,Kilgraston,25,26/07/2024,26/07/2024,150,,FALSE,EXTRA
+1 day Discovery,Kilgraston,25,29/07/2024,29/07/2024,150,,FALSE,EXTRA
+1 day Discovery,Kilgraston,25,30/07/2024,30/07/2024,150,,FALSE,EXTRA
+1 day Discovery,Kilgraston,25,31/07/2024,31/07/2024,150,,FALSE,EXTRA
+1 day Discovery,Kilgraston,25,01/08/2024,01/08/2024,150,,FALSE,EXTRA
+1 day Discovery,Kilgraston,25,02/08/2024,02/08/2024,150,,FALSE,EXTRA
+1 day Discovery,Kilgraston,25,05/08/2024,05/08/2024,150,,FALSE,EXTRA
+1 day Discovery,Kilgraston,25,06/08/2024,06/08/2024,150,,FALSE,EXTRA
+1 day Discovery,Kilgraston,25,07/08/2024,07/08/2024,150,,FALSE,EXTRA
+1 day Discovery,Kilgraston,25,08/08/2024,08/08/2024,150,,FALSE,EXTRA
+1 day Discovery,Kilgraston,25,09/08/2024,09/08/2024,150,,FALSE,EXTRA
+1 day MultiSports,Kilgraston,0,01/07/2024,01/07/2024,150,,FALSE,EXTRA
+1 day MultiSports,Kilgraston,0,02/07/2024,02/07/2024,150,,FALSE,EXTRA
+1 day MultiSports,Kilgraston,0,03/07/2024,03/07/2024,150,,FALSE,EXTRA
+1 day MultiSports,Kilgraston,0,04/07/2024,04/07/2024,150,,FALSE,EXTRA
+1 day MultiSports,Kilgraston,0,05/07/2024,05/07/2024,150,,FALSE,EXTRA
+1 day MultiSports,Kilgraston,0,08/07/2024,08/07/2024,150,,FALSE,EXTRA
+1 day MultiSports,Kilgraston,0,09/07/2024,09/07/2024,150,,FALSE,EXTRA
+1 day MultiSports,Kilgraston,0,10/07/2024,10/07/2024,150,,FALSE,EXTRA
+1 day MultiSports,Kilgraston,0,11/07/2024,11/07/2024,150,,FALSE,EXTRA
+1 day MultiSports,Kilgraston,0,12/07/2024,12/07/2024,150,,FALSE,EXTRA
+1 day MultiSports,Kilgraston,0,15/07/2024,15/07/2024,150,,FALSE,EXTRA
+1 day MultiSports,Kilgraston,0,16/07/2024,16/07/2024,150,,FALSE,EXTRA
+1 day MultiSports,Kilgraston,0,17/07/2024,17/07/2024,150,,FALSE,EXTRA
+1 day MultiSports,Kilgraston,0,18/07/2024,18/07/2024,150,,FALSE,EXTRA
+1 day MultiSports,Kilgraston,0,19/07/2024,19/07/2024,150,,FALSE,EXTRA
+1 day MultiSports,Kilgraston,0,22/07/2024,22/07/2024,150,,FALSE,EXTRA
+1 day MultiSports,Kilgraston,0,23/07/2024,23/07/2024,150,,FALSE,EXTRA
+1 day MultiSports,Kilgraston,0,24/07/2024,24/07/2024,150,,FALSE,EXTRA
+1 day MultiSports,Kilgraston,0,25/07/2024,25/07/2024,150,,FALSE,EXTRA
+1 day MultiSports,Kilgraston,0,26/07/2024,26/07/2024,150,,FALSE,EXTRA
+1 day MultiSports,Kilgraston,0,29/07/2024,29/07/2024,150,,FALSE,EXTRA
+1 day MultiSports,Kilgraston,0,30/07/2024,30/07/2024,150,,FALSE,EXTRA
+1 day MultiSports,Kilgraston,0,31/07/2024,31/07/2024,150,,FALSE,EXTRA
+1 day MultiSports,Kilgraston,0,01/08/2024,01/08/2024,150,,FALSE,EXTRA
+1 day MultiSports,Kilgraston,0,02/08/2024,02/08/2024,150,,FALSE,EXTRA
+1 day MultiSports,Kilgraston,0,05/08/2024,05/08/2024,150,,FALSE,EXTRA
+1 day MultiSports,Kilgraston,0,06/08/2024,06/08/2024,150,,FALSE,EXTRA
+1 day MultiSports,Kilgraston,0,07/08/2024,07/08/2024,150,,FALSE,EXTRA
+1 day MultiSports,Kilgraston,0,08/08/2024,08/08/2024,150,,FALSE,EXTRA
+1 day MultiSports,Kilgraston,0,09/08/2024,09/08/2024,150,,FALSE,EXTRA
+1 day Discovery,Strathallan,25,01/07/2024,01/07/2024,150,,FALSE,EXTRA
+1 day Discovery,Strathallan,25,02/07/2024,02/07/2024,150,,FALSE,EXTRA
+1 day Discovery,Strathallan,25,03/07/2024,03/07/2024,150,,FALSE,EXTRA
+1 day Discovery,Strathallan,25,04/07/2024,04/07/2024,150,,FALSE,EXTRA
+1 day Discovery,Strathallan,25,05/07/2024,05/07/2024,150,,FALSE,EXTRA
+1 day Discovery,Strathallan,25,08/07/2024,08/07/2024,150,,FALSE,EXTRA
+1 day Discovery,Strathallan,25,09/07/2024,09/07/2024,150,,FALSE,EXTRA
+1 day Discovery,Strathallan,25,10/07/2024,10/07/2024,150,,FALSE,EXTRA
+1 day Discovery,Strathallan,25,11/07/2024,11/07/2024,150,,FALSE,EXTRA
+1 day Discovery,Strathallan,25,12/07/2024,12/07/2024,150,,FALSE,EXTRA
+1 day Discovery,Strathallan,25,15/07/2024,15/07/2024,150,,FALSE,EXTRA
+1 day Discovery,Strathallan,25,16/07/2024,16/07/2024,150,,FALSE,EXTRA
+1 day Discovery,Strathallan,25,17/07/2024,17/07/2024,150,,FALSE,EXTRA
+1 day Discovery,Strathallan,25,18/07/2024,18/07/2024,150,,FALSE,EXTRA
+1 day Discovery,Strathallan,25,19/07/2024,19/07/2024,150,,FALSE,EXTRA
+1 day Discovery,Strathallan,25,22/07/2024,22/07/2024,150,,FALSE,EXTRA
+1 day Discovery,Strathallan,25,23/07/2024,23/07/2024,150,,FALSE,EXTRA
+1 day Discovery,Strathallan,25,24/07/2024,24/07/2024,150,,FALSE,EXTRA
+1 day Discovery,Strathallan,25,25/07/2024,25/07/2024,150,,FALSE,EXTRA
+1 day Discovery,Strathallan,25,26/07/2024,26/07/2024,150,,FALSE,EXTRA
+1 day MultiSports,Strathallan,0,01/07/2024,01/07/2024,150,,FALSE,EXTRA
+1 day MultiSports,Strathallan,0,02/07/2024,02/07/2024,150,,FALSE,EXTRA
+1 day MultiSports,Strathallan,0,03/07/2024,03/07/2024,150,,FALSE,EXTRA
+1 day MultiSports,Strathallan,0,04/07/2024,04/07/2024,150,,FALSE,EXTRA
+1 day MultiSports,Strathallan,0,05/07/2024,05/07/2024,150,,FALSE,EXTRA
+1 day MultiSports,Strathallan,0,08/07/2024,08/07/2024,150,,FALSE,EXTRA
+1 day MultiSports,Strathallan,0,09/07/2024,09/07/2024,150,,FALSE,EXTRA
+1 day MultiSports,Strathallan,0,10/07/2024,10/07/2024,150,,FALSE,EXTRA
+1 day MultiSports,Strathallan,0,11/07/2024,11/07/2024,150,,FALSE,EXTRA
+1 day MultiSports,Strathallan,0,12/07/2024,12/07/2024,150,,FALSE,EXTRA
+1 day MultiSports,Strathallan,0,15/07/2024,15/07/2024,150,,FALSE,EXTRA
+1 day MultiSports,Strathallan,0,16/07/2024,16/07/2024,150,,FALSE,EXTRA
+1 day MultiSports,Strathallan,0,17/07/2024,17/07/2024,150,,FALSE,EXTRA
+1 day MultiSports,Strathallan,0,18/07/2024,18/07/2024,150,,FALSE,EXTRA
+1 day MultiSports,Strathallan,0,19/07/2024,19/07/2024,150,,FALSE,EXTRA
+1 day MultiSports,Strathallan,0,22/07/2024,22/07/2024,150,,FALSE,EXTRA
+1 day MultiSports,Strathallan,0,23/07/2024,23/07/2024,150,,FALSE,EXTRA
+1 day MultiSports,Strathallan,0,24/07/2024,24/07/2024,150,,FALSE,EXTRA
+1 day MultiSports,Strathallan,0,25/07/2024,25/07/2024,150,,FALSE,EXTRA
+1 day MultiSports,Strathallan,0,26/07/2024,26/07/2024,150,,FALSE,EXTRA
+Extra Night,Kilgraston,50,2024-06-30,2024-07-01,120,,FALSE,EXTRA
+Extra Night,Kilgraston,50,2024-07-01,2024-07-02,120,,FALSE,EXTRA
+Extra Night,Kilgraston,50,2024-07-02,2024-07-03,120,,FALSE,EXTRA
+Extra Night,Kilgraston,50,2024-07-03,2024-07-04,120,,FALSE,EXTRA
+Extra Night,Kilgraston,50,2024-07-04,2024-07-05,120,,FALSE,EXTRA
+Extra Night,Kilgraston,50,2024-07-05,2024-07-06,120,,FALSE,EXTRA
+Extra Night,Kilgraston,50,2024-07-06,2024-07-07,120,,FALSE,EXTRA
+Extra Night,Kilgraston,50,2024-07-07,2024-07-08,120,,FALSE,EXTRA
+Extra Night,Kilgraston,50,2024-07-08,2024-07-09,120,,FALSE,EXTRA
+Extra Night,Kilgraston,50,2024-07-09,2024-07-10,120,,FALSE,EXTRA
+Extra Night,Kilgraston,50,2024-07-10,2024-07-11,120,,FALSE,EXTRA
+Extra Night,Kilgraston,50,2024-07-11,2024-07-12,120,,FALSE,EXTRA
+Extra Night,Kilgraston,50,2024-07-12,2024-07-13,120,,FALSE,EXTRA
+Extra Night,Kilgraston,50,2024-07-13,2024-07-14,120,,FALSE,EXTRA
+Extra Night,Kilgraston,50,2024-07-14,2024-07-15,120,,FALSE,EXTRA
+Extra Night,Kilgraston,50,2024-07-15,2024-07-16,120,,FALSE,EXTRA
+Extra Night,Kilgraston,50,2024-07-16,2024-07-17,120,,FALSE,EXTRA
+Extra Night,Kilgraston,50,2024-07-17,2024-07-18,120,,FALSE,EXTRA
+Extra Night,Kilgraston,50,2024-07-18,2024-07-19,120,,FALSE,EXTRA
+Extra Night,Kilgraston,50,2024-07-19,2024-07-20,120,,FALSE,EXTRA
+Extra Night,Kilgraston,50,2024-07-20,2024-07-21,120,,FALSE,EXTRA
+Extra Night,Kilgraston,50,2024-07-21,2024-07-22,120,,FALSE,EXTRA
+Extra Night,Kilgraston,50,2024-07-22,2024-07-23,120,,FALSE,EXTRA
+Extra Night,Kilgraston,50,2024-07-23,2024-07-24,120,,FALSE,EXTRA
+Extra Night,Kilgraston,50,2024-07-24,2024-07-25,120,,FALSE,EXTRA
+Extra Night,Kilgraston,50,2024-07-25,2024-07-26,120,,FALSE,EXTRA
+Extra Night,Kilgraston,50,2024-07-26,2024-07-27,120,,FALSE,EXTRA
+Extra Night,Kilgraston,50,2024-07-27,2024-07-28,120,,FALSE,EXTRA
+Extra Night,Kilgraston,50,2024-07-28,2024-07-29,120,,FALSE,EXTRA
+Extra Night,Kilgraston,50,2024-07-29,2024-07-30,120,,FALSE,EXTRA
+Extra Night,Kilgraston,50,2024-07-30,2024-07-31,120,,FALSE,EXTRA
+Extra Night,Kilgraston,50,2024-07-31,2024-08-01,120,,FALSE,EXTRA
+Extra Night,Kilgraston,50,2024-08-01,2024-08-02,120,,FALSE,EXTRA
+Extra Night,Kilgraston,50,2024-08-02,2024-08-03,120,,FALSE,EXTRA
+Extra Night,Kilgraston,50,2024-08-03,2024-08-04,120,,FALSE,EXTRA
+Extra Night,Kilgraston,50,2024-08-04,2024-08-05,120,,FALSE,EXTRA
+Extra Night,Kilgraston,50,2024-08-05,2024-08-06,120,,FALSE,EXTRA
+Extra Night,Kilgraston,50,2024-08-06,2024-08-07,120,,FALSE,EXTRA
+Extra Night,Kilgraston,50,2024-08-07,2024-08-08,120,,FALSE,EXTRA
+Extra Night,Kilgraston,50,2024-08-08,2024-08-09,120,,FALSE,EXTRA
+Extra Night,Kilgraston,50,2024-08-09,2024-08-10,120,,FALSE,EXTRA
+Extra Night,Kilgraston,50,2024-08-10,2024-08-11,120,,FALSE,EXTRA
+Extra Night,Kilgraston,50,2024-08-11,2024-08-12,120,,FALSE,EXTRA
+Extra Night,Strathallan,50,2024-06-30,2024-07-01,120,,FALSE,EXTRA
+Extra Night,Strathallan,50,2024-07-01,2024-07-02,120,,FALSE,EXTRA
+Extra Night,Strathallan,50,2024-07-02,2024-07-03,120,,FALSE,EXTRA
+Extra Night,Strathallan,50,2024-07-03,2024-07-04,120,,FALSE,EXTRA
+Extra Night,Strathallan,50,2024-07-04,2024-07-05,120,,FALSE,EXTRA
+Extra Night,Strathallan,50,2024-07-05,2024-07-06,120,,FALSE,EXTRA
+Extra Night,Strathallan,50,2024-07-06,2024-07-07,120,,FALSE,EXTRA
+Extra Night,Strathallan,50,2024-07-07,2024-07-08,120,,FALSE,EXTRA
+Extra Night,Strathallan,50,2024-07-08,2024-07-09,120,,FALSE,EXTRA
+Extra Night,Strathallan,50,2024-07-09,2024-07-10,120,,FALSE,EXTRA
+Extra Night,Strathallan,50,2024-07-10,2024-07-11,120,,FALSE,EXTRA
+Extra Night,Strathallan,50,2024-07-11,2024-07-12,120,,FALSE,EXTRA
+Extra Night,Strathallan,50,2024-07-12,2024-07-13,120,,FALSE,EXTRA
+Extra Night,Strathallan,50,2024-07-13,2024-07-14,120,,FALSE,EXTRA
+Extra Night,Strathallan,50,2024-07-14,2024-07-15,120,,FALSE,EXTRA
+Extra Night,Strathallan,50,2024-07-15,2024-07-16,120,,FALSE,EXTRA
+Extra Night,Strathallan,50,2024-07-16,2024-07-17,120,,FALSE,EXTRA
+Extra Night,Strathallan,50,2024-07-17,2024-07-18,120,,FALSE,EXTRA
+Extra Night,Strathallan,50,2024-07-18,2024-07-19,120,,FALSE,EXTRA
+Extra Night,Strathallan,50,2024-07-19,2024-07-20,120,,FALSE,EXTRA
+Extra Night,Strathallan,50,2024-07-20,2024-07-21,120,,FALSE,EXTRA
+Extra Night,Strathallan,50,2024-07-21,2024-07-22,120,,FALSE,EXTRA
+Extra Night,Strathallan,50,2024-07-22,2024-07-23,120,,FALSE,EXTRA
+Extra Night,Strathallan,50,2024-07-23,2024-07-24,120,,FALSE,EXTRA
+Extra Night,Strathallan,50,2024-07-24,2024-07-25,120,,FALSE,EXTRA
+Extra Night,Strathallan,50,2024-07-25,2024-07-26,120,,FALSE,EXTRA
+Extra Night,Strathallan,50,2024-07-26,2024-07-27,120,,FALSE,EXTRA
+Extra Night,Strathallan,50,2024-07-27,2024-07-28,120,,FALSE,EXTRA
