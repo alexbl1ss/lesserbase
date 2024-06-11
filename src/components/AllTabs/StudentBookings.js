@@ -6,9 +6,9 @@ import IconButton from '@mui/material/IconButton';
 import { Delete } from '@mui/icons-material';
 
 function StudentBookings(props) {
-  const { selectedPerson, showFinancials } = props;
+  const { selectedPerson, showFinancials, selectedStay } = props;
   const [bookings, setBookings] = useState([]);
-
+  
   const fetchBookings = useCallback(() => {
     const token = sessionStorage.getItem('bearer');
     fetch(`${SERVER_URL}api/student/${selectedPerson.id}/booking`, {
@@ -25,7 +25,7 @@ function StudentBookings(props) {
       })
       .then((data) => {
         const filteredData = data.filter(booking => 
-          new Date(booking.startDate) > new Date(CUTOFF_DATE)
+          booking.startDate === null || new Date(booking.startDate) > new Date(CUTOFF_DATE)
         );
         sessionStorage.setItem('bookings', JSON.stringify(filteredData));
         setBookings(filteredData);
@@ -106,6 +106,12 @@ function StudentBookings(props) {
       
   return(
     <React.Fragment>
+    <div style={{ color: '#999999', fontSize: '10px' }}>
+        <p>
+          Selected Student: {selectedPerson.id} — 
+          Selected Stay: {selectedStay ? `${selectedStay.arrivalDate} to ${selectedStay.departureDate}` : 'None'}
+        </p>
+    </div>
     <div className="detail-card booking-card" style={{ padding: '20px 0' }}>
     <table style={{ width: '80%', textAlign: 'left', margin: 'auto', borderCollapse: 'collapse' }}>
         <thead>
