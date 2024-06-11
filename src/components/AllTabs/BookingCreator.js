@@ -8,27 +8,76 @@ function BookingCreator(props) {
   const [stayId] = useState(selectedStay ? selectedStay.stayId : '0');
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [searchPath, setSearchPath] = useState('eligableProducts');
+  const [singleDayProducts, setSingleDayProducts] = useState([]);
+  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]); // defaults to today's date
+  const [weekendProducts, setWeekendProducts] = useState([]);
+  const [residentialProducts, setResidentialProducts] = useState([]);
+  const [externalOrAfternoonProducts, setExternalOrAfternoonProducts] = useState([]);
+  const [singleDayExcursion, setSingleDayExcursion] = useState([]);
+  const [singleDayOther, setSingleDayOther] = useState([]);
+  
 
   const fetchEligableProducts = useCallback(() => {
     const token = sessionStorage.getItem('bearer');
     fetch(`${SERVER_URL}api/products/${searchPath}/stay/${stayId}`, {
-      headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${token}` },
     })
-      .then((response) => {
+    .then(response => {
         if (response.status === 204) {
-          return [];
+            return [];
         } else if (response.ok) {
-          return response.json();
+            return response.json();
         } else {
-          throw new Error('Failed to fetch bookings');
+            throw new Error('Failed to fetch bookings');
         }
-      })
-      .then((data) => {
-        sessionStorage.setItem('bookings', JSON.stringify(data));
-        setEligableProducts(data);
-      })
-      .catch((err) => console.error(err));
-  }, [stayId, searchPath]);
+    })
+    .then(data => {
+        const singleDay = [];
+        const weekendProducts = [];
+        const residentialProducts = [];
+        const externalOrAfternoonProducts = [];
+        const singleDayExcursion = [];
+        const singleDayOther = [];
+
+        data.forEach(product => {
+            if (new Date(product.startDate).toDateString() === new Date(product.endDate).toDateString()) {
+                singleDay.push(product);
+                if (product.productType === "WEEKEND") {
+                    singleDayExcursion.push(product);
+                } else {
+                    singleDayOther.push(product);
+                }
+            } else {
+                switch (product.productType) {
+                    case "WEEKEND":
+                        weekendProducts.push(product);
+                        break;
+                    case "RESIDENTIAL":
+                        residentialProducts.push(product);
+                        break;
+                    case "EXTERNAL":
+                    case "AFTERNOON":
+                        externalOrAfternoonProducts.push(product);
+                        break;
+                    default:
+                        // Handle any products that don't fit the specified categories if necessary
+                        break;
+                }
+            }
+        });
+
+        // Update state with all product lists
+        setSingleDayProducts(singleDay);
+        setWeekendProducts(weekendProducts);
+        setResidentialProducts(residentialProducts);
+        setExternalOrAfternoonProducts(externalOrAfternoonProducts);
+        setSingleDayExcursion(singleDayExcursion);
+        setSingleDayOther(singleDayOther);
+    })
+    .catch(err => console.error(err));
+}, [stayId, searchPath]);
+
+
 
   useEffect(() => {
     fetchEligableProducts();
@@ -86,52 +135,191 @@ const handleBookings = () => {
     
   return(
     <React.Fragment>
-    <button onClick={widenSearch} type="button">Wide Search</button>
-    <button onClick={normalSearch} type="button">Normal Search</button>
-    <button onClick={handleBookings} type="button">Book</button>
-    <div className="detail-card booking-card" style={{ padding: '20px 0' }}>
-      <table style={{ width: '80%', textAlign: 'left', margin: 'auto', borderCollapse: 'collapse' }}>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Product Name</th>
-            <th>Product Base</th>
-            <th>Start Date</th>
-            <th>End Date</th>
-            <th>Capacity</th>
-            <th>Allocated</th>
-            {showFinancials && <th>Default Rate</th>}
-            <th>book?</th>
-          </tr>
-        </thead>
-        <tbody>
-        {sortedProducts.map((eligableProduct) => (
-          <tr key={eligableProduct.id}>
-          <td>{eligableProduct.id}</td>
-          <td>{eligableProduct.name}</td>
-          <td>{eligableProduct.base}</td>
-          <td>{eligableProduct.startDate}</td>
-          <td>{eligableProduct.endDate}</td>
-          <td>{eligableProduct.capacity}</td>
-          <td>{eligableProduct.allocated}</td>
-          {showFinancials && <td>{eligableProduct.defaultRate}</td>}
-          <td>
-          <input
-            type="checkbox"
-            disabled={eligableProduct.allocated >= eligableProduct.capacity}
-            onChange={() => handleProductSelect(eligableProduct)}
-          />
-        </td>
-      </tr>
-    ))}
-        </tbody>
-      </table>
-    </div>
-    <button onClick={handleBookings}  type="button">Create Bookings</button>
-    <div>
+      <h2>Residential</h2>
+      <button onClick={widenSearch} type="button">Wide Search</button>
+      <button onClick={normalSearch} type="button">Normal Search</button>
+      <button onClick={handleBookings} type="button">Book</button>
+      <div className="detail-card booking-card" style={{ padding: '20px 0' }}>
+        <table style={{ width: '80%', textAlign: 'left', margin: 'auto', borderCollapse: 'collapse' }}>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Product Name</th>
+              <th>Product Base</th>
+              <th>Start Date</th>
+              <th>End Date</th>
+              <th>Capacity</th>
+              <th>Allocated</th>
+              {showFinancials && <th>Default Rate</th>}
+              <th>book?</th>
+            </tr>
+          </thead>
+          <tbody>
+            {residentialProducts.map((eligableProduct) => (
+              <tr key={eligableProduct.id}>
+                <td>{eligableProduct.id}</td>
+                <td>{eligableProduct.name}</td>
+                <td>{eligableProduct.base}</td>
+                <td>{eligableProduct.startDate}</td>
+                <td>{eligableProduct.endDate}</td>
+                <td>{eligableProduct.capacity}</td>
+                <td>{eligableProduct.allocated}</td>
+                {showFinancials && <td>{eligableProduct.defaultRate}</td>}
+                <td>
+                  <input
+                    type="checkbox"
+                    disabled={eligableProduct.allocated >= eligableProduct.capacity}
+                    onChange={() => handleProductSelect(eligableProduct)}
+                  />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <button onClick={handleBookings}  type="button">Create Bookings</button>
+      <div>
         <p style={{ color: '#999999', fontSize: '10px' }}>Student: {selectedPerson.id}</p>
         <p style={{ color: '#999999', fontSize: '10px' }}>Selected Stay: {selectedStay ? selectedStay.stayId : 'None'}</p>
         <p style={{ color: '#999999', fontSize: '10px' }}>Is authenticated: {sessionStorage.getItem('isAuthenticated').toString()}</p>
+      </div>
+      <h2>Afternoon</h2>
+      <button onClick={widenSearch} type="button">Wide Search</button>
+      <button onClick={normalSearch} type="button">Normal Search</button>
+      <button onClick={handleBookings} type="button">Book</button>
+      <div className="detail-card booking-card" style={{ padding: '20px 0' }}>
+        <table style={{ width: '80%', textAlign: 'left', margin: 'auto', borderCollapse: 'collapse' }}>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Product Name</th>
+              <th>Product Base</th>
+              <th>Start Date</th>
+              <th>End Date</th>
+              <th>Capacity</th>
+              <th>Allocated</th>
+              {showFinancials && <th>Default Rate</th>}
+              <th>book?</th>
+            </tr>
+          </thead>
+          <tbody>
+            {externalOrAfternoonProducts.map((eligableProduct) => (
+              <tr key={eligableProduct.id}>
+                <td>{eligableProduct.id}</td>
+                <td>{eligableProduct.name}</td>
+                <td>{eligableProduct.base}</td>
+                <td>{eligableProduct.startDate}</td>
+                <td>{eligableProduct.endDate}</td>
+                <td>{eligableProduct.capacity}</td>
+                <td>{eligableProduct.allocated}</td>
+                {showFinancials && <td>{eligableProduct.defaultRate}</td>}
+                <td>
+                  <input
+                    type="checkbox"
+                    disabled={eligableProduct.allocated >= eligableProduct.capacity}
+                    onChange={() => handleProductSelect(eligableProduct)}
+                  />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <h2>Weekend</h2>
+      <button onClick={widenSearch} type="button">Wide Search</button>
+      <button onClick={normalSearch} type="button">Normal Search</button>
+      <button onClick={handleBookings} type="button">Book</button>
+      <div className="detail-card booking-card" style={{ padding: '20px 0' }}>
+        <table style={{ width: '80%', textAlign: 'left', margin: 'auto', borderCollapse: 'collapse' }}>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Product Name</th>
+              <th>Product Base</th>
+              <th>Start Date</th>
+              <th>End Date</th>
+              <th>Capacity</th>
+              <th>Allocated</th>
+              {showFinancials && <th>Default Rate</th>}
+              <th>book?</th>
+            </tr>
+          </thead>
+          <tbody>
+            {singleDayExcursion.map((eligableProduct) => (
+              <tr key={eligableProduct.id}>
+                <td>{eligableProduct.id}</td>
+                <td>{eligableProduct.name}</td>
+                <td>{eligableProduct.base}</td>
+                <td>{eligableProduct.startDate}</td>
+                <td>{eligableProduct.endDate}</td>
+                <td>{eligableProduct.capacity}</td>
+                <td>{eligableProduct.allocated}</td>
+                {showFinancials && <td>{eligableProduct.defaultRate}</td>}
+                <td>
+                  <input
+                    type="checkbox"
+                    disabled={eligableProduct.allocated >= eligableProduct.capacity}
+                    onChange={() => handleProductSelect(eligableProduct)}
+                  />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <button onClick={handleBookings}  type="button">Create Bookings</button>
+      <div>
+        <p style={{ color: '#999999', fontSize: '10px' }}>Student: {selectedPerson.id}</p>
+        <p style={{ color: '#999999', fontSize: '10px' }}>Selected Stay: {selectedStay ? selectedStay.stayId : 'None'}</p>
+        <p style={{ color: '#999999', fontSize: '10px' }}>Is authenticated: {sessionStorage.getItem('isAuthenticated').toString()}</p>
+      </div>
+      <h2>Single Day Activities</h2>
+      <div className="date-selector">
+        <label htmlFor="datePicker">Select Date:</label>
+        <input
+          type="date"
+          id="datePicker"
+          value={selectedDate}
+          onChange={e => setSelectedDate(e.target.value)}
+        />
+      </div>
+      <div className="detail-card booking-card" style={{ padding: '20px 0', marginTop: '20px' }}>
+        <table style={{ width: '80%', textAlign: 'left', margin: 'auto', borderCollapse: 'collapse' }}>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Product Name</th>
+              <th>Start Date</th>
+              <th>Book?</th>
+            </tr>
+          </thead>
+          <tbody>
+            {singleDayOther.filter(product => 
+                new Date(product.startDate).toISOString().split('T')[0] === new Date(selectedDate).toISOString().split('T')[0]
+                ).length > 0 ? (
+              singleDayProducts.filter(product => 
+                  new Date(product.startDate).toISOString().split('T')[0] === new Date(selectedDate).toISOString().split('T')[0]
+                  ).map(product => (
+                <tr key={product.id}>
+                  <td>{product.id}</td>
+                  <td>{product.name}</td>
+                  <td>{product.startDate}</td>
+                  <td>
+                    <input
+                      type="checkbox"
+                      disabled={product.allocated >= product.capacity}
+                      onChange={() => handleProductSelect(product)}
+                    />
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="4">No single day products found for date {selectedDate}</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
       </div>
     </React.Fragment>
 );

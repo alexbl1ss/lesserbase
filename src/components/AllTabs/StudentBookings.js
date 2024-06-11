@@ -25,7 +25,7 @@ function StudentBookings(props) {
       })
       .then((data) => {
         const filteredData = data.filter(booking => 
-          new Date(booking.startDate) > new Date(CUTOFF_DATE)
+          booking.startDate === null || new Date(booking.startDate) > new Date(CUTOFF_DATE)
         );
         sessionStorage.setItem('bookings', JSON.stringify(filteredData));
         setBookings(filteredData);
