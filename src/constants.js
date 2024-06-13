@@ -36,6 +36,11 @@ export const CAMPUSES = [
       { value: 'EXCURSION', label: 'EXCURSION' },
     ];
 
+    export const SCHEDULETYPE = [
+      {value: 'STAFF', label: 'STAFF'},
+      {value: 'GROUPS/ROOMS', label: 'GROUPS/ROOMS'},
+    ]
+
     export const CUTOFF_DATE = '2023-08-15'; // Format: YYYY-MM-DD
     
     

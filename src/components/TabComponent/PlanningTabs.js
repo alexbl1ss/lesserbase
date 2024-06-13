@@ -28,7 +28,7 @@ const PlanningTabs = () => {
                 <li
                     className={activeTab === "adultstab" ? "active" : ""}
                     onClick={handleadults}>
-                Adults
+                Staff
                 </li>
                 <li
                     className={activeTab === "groupstab" ? "active" : ""}
