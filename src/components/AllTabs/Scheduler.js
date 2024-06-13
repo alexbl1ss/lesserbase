@@ -5,14 +5,7 @@ import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
-import DatePicker from "react-multi-date-picker";
-import DatePanel from "react-multi-date-picker/plugins/date_panel";
-import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
-import { DateCalendar, LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { Box, ThemeProvider, createTheme } from '@mui/material';
-import InputIcon from "react-multi-date-picker/components/input_icon"
 
 function Scheduler(props) {
   const [campDates, setCampDates] = useState([]);
@@ -27,7 +20,6 @@ function Scheduler(props) {
   const [previousSelectedDates, setPreviousSelectedDates] = useState([]);
 
   const fetchDates = useCallback(() => {
-    console.log("when does fetchDates get called?")
     const token = sessionStorage.getItem('bearer');
   
     fetch(`${SERVER_URL}api/camptimes`, {
@@ -50,7 +42,6 @@ function Scheduler(props) {
   }, []);
 
   const convertedCampDates = campDates.map(date => {
-    console.log("when does convertedCampDates get called?")
     return {
       ...date,
       campDate: new Date(date.campDate)
@@ -58,12 +49,10 @@ function Scheduler(props) {
   });
 
   const sortedDates = campDates.sort((a, b) => {
-    console.log("is sortedDates called?")
     return new Date(a.campDate) - new Date(b.campDate);
   });
 
   const fetchGroups = useCallback(() => {
-    console.log("when does fetchGroups get called?")
     const token = sessionStorage.getItem('bearer');
     fetch(`${SERVER_URL}api/campgroups`, {
       headers: { Authorization: `Bearer ${token}` },
@@ -78,13 +67,11 @@ function Scheduler(props) {
   }, []);
 
   useEffect(() => {
-    console.log("fetcher effect");
     fetchDates();
     fetchGroups();
   }, [fetchDates, fetchGroups]);
 
   useEffect(() => {
-    console.log("group change effect");
     if (filteredGroups.length === 1) {
       const groupToSelect = filteredGroups[0];
       setSelectedGroup(groupToSelect);
@@ -95,7 +82,6 @@ function Scheduler(props) {
   }, [filteredGroups]);
 
   useEffect(() => {
-    console.log("dates effect");
     if (campDates.length > 0 && selectedDates.length === campDates.length) {
       setSelectAll(true);
     } else {
@@ -104,7 +90,6 @@ function Scheduler(props) {
   }, [selectedDates, campDates]);
 
   const handleSelectAll = (event) => {
-    console.log("select all dates")
     if (event.target.checked) {
       setSelectedDates(campDates);
     } else {
@@ -114,21 +99,18 @@ function Scheduler(props) {
   };
 
   const handleGroupTypeChange = (event) => {
-    console.log("handleGroupTypeChange")
     const groupType = event.target.value;
     setSelectedGroupType(groupType);
     filterGroups(selectedCampus, groupType);
   };
   
   const handleCampusChange = (event) => {
-    console.log("handleCampusChange")
     const campus = event.target.value;
     setSelectedCampus(campus);
     filterGroups(campus, selectedGroupType);
   };
   
   const filterGroups = (campus, groupType) => {
-    console.log("filterGroups")
     const filtered = allGroups.filter(group => {
         return (!campus || group.campus === campus) && (!groupType || group.groupType === groupType);
     });
@@ -145,8 +127,6 @@ function Scheduler(props) {
   };
   
   const handleGroupChangeAfterSelection = (group) => {
-    console.log("handleGroupChangeAfterSelection")  
-
     if (!selectedGroup || group.id !== selectedGroup.id) {
       const datesWithGroup = campDates.filter(date => 
         date.groups.some(g => g.id === group.id)
@@ -154,111 +134,80 @@ function Scheduler(props) {
       setSelectedDates(datesWithGroup);
       setPreviousSelectedDates(datesWithGroup);
 
-      console.log("selected dates");
-      console.log(selectedDates);
-      console.log("Pre selected dates");
-      console.log(previousSelectedDates);
-
       const ConvertedDatesWithGroup = convertedCampDates.filter(date => 
         date.groups.some(g => g.id === group.id)
       );
 
       setSelectedConvertedDates(ConvertedDatesWithGroup.map(date => date.campDate));
     }
-    console.log("selected dates (converted)");
-    console.log(selectedConvertedDates)
-};
+  };
 
-const handleGroupChange = (event) => {
-  console.log("handleGroupChangeAfterSelection")
-  const group = event.target.value;
-  setSelectedGroup(group);
-  handleGroupChangeAfterSelection(group);
-};
+  const handleGroupChange = (event) => {
+    const group = event.target.value;
+    setSelectedGroup(group);
+    handleGroupChangeAfterSelection(group);
+  };
 
-const handleDatesSelect = useCallback((campdate) => {
-    console.log("When is handleDatesSelect called?")
+  const handleDatesSelect = useCallback((campdate) => {
     const isSelected = selectedDates.some(date => date.id === campdate.id);
     if (isSelected) {
         setSelectedDates(selectedDates.filter(date => date.id !== campdate.id));
     } else {
         setSelectedDates([...selectedDates, campdate]);
     }
-}, [selectedDates]);
+  }, [selectedDates]);
 
-const handleSchedule = () => {
-  const token = sessionStorage.getItem('bearer');
+  const handleSchedule = () => {
+    const token = sessionStorage.getItem('bearer');
 
-  const datesToPut = selectedDates.filter(date =>
-    !previousSelectedDates.some(prevDate => prevDate.id === date.id)
-  );
+    const datesToPut = selectedDates.filter(date =>
+      !previousSelectedDates.some(prevDate => prevDate.id === date.id)
+    );
 
-  const datesToDelete = previousSelectedDates.filter(prevDate =>
-    !selectedDates.some(date => date.id === prevDate.id)
-  );
+    const datesToDelete = previousSelectedDates.filter(prevDate =>
+      !selectedDates.some(date => date.id === prevDate.id)
+    );
 
-  const putRequests = datesToPut.map(campdate => {
-    return fetch(`${SERVER_URL}api/campgroup/${selectedGroup.id}/camptime/${campdate.id}`, {
-      method: 'PUT',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      },
+    const putRequests = datesToPut.map(campdate => {
+      return fetch(`${SERVER_URL}api/campgroup/${selectedGroup.id}/camptime/${campdate.id}`, {
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+      });
     });
-  });
 
-  const deleteRequests = datesToDelete.map(campdate => {
-    return fetch(`${SERVER_URL}api/campgroup/${selectedGroup.id}/camptime/${campdate.id}`, {
-      method: 'DELETE',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      },
+    const deleteRequests = datesToDelete.map(campdate => {
+      return fetch(`${SERVER_URL}api/campgroup/${selectedGroup.id}/camptime/${campdate.id}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+      });
     });
-  });
 
-  Promise.all([...putRequests, ...deleteRequests])
+    Promise.all([...putRequests, ...deleteRequests])
       .then(responses => {
           console.log('All operations completed');
           setPreviousSelectedDates(selectedDates);
-          console.log("Pre selected dates");
-          console.log(previousSelectedDates);
           fetchDates();
       })
       .catch(err => console.error('Error with scheduling operations:', err));
-};
+  };
 
-const theme = createTheme({
-  components: {
-    MuiCalendarPicker: {
-      styleOverrides: {
-        day: ({ ownerState, theme }) => {
-          const isSelected = selectedDates.some(
-            selectedDate => selectedDate && selectedDate.toISOString().slice(0, 10) === ownerState.day.toISOString().slice(0, 10)
-          );
-          return {
-            ...(isSelected && {
-              backgroundColor: theme.palette.primary.main,
-              color: theme.palette.common.white,
-            }),
-          };
-        },
-      },
-    },
-  },
-});
-
-function chunkArray(array, chunkSize) {
-  const chunks = [];
-  for (let i = 0; i < array.length; i += chunkSize) {
-    chunks.push(array.slice(i, i + chunkSize));
+  function chunkArray(array, chunkSize) {
+    const chunks = [];
+    for (let i = 0; i < array.length; i += chunkSize) {
+      chunks.push(array.slice(i, i + chunkSize));
+    }
+    return chunks;
   }
-  return chunks;
-}
 
-const dateChunks = chunkArray(sortedDates, 7);
+  const dateChunks = chunkArray(sortedDates, 7);
 
-return(
+  return(
     <React.Fragment>
         
     <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', margin: '20px 0' }}>
@@ -314,17 +263,6 @@ return(
     </div>
     <button onClick={handleSchedule} type="button">Schedule</button>
     <div style={{ display: 'grid', gridTemplateRows: 'auto 1fr', gap: '20px', marginBottom: '20px' }}>
-    <div style={{ gridRow: '1', position: 'relative', zIndex: 1000 }}>
-        <DatePicker
-            range
-            placeholderText="Scheduler"
-            render={<InputIcon/>}
-            plugins={[<DatePanel />]}
-            multiple
-            value={selectedConvertedDates}
-            style={{ width: "100%", fontSize: "1.25rem" }}
-        />
-    </div>
     <div className="detail-card booking-card" style={{ padding: '20px 0' }}>
     <div style={{ margin: '10px' }}>
     <input
