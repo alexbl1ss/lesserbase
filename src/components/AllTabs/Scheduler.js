@@ -5,16 +5,28 @@ import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
+import DatePicker from "react-multi-date-picker";
+import DatePanel from "react-multi-date-picker/plugins/date_panel";
+import Calendar from 'react-calendar';
+import 'react-calendar/dist/Calendar.css';
+import { DateCalendar, LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { Box, ThemeProvider, createTheme } from '@mui/material';
+import InputIcon from "react-multi-date-picker/components/input_icon"
+
+
+
 
 function Scheduler(props) {
   const [campDates, setCampDates] = useState([]);
-  const [allGroups, setAllGroups] = useState([]);  // All groups fetched from the server
-  const [filteredGroups, setFilteredGroups] = useState([]); // Groups filtered based on campus and group type
+  const [allGroups, setAllGroups] = useState([]);
+  const [filteredGroups, setFilteredGroups] = useState([]);
   const [selectedDates, setSelectedDates] = useState([]);
   const [selectedGroup, setSelectedGroup] = useState('');
   const [selectedCampus, setSelectedCampus] = useState('');
   const [selectedGroupType, setSelectedGroupType] = useState('');
   const [selectAll, setSelectAll] = useState(false);
+  const [selectedConvertedDates, setSelectedConvertedDates] = useState([]);
 
 
     const fetchDates = useCallback(() => {
@@ -38,6 +50,14 @@ function Scheduler(props) {
       .catch((err) => console.error(err));
   }, []);
 
+  const convertedCampDates = campDates.map(date => {
+    return {
+      ...date,
+      campDate: new Date(date.campDate) // Convert string to Date object
+    };
+  });
+  
+
   const fetchGroups = useCallback(() => {
     const token = sessionStorage.getItem('bearer');
     fetch(`${SERVER_URL}api/campgroups`, {
@@ -47,7 +67,7 @@ function Scheduler(props) {
         .then(data => {
             sessionStorage.setItem('campgroups', JSON.stringify(data));
             setAllGroups(data);
-            setFilteredGroups(data);  // Initially no filter, so show all groups
+            setFilteredGroups(data);
         })
         .catch(err => console.error(err));
 }, []);
@@ -98,6 +118,11 @@ const handleGroupChangeAfterSelection = (group) => {
     date.groups.some(g => g.id === group.id)
   );
   setSelectedDates(datesWithGroup);
+
+  const ConvertedDatesWithGroup = convertedCampDates.filter(date => 
+    date.groups.some(g => g.id === group.id)
+  );
+  setSelectedConvertedDates(ConvertedDatesWithGroup.map(date => date.campDate));
 };
 
 const handleGroupTypeChange = (event) => {
@@ -188,8 +213,39 @@ const handleGroupChange = (event) => {
   handleGroupChangeAfterSelection(group);
 };
 
+const theme = createTheme({
+  components: {
+    MuiCalendarPicker: {
+      styleOverrides: {
+        day: ({ ownerState, theme }) => {
+          const isSelected = selectedDates.some(
+            selectedDate => selectedDate && selectedDate.toISOString().slice(0, 10) === ownerState.day.toISOString().slice(0, 10)
+          );
+          return {
+            ...(isSelected && {
+              backgroundColor: theme.palette.primary.main,
+              color: theme.palette.common.white,
+            }),
+          };
+        },
+      },
+    },
+  },
+});
+
+function chunkArray(array, chunkSize) {
+  const chunks = [];
+  for (let i = 0; i < array.length; i += chunkSize) {
+    chunks.push(array.slice(i, i + chunkSize));
+  }
+  return chunks;
+}
+
+const dateChunks = chunkArray(sortedDates, 7);
+
 return(
     <React.Fragment>
+        
     <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', margin: '20px 0' }}>
         
         <FormControl variant="standard" style={{ minWidth: 240 }}>
@@ -242,6 +298,18 @@ return(
         </FormControl>
     </div>
     <button onClick={handleSchedule} type="button">Schedule</button>
+    <div style={{ display: 'grid', gridTemplateRows: 'auto 1fr', gap: '20px', marginBottom: '20px' }}>
+    <div style={{ gridRow: '1', position: 'relative', zIndex: 1000 }}>
+        <DatePicker
+            range
+            placeholderText="Scheduler"
+            render={<InputIcon/>}
+            plugins={[<DatePanel />]}
+            multiple
+            value={selectedConvertedDates}
+            style={{ width: "100%", fontSize: "1.25rem" }}
+        />
+    </div>
     <div className="detail-card booking-card" style={{ padding: '20px 0' }}>
     <div style={{ margin: '10px' }}>
     <input
@@ -250,36 +318,53 @@ return(
       onChange={handleSelectAll}
     />
     <label>Select All Dates</label>
-  </div><table style={{ width: '80%', textAlign: 'left', margin: 'auto', borderCollapse: 'collapse' }}>
-        <thead>
-          <tr>
-            <th>ID</th>
+    <table style={{ width: '80%', textAlign: 'left', margin: 'auto', borderCollapse: 'collapse' }}>
+    <thead>
+        <tr>
+        <th>Date</th>
+            <th>?</th>
             <th>Date</th>
-            <th>schedule?</th>
-          </tr>
-        </thead>
-        <tbody>
-        {sortedDates.map((campdate) => (
-          <tr key={campdate.id}>
-          <td>{campdate.id}</td>
-          <td>{campdate.campDate}</td>
-          <td>
-          <input
-    type="checkbox"
-    checked={selectedDates.some(date => date.id === campdate.id)}
-    onChange={() => handleDatesSelect(campdate)}
-/>
-
-        </td>
-      </tr>
+            <th>?</th>
+            <th>Date</th>
+            <th>?</th>
+            <th>Date</th>
+            <th>?</th>
+            <th>Date</th>
+            <th>?</th>
+            <th>Date</th>
+            <th>?</th>
+            <th>Date</th>
+            <th>?</th>
+        </tr>
+    </thead>
+    <tbody>
+    {dateChunks.map((chunk) => (
+        <tr key={chunk[0].id}>
+            {chunk.map((campdate) => (
+                <>
+                    <td>{campdate.campDate}</td>
+                    <td>
+                        <input
+                            type="checkbox"
+                            checked={selectedDates.some(date => date.id === campdate.id)}
+                            onChange={() => handleDatesSelect(campdate)}
+                        />
+                    </td>
+                </>
+            ))}
+            {chunk.length < 7 ? <td colSpan={7 * (7 - chunk.length)}></td> : null}
+        </tr>
     ))}
-        </tbody>
-      </table>
+    </tbody>
+</table>
+
     </div>
-    <button onClick={handleSchedule}  type="button">Create Schedule</button>
+    <button onClick={handleSchedule}  type="button">Update Schedule</button>
     <div>
         <p style={{ color: '#999999', fontSize: '10px' }}>Is authenticated: {sessionStorage.getItem('isAuthenticated').toString()}</p>
       </div>
+      </div>
+     </div>
     </React.Fragment>
 );
 }

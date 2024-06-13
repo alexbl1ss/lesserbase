@@ -4,7 +4,6 @@ export const SERVER_URL='https://blissdbtest.herokuapp.com/';
 //export const SERVER_URL='https://blissalex.herokuapp.com/';
 
 export const CAMPUSES = [
-  { value: 'Glenalmond', label: 'Glenalmond' },
   { value: 'Kilgraston', label: 'Kilgraston' },
   { value: 'Rishworth', label: 'Rishworth' },
   { value: 'StBees', label: 'StBees' },
