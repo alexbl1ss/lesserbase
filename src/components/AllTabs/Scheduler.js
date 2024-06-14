@@ -63,7 +63,7 @@ function Scheduler(props) {
   const fetchAdults = useCallback(() => {
     console.log('Fetching adults...');
     const token = sessionStorage.getItem('bearer');
-    fetch(`${SERVER_URL}api/adults`, {
+    fetch(`${SERVER_URL}api/adultswithstays`, {
         headers: { Authorization: `Bearer ${token}` }
     })
     .then(response => response.json())
@@ -79,7 +79,7 @@ function Scheduler(props) {
     fetchDates();
     fetchGroups();
     fetchAdults();
-  }, [fetchDates, fetchGroups]);
+  }, [fetchDates, fetchGroups, fetchAdults]);
 
   useEffect(() => {
     if (filteredGroups.length === 1) {
@@ -155,7 +155,7 @@ function Scheduler(props) {
   const handleItemChangeAfterSelection = (item) => {
     if (!selectedItem || item.id !== selectedItem.id) {
       const datesWithItem = campDates.filter(date => 
-        date.groups.some(g => g.id === item.id) // Modify this to handle adults as well
+        (scheduleType === 'STAFF' ? date.adults : date.groups).some(g => g.id === item.id)
       );
       setSelectedDates(datesWithItem);
       setPreviousSelectedDates(datesWithItem);
@@ -188,7 +188,12 @@ function Scheduler(props) {
     );
 
     const putRequests = datesToPut.map(campdate => {
-      return fetch(`${SERVER_URL}api/campgroup/${selectedItem.id}/camptime/${campdate.id}`, {
+      // Determine the base URL based on the scheduleType
+      const baseUrl = scheduleType === 'STAFF'
+        ? `${SERVER_URL}api/adult/${selectedItem.id}/camptime/${campdate.id}`
+        : `${SERVER_URL}api/campgroup/${selectedItem.id}/camptime/${campdate.id}`;
+    
+      return fetch(baseUrl, {
         method: 'PUT',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -196,9 +201,14 @@ function Scheduler(props) {
         },
       });
     });
-
+    
     const deleteRequests = datesToDelete.map(campdate => {
-      return fetch(`${SERVER_URL}api/campgroup/${selectedItem.id}/camptime/${campdate.id}`, {
+      // Determine the base URL based on the scheduleType
+      const baseUrl = scheduleType === 'STAFF'
+        ? `${SERVER_URL}api/adult/${selectedItem.id}/camptime/${campdate.id}`
+        : `${SERVER_URL}api/campgroup/${selectedItem.id}/camptime/${campdate.id}`;
+    
+      return fetch(baseUrl, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -206,6 +216,7 @@ function Scheduler(props) {
         },
       });
     });
+    
 
     Promise.all([...putRequests, ...deleteRequests])
       .then(responses => {
@@ -284,21 +295,28 @@ function Scheduler(props) {
         </FormControl>
 
         <FormControl variant="standard" style={{ minWidth: 240 }}>
-          <InputLabel id="item-label">{scheduleType === 'STAFF' ? 'Adult' : 'Group'}</InputLabel>
-            <Select
-              labelId="item-label"
-              id="item-select"
-              value={selectedItem}
-              onChange={handleItemChange}
-              renderValue={selected => selected ? (scheduleType === 'STAFF' ? selected.adultName : selected.groupName) : ''}
-            >
-              {filteredGroups.map((item) => (
-                <MenuItem key={item.id} value={item}>
-                  {scheduleType === 'STAFF' ? item.adultName : item.groupName}
-                </MenuItem>
-              ))}
-            </Select>
-        </FormControl>
+  <InputLabel id="item-label">{scheduleType === 'STAFF' ? 'Adult' : 'Group'}</InputLabel>
+  <Select
+    labelId="item-label"
+    id="item-select"
+    value={selectedItem}
+    onChange={handleItemChange}
+    renderValue={selected => 
+      selected && scheduleType === 'STAFF' && selected.adultName && selected.adultSurname 
+      ? `${selected.adultName} ${selected.adultSurname}` 
+      : selected && selected.groupName ? selected.groupName : ''}
+  >
+    {filteredGroups.map((item) => (
+      <MenuItem key={item.id} value={item}>
+        {scheduleType === 'STAFF' && item.adultName && item.adultSurname 
+          ? `${item.adultName} ${item.adultSurname}` 
+          : item.groupName ? item.groupName : 'No Name Available'}
+      </MenuItem>
+    ))}
+  </Select>
+</FormControl>
+
+
 
     </div>
     <button onClick={handleSchedule} type="button">Schedule</button>
