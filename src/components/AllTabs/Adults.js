@@ -10,6 +10,7 @@ import MenuItem from '@mui/material/MenuItem';
 import EditIcon from '@mui/icons-material/Edit';
 import IconButton from '@mui/material/IconButton';
 import EditAdultStay from '../AddsEdits/EditAdultStay.js';
+import AddAdultStay from '../AddsEdits/AddAdultStay.js';
 
 
 function Adults(props) {
@@ -100,11 +101,7 @@ function Adults(props) {
             setSelectedStay(stay);
         }
     }; 
-    useEffect(() => {
-        console.log('selectedItem');
-        console.log(selectedItem);
-    }, [selectedItem])
-
+    
     const addAdult = adult => {
         const token = sessionStorage.getItem("bearer");
         fetch(`${SERVER_URL}api/adults`, {
@@ -120,7 +117,6 @@ function Adults(props) {
     };
 
     const editAdult = updatedAdult => {
-        console.log(updatedAdult)
         const token = sessionStorage.getItem("bearer");
         fetch(`${SERVER_URL}api/adults/${updatedAdult.id}`, {
             method: 'PUT',
@@ -140,8 +136,28 @@ function Adults(props) {
       };
   
 
+    const addStay = (stay) => {
+        const token = sessionStorage.getItem("bearer");
+
+        fetch(`${SERVER_URL}api/adult/${selectedItem.id}/stays`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(stay)
+        })
+            .then(response => {
+                if (response.ok) {
+                    fetchCampStays();
+                } else {
+                    alert('Something went wrong!');
+                }
+            })
+            .catch(err => console.error(err))
+    }
+    
     const updateAdultStay = updatedAdultStay => {
-        console.log(updatedAdultStay)
         const token = sessionStorage.getItem("bearer");
         fetch(`${SERVER_URL}api/adult/${selectedItem.id}/stay/${selectedStay.stayId}`, {
             method: 'PUT',
@@ -191,6 +207,42 @@ function Adults(props) {
           .catch(err => console.error(err))
       }
 
+    const deleteAdultStay = (event, stayId) => {
+        event.preventDefault();
+      
+        const token = sessionStorage.getItem("bearer");
+        
+        fetch(`${SERVER_URL}api/adult/${selectedItem.id}/stays`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          method: 'GET'
+        })
+          .then(response => response.json())
+          .then(data => {
+            const adultId = data.id;
+            
+            return fetch(`${SERVER_URL}api/adult/${selectedItem.id}/stay/${stayId}`, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json'
+              },
+              method: 'DELETE'
+            })
+          })
+          .then(response => {
+    
+            if (response.ok) {
+              fetchCampStays();
+            }
+            else {
+              alert('Something went wrong!');
+            }
+          })
+          .catch(err => console.error(err))
+      }
+
     return (
         <React.Fragment>
             <div className="detail-card payments-card" style={{ padding: '20px 0' }}>
@@ -219,7 +271,7 @@ function Adults(props) {
                         <th>Allergies</th>
                         <th>Role</th>
                         <th>Notes</th>
-                        <th>Edit</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -251,9 +303,6 @@ function Adults(props) {
                 </table>
             </div>
             <AddAdult addAdult={addAdult} />
-            <div>
-                <p style={{ color: '#999999', fontSize: '10px' }}>Is authenticated: {sessionStorage.getItem('isAuthenticated').toString()}</p>
-            </div>
             <div className="detail-card payments-card" style={{ padding: '20px 0' }}>
             <table style={{ width: '80%', textAlign: 'left', margin: '20px auto', borderCollapse: 'collapse' }}>
                 <thead>
@@ -279,7 +328,7 @@ function Adults(props) {
                                     </IconButton>
                             </td>
                             <td>
-                                <IconButton onClick={(event) => deleteAdult(event, stay.id)}><Delete color="primary"/></IconButton>
+                                <IconButton onClick={(event) => deleteAdultStay(event, stay.stayId)}><Delete color="primary"/></IconButton>
                             </td>
                             <td>
                             <input
@@ -301,7 +350,10 @@ function Adults(props) {
                                     onClose={() => setEditOpen(false)}
                                     editStay={(stay) => EditAdultStay(selectedStay, updateAdultStay, selectedItem.id, selectedStay.stayId)}
                                 />
-            <AddAdult addAdult={addAdult} />
+            <AddAdultStay
+                adultId={selectedItem}
+                addStay={addStay}
+            />
             <div>
                 <p style={{ color: '#999999', fontSize: '10px' }}>Is authenticated: {sessionStorage.getItem('isAuthenticated').toString()}</p>
             </div>    

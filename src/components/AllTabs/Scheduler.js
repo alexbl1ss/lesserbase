@@ -13,12 +13,13 @@ function Scheduler(props) {
   const [adults, setAdults] = useState([]);
   const [filteredGroups, setFilteredGroups] = useState([]);
   const [selectedDates, setSelectedDates] = useState([]);
-  const [selectedItem, setSelectedItem] = useState(null);
+  const [selectedItem, setSelectedItem] = useState('');
+  const [selectAll, setSelectAll] = useState(false);
+  const [previousSelectedDates, setPreviousSelectedDates] = useState([]);
   const [selectedCampus, setSelectedCampus] = useState('');
   const [selectedGroupType, setSelectedGroupType] = useState('');
-  const [selectAll, setSelectAll] = useState(false);
-  const [scheduleType, setScheduleType] = useState([]);
-  const [previousSelectedDates, setPreviousSelectedDates] = useState([]);
+  const [scheduleType, setScheduleType] = useState('');
+
 
   const fetchDates = useCallback(() => {
     const token = sessionStorage.getItem('bearer');
@@ -47,6 +48,8 @@ function Scheduler(props) {
   });
 
   const fetchGroups = useCallback(() => {
+    console.log("fetchGroups");
+    console.log(filteredGroups);
     const token = sessionStorage.getItem('bearer');
     fetch(`${SERVER_URL}api/campgroups`, {
       headers: { Authorization: `Bearer ${token}` },
@@ -56,6 +59,7 @@ function Scheduler(props) {
         sessionStorage.setItem('campgroups', JSON.stringify(data));
         setAllGroups(data);
         setFilteredGroups(data);
+        console.log(filteredGroups);
       })
       .catch(err => console.error(err));
   }, []);
@@ -109,19 +113,31 @@ function Scheduler(props) {
   };
 
   const handleScheduleTypeChange = (event) => {
-    console.log("Schedule type changed to: ", event.target.value);
-    setScheduleType(event.target.value);
+    const newType = event.target.value;
+    console.log("Schedule type changed to: ", newType);
+    setScheduleType(newType);
 
     setSelectedItem('');
     setSelectedDates([]);
     setFilteredGroups([]);
 
-    if (event.target.value === 'STAFF') {
+    if (newType === 'STAFF') {
       setFilteredGroups(adults);
+      setSelectedGroupType('');
     } else {
-      filterItems(selectedCampus, selectedGroupType);
+      setSelectedGroupType(GROUPTYPES[0]?.value || ''); // Ensure a valid default or empty
+      filterItems(selectedCampus, GROUPTYPES[0]?.value || '');
     }
-  };
+};
+
+useEffect(() => {
+  console.log(filteredGroups)
+  const ids = filteredGroups.map(item => item.id);
+  const uniqueIds = new Set(ids);
+  if (ids.length !== uniqueIds.size) {
+    console.error("Duplicate IDs detected:", ids);
+  }
+}, [filteredGroups]);
 
   const handleGroupTypeChange = (event) => {
     const groupType = event.target.value;
@@ -140,7 +156,7 @@ function Scheduler(props) {
         ? adults.filter(adult => (!campus || adult.campus === campus) && (!type || adult.role === type))
         : allGroups.filter(group => (!campus || group.campus === campus) && (!type || group.groupType === type));
 
-    setFilteredGroups(filtered); // Consider renaming this state to filteredItems for clarity
+    setFilteredGroups(filtered);
 
     if (filtered.length > 0) {
         const firstItem = filtered[0];
@@ -279,12 +295,12 @@ function Scheduler(props) {
         </FormControl>
         
         <FormControl variant="standard" style={{ minWidth: 240 }}>
-          <InputLabel id="type-label">{scheduleType === 'STAFF' ? 'Role' : 'Group Type'}</InputLabel>
+          <InputLabel id="role-group-type-label">{scheduleType === 'STAFF' ? 'Role' : 'Group Type'}</InputLabel>
             <Select
-              labelId="type-label"
-              id="type-select"
+              labelId="role-group-type-label"
+              id="role-group-type-select"
               value={selectedGroupType}
-              onChange={handleGroupTypeChange}
+              onChange={handleGroupTypeChange} // Ensure this handler is correctly updating `selectedGroupType`
             >
             {(scheduleType === 'STAFF' ? ROLES : GROUPTYPES).map((type) => (
               <MenuItem key={type.value} value={type.value}>
@@ -295,29 +311,41 @@ function Scheduler(props) {
         </FormControl>
 
         <FormControl variant="standard" style={{ minWidth: 240 }}>
-  <InputLabel id="item-label">{scheduleType === 'STAFF' ? 'Adult' : 'Group'}</InputLabel>
-  <Select
-    labelId="item-label"
-    id="item-select"
-    value={selectedItem}
-    onChange={handleItemChange}
-    renderValue={selected => 
-      selected && scheduleType === 'STAFF' && selected.adultName && selected.adultSurname 
-      ? `${selected.adultName} ${selected.adultSurname}` 
-      : selected && selected.groupName ? selected.groupName : ''}
-  >
-    {filteredGroups.map((item) => (
-      <MenuItem key={item.id} value={item}>
-        {scheduleType === 'STAFF' && item.adultName && item.adultSurname 
-          ? `${item.adultName} ${item.adultSurname}` 
-          : item.groupName ? item.groupName : 'No Name Available'}
-      </MenuItem>
-    ))}
-  </Select>
-</FormControl>
-
-
-
+          <InputLabel id="item-label">
+            {scheduleType === 'STAFF' ? 'Adult' : 'Group'}
+          </InputLabel>
+          <Select
+            labelId="item-label"
+            id="item-select"
+            value={selectedItem}
+            onChange={handleItemChange}
+            renderValue={(selected) =>
+            selected &&
+            scheduleType === 'STAFF' &&
+            selected.adultName &&
+            selected.adultSurname &&
+            selected.start &&
+            selected.end
+              ? `${selected.adultName} ${selected.adultSurname} (${selected.start} - ${selected.end})`
+              : selected && selected.groupName
+              ? selected.groupName
+              : ''
+            }
+          >
+          {filteredGroups.map((item) => (
+            <MenuItem
+              key={item.id}
+              value={item}
+            >
+            {scheduleType === 'STAFF' && item.adultName && item.adultSurname && item.start && item.end
+            ? `${item.adultName} ${item.adultSurname} (${item.start} - ${item.end})`
+            : item.groupName
+            ? item.groupName
+            : 'No Name Available'}
+            </MenuItem>
+          ))}
+          </Select>
+        </FormControl>
     </div>
     <button onClick={handleSchedule} type="button">Schedule</button>
     <div style={{ display: 'grid', gridTemplateRows: 'auto 1fr', gap: '20px', marginBottom: '20px' }}>

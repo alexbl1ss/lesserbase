@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
@@ -10,15 +10,17 @@ import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
+import AddIcon from '@mui/icons-material/Add';
+import IconButton from '@mui/material/IconButton';
 import { CAMPUSES } from '../../constants';
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
 
-
-function EditAdultStay(props) {
-    const { adultStayToEdit, updateAdultStay, open, onClose, adultId } = props;
+function AddStay(props) {
+    const [open, setOpen] = useState(false);
+    const { adultId } = props;
     const [stay, setStay] = useState({
         campus: '',
         arrivalDate: new Date(),
@@ -26,29 +28,22 @@ function EditAdultStay(props) {
         residential: false,
     });
 
-    useEffect(() => {
-        if (adultStayToEdit) {
-            const safeDate = (dateString) => {
-                const date = new Date(dateString);
-                return date instanceof Date && !isNaN(date) ? date : new Date();
-              };
-        
-            setStay({
-                campus: adultStayToEdit.campus,
-                arrivalDate: safeDate(adultStayToEdit.arrivalDate),
-                departureDate: safeDate(adultStayToEdit.departureDate),
-                residential: adultStayToEdit.residential === "Yes",
-            });
-        }
-    }, [adultStayToEdit]);
+    const handleClickOpen = () => {
+        setStay(prevStay => ({
+            ...prevStay,
+            arrivalDate: new Date('2024-06-30'),
+            departureDate: new Date('2024-08-10')
+          }));
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
 
     const handleSave = () => {
-        const stayForServer = {
-            ...stay,
-            residential: stay.residential ? "Yes" : "No"
-        };
-        updateAdultStay(stay, adultId, adultStayToEdit.stayId);
-        onClose();
+        props.addStay(stay, adultId.id);
+        handleClose();
     };
 
     const handleDateChange = (date, name) => {
@@ -67,10 +62,12 @@ function EditAdultStay(props) {
     };
 
     return (
-        <Dialog open={open} onClose={onClose}>
-            <DialogTitle>Edit Stay</DialogTitle>
-            <DialogContent>
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
+        <div>
+            <IconButton onClick={handleClickOpen}color="primary"> <AddIcon/></IconButton>
+            <Dialog open={open} onClose={handleClose}>
+                <DialogTitle>Add Stay</DialogTitle>
+                <DialogContent>
+                <LocalizationProvider dateAdapter={AdapterDateFns}>
                     <Stack spacing={2} mt={1}>
                         <FormControl>
                             <InputLabel id="campus-label">Campus</InputLabel>
@@ -126,16 +123,17 @@ function EditAdultStay(props) {
                                 />
                             }
                             label="Residential"
-                        />
+                            />
                     </Stack>
                     </LocalizationProvider>
-            </DialogContent>
-            <DialogActions>
-                <Button onClick={onClose}>Cancel</Button>
-                <Button onClick={handleSave}>Save</Button>
-            </DialogActions>
-        </Dialog>
+                    </DialogContent>    
+                <DialogActions>
+                    <Button onClick={handleClose}>Cancel</Button>
+                    <Button onClick={handleSave}>Save</Button>
+                </DialogActions>
+            </Dialog>            
+        </div>
     );
 }
 
-export default EditAdultStay;
+export default AddStay;
