@@ -48,8 +48,7 @@ function Scheduler(props) {
   });
 
   const fetchGroups = useCallback(() => {
-    console.log("fetchGroups");
-    console.log(filteredGroups);
+    console.log('Fetching groups...');
     const token = sessionStorage.getItem('bearer');
     fetch(`${SERVER_URL}api/campgroups`, {
       headers: { Authorization: `Bearer ${token}` },
@@ -59,7 +58,6 @@ function Scheduler(props) {
         sessionStorage.setItem('campgroups', JSON.stringify(data));
         setAllGroups(data);
         setFilteredGroups(data);
-        console.log(filteredGroups);
       })
       .catch(err => console.error(err));
   }, []);
@@ -128,17 +126,8 @@ function Scheduler(props) {
       setSelectedGroupType(GROUPTYPES[0]?.value || ''); // Ensure a valid default or empty
       filterItems(selectedCampus, GROUPTYPES[0]?.value || '');
     }
-};
-
-useEffect(() => {
-  console.log(filteredGroups)
-  const ids = filteredGroups.map(item => item.id);
-  const uniqueIds = new Set(ids);
-  if (ids.length !== uniqueIds.size) {
-    console.error("Duplicate IDs detected:", ids);
-  }
-}, [filteredGroups]);
-
+  };
+  
   const handleGroupTypeChange = (event) => {
     const groupType = event.target.value;
     setSelectedGroupType(groupType);
