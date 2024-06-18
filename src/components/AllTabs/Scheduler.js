@@ -158,14 +158,23 @@ function Scheduler(props) {
   };
   
   const handleItemChangeAfterSelection = (item) => {
-    if (!selectedItem || item.id !== selectedItem.id) {
-      const datesWithItem = campDates.filter(date => 
-        (scheduleType === 'STAFF' ? date.adults : date.groups).some(g => g.id === item.id)
-      );
+    const itemId = scheduleType === 'STAFF' ? item.stayId : item.id;
+    const selectedItemId = selectedItem ? (scheduleType === 'STAFF' ? selectedItem.stayId : selectedItem.id) : null;
+  
+    if (!selectedItem || itemId !== selectedItemId) {
+      const datesWithItem = campDates.filter(date => {
+        const matches = (scheduleType === 'STAFF' ? date.campstays : date.groups).some(g =>
+          (scheduleType === 'STAFF' ? g.id : g.id) === itemId
+        );
+        return matches;
+      });
       setSelectedDates(datesWithItem);
       setPreviousSelectedDates(datesWithItem);
+      setSelectedItem(item);
     }
   };
+  
+  
   
   const handleItemChange = (event) => {
     setSelectedItem(event.target.value);
@@ -182,6 +191,7 @@ function Scheduler(props) {
   }, [selectedDates]);
 
   const handleSchedule = () => {
+    console.log(selectedItem);
     const token = sessionStorage.getItem('bearer');
 
     const datesToPut = selectedDates.filter(date =>
@@ -195,7 +205,7 @@ function Scheduler(props) {
     const putRequests = datesToPut.map(campdate => {
       // Determine the base URL based on the scheduleType
       const baseUrl = scheduleType === 'STAFF'
-        ? `${SERVER_URL}api/adult/${selectedItem.id}/camptime/${campdate.id}`
+        ? `${SERVER_URL}api/adult/${selectedItem.adultId}/campstay/${selectedItem.stayId}/camptime/${campdate.id}`
         : `${SERVER_URL}api/campgroup/${selectedItem.id}/camptime/${campdate.id}`;
     
       return fetch(baseUrl, {
@@ -210,7 +220,7 @@ function Scheduler(props) {
     const deleteRequests = datesToDelete.map(campdate => {
       // Determine the base URL based on the scheduleType
       const baseUrl = scheduleType === 'STAFF'
-        ? `${SERVER_URL}api/adult/${selectedItem.id}/camptime/${campdate.id}`
+        ? `${SERVER_URL}api/adult/${selectedItem.adultId}/campstay/${selectedItem.stayId}/camptime/${campdate.id}`
         : `${SERVER_URL}api/campgroup/${selectedItem.id}/camptime/${campdate.id}`;
     
       return fetch(baseUrl, {

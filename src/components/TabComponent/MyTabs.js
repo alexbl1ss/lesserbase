@@ -116,7 +116,7 @@ const MyTabs = (props) => {
                 {activeTab === "agents" ? <StudentAgents selectedPerson={selectedPerson}/> : null}
                 {activeTab === "transfers" ? <StudentTransfers selectedPerson={selectedPerson}/> : null}
                 {activeTab === "payments" ? <StudentPayments selectedPerson={selectedPerson}/> : null}
-                {activeTab === "invoice" ? <StudentInvoice selectedPerson={selectedPerson}/> : null}
+                {activeTab === "invoice" ? <StudentInvoice selectedPerson={selectedPerson} selectedStay={selectedStay}/> : null}
                 {activeTab === "summary" ? <StudentSummary selectedPerson={selectedPerson} selectedStay={selectedStay}/> : null}
             </div>
         </div>

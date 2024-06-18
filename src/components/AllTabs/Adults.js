@@ -176,7 +176,7 @@ function Adults(props) {
       
         const token = sessionStorage.getItem("bearer");
         
-        fetch(`${SERVER_URL}api/adults/${adultId}`, {
+        fetch(`${SERVER_URL}api/adult/${adultId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json'

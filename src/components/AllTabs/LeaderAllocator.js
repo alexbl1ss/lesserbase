@@ -135,6 +135,42 @@ const handleGroupTypeChange = (event) => {
     } catch (error) {
         console.error('Error updating group leader:', error);
     }
+  };
+
+const handleDeallocate = async () => {
+  if (!selectedGroup.id) {
+      alert('Please select a group before deallocating.');
+      return;
+  }
+
+  const updatedGroup = {
+      ...selectedGroup,
+      leader: null
+  };
+
+  const url = `${SERVER_URL}api/campgroup/${selectedGroup.id}`;
+  const requestOptions = {
+      method: 'PUT',
+      headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${sessionStorage.getItem('bearer')}`
+      },
+      body: JSON.stringify(updatedGroup)
+  };
+
+  try {
+      const response = await fetch(url, requestOptions);
+      if (!response.ok) {
+          throw new Error('Failed to update the group leader');
+      }
+      const result = await response.json();
+      console.log('Group updated successfully:', result);
+
+      // Refresh your groups list here if the UI needs to reflect the change
+      fetchGroups();
+  } catch (error) {
+      console.error('Error updating group leader:', error);
+  }
 };
 
   
@@ -201,6 +237,7 @@ return(
 
     </div>
     <button onClick={handleAllocate} type="button">Allocate</button>
+    <button onClick={handleDeallocate} type="button">Deallocate</button>
     <div className="detail-card booking-card" style={{ padding: '20px 0' }}>
       <table style={{ width: '80%', textAlign: 'left', margin: 'auto', borderCollapse: 'collapse' }}>
         <thead>

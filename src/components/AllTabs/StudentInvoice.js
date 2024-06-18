@@ -6,7 +6,7 @@ import '../InvoicePage.css';
 import { SERVER_URL, CUTOFF_DATE } from '../../constants.js'
 
 function StudentInvoice(props) {
-  const { selectedPerson } = props;
+  const { selectedPerson, selectedStay } = props;
   const [student, setStudent] = useState([]);
 
   const today = new Date();
@@ -244,8 +244,8 @@ function StudentInvoice(props) {
       <div className="student-details-container">
         <div><strong>{student.studentName} {student.studentSurname}</strong></div>
         <div>Student ID: {student.mtRef}</div>
-        <div>Check in: {student.arrivalDate}</div>
-        <div>Check out: {student.departureDate}</div>
+        <div>Check in: {selectedStay.arrivalDate}</div>
+        <div>Check out: {selectedStay.departureDate}</div>
       </div>
       <div style={{ textAlign: 'right' }}>
         <p>Date: {invoiceDate}</p>
