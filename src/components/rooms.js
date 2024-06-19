@@ -38,7 +38,17 @@ function Rooms() {
         .catch((err) => console.error(err));
     };
 
-    const fetchGroups = useCallback(() => {
+    const filterGroupsByWeekAndCampus = (groups, startDate, endDate, campus) => {
+        return groups.filter(group => 
+            (!campus || group.campus === campus) &&
+            group.groupDates.some(date => {
+                const groupDate = new Date(date);
+                return groupDate >= new Date(startDate) && groupDate <= new Date(endDate);
+            })
+        );
+    };
+
+    const fetchGroups = useCallback((startDate, endDate, campus) => {
         console.log('Fetching groups...');
         const token = sessionStorage.getItem('bearer');
         fetch(`${SERVER_URL}api/campgroups/type/CLASS`, {
@@ -47,12 +57,15 @@ function Rooms() {
         .then(response => response.json())
         .then(data => {
             sessionStorage.setItem('campgroups', JSON.stringify(data));
-            const groups = data.map(group => ({
+            const filteredGroups = filterGroupsByWeekAndCampus(data, startDate, endDate, campus);
+            const groups = filteredGroups.map(group => ({
                 id: group.id,
                 name: group.groupName,
                 leader: `${group.leader.adultName} ${group.leader.adultSurname}`,
                 studentIds: group.studentIds,
-                students: []
+                students: [],
+                campus: group.campus,
+                groupDates: group.groupDates
             }));
             setClassrooms(groups);
             setInitialClassrooms(groups);
@@ -63,8 +76,8 @@ function Rooms() {
     useEffect(() => {
         console.log('Component mounted or updated');
         fetchStudents(selectedWeek.startDate, selectedWeek.endDate);
-        fetchGroups();
-    }, [fetchGroups, selectedWeek]);
+        fetchGroups(selectedWeek.startDate, selectedWeek.endDate, selectedCampus);
+    }, [fetchGroups, selectedWeek, selectedCampus]);
 
     useEffect(() => {
         if (students.length > 0) {
