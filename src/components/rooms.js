@@ -1,26 +1,78 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { DndContext } from '@dnd-kit/core';
+import { SERVER_URL } from '../constants.js';
 
 import Draggable from './Draggable';
 import Droppable from './Droppable';
 import StudentClassroomCard from './StudentClassroomCard';
 
 function Rooms() {
-    const [students, setStudents] = useState([
-        { id: 1, studentName: "Alice Johnson", studentGender: "female", mtRef: "MT001", englishLevel: "B1", studentAge: 13, studentNationality: "Italian" },
-        { id: 2, studentName: "Bob Smith", studentGender: "male", mtRef: "MT002", englishLevel: "A2", studentAge: 7, studentNationality: "Spanish"  },
-        { id: 3, studentName: "Charlie Brown", studentGender: "male", mtRef: "MT003", englishLevel: "A1", studentAge: 16, studentNationality: "Chinese" }
-    ]);
+    const [students, setStudents] = useState([]);
+    const [classrooms, setClassrooms] = useState([]);
+    const [initialClassrooms, setInitialClassrooms] = useState([]);
     
+    const fetchStudents = () => {
+        const token = sessionStorage.getItem('bearer');
+        fetch(`${SERVER_URL}api/studentsBasic`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        .then((response) => {
+          if (response.status === 204) {
+            return [];
+          } else if (response.ok) {
+            return response.json();
+          } else {
+            throw new Error('Failed to fetch students');
+          }
+        })
+        .then((data) => {
+          sessionStorage.setItem('students', JSON.stringify(data));
+          setStudents(data);
+        })
+        .catch((err) => console.error(err));
+    };
 
-    const [classrooms, setClassrooms] = useState([
-        { id: 'A', name: "Room A", students: [] },
-        { id: 'B', name: "Room B", students: [] },
-        { id: 'C', name: "Room C", students: [] },
-        { id: 'D', name: "Room D", students: [] },
-        { id: 'E', name: "Room E", students: [] },
-        { id: 'F', name: "Room F", students: [] }
-    ]);
+    const fetchGroups = useCallback(() => {
+        console.log('Fetching groups...');
+        const token = sessionStorage.getItem('bearer');
+        fetch(`${SERVER_URL}api/campgroups/type/CLASS`, {
+            headers: { Authorization: `Bearer ${token}` },
+        })
+        .then(response => response.json())
+        .then(data => {
+            sessionStorage.setItem('campgroups', JSON.stringify(data));
+            const groups = data.map(group => ({
+                id: group.id,
+                name: group.groupName,
+                leader: `${group.leader.adultName} ${group.leader.adultSurname}`,
+                studentIds: group.studentIds,
+                students: []
+            }));
+            setClassrooms(groups);
+            setInitialClassrooms(groups);
+            
+        })
+        .catch(err => console.error(err));
+    }, []);
+
+    useEffect(() => {
+        console.log('Component mounted or updated');
+        fetchStudents();
+        fetchGroups();
+    }, [fetchGroups]);
+    
+    useEffect(() => {
+        if (students.length > 0 && classrooms.length > 0) {
+            const updatedClassrooms = classrooms.map(classroom => ({
+                ...classroom,
+                students: classroom.studentIds.map(id => students.find(student => student.id === id))
+            }));
+            setClassrooms(updatedClassrooms);
+            if (initialClassrooms.length === 0) {
+                setInitialClassrooms(updatedClassrooms);
+            }
+        }
+    }, [students]);
 
     function handleDragEnd(event) {
         const { active, over } = event;
@@ -54,15 +106,52 @@ function Rooms() {
                 }
                 return room;
             });
-        } else {
-            // If moving to unassigned, we should effectively just update the classrooms list as above
-            // because the unassigned list is derived from those not in any classrooms.
-        }
+        } 
     
         setClassrooms(updatedClassrooms);
     }
     
-    
+    const updateRoomStudents = () => {
+        const token = sessionStorage.getItem('bearer');
+        const addRequests = [];
+        const deleteRequests = [];
+
+        classrooms.forEach(classroom => {
+            const initialClassroom = initialClassrooms.find(ic => ic.id === classroom.id);
+            const initialStudentIds = initialClassroom.students.map(s => s.id);
+            const currentStudentIds = classroom.students.map(s => s.id);
+
+            const studentsToAdd = currentStudentIds.filter(id => !initialStudentIds.includes(id));
+            const studentsToRemove = initialStudentIds.filter(id => !currentStudentIds.includes(id));
+
+            studentsToAdd.forEach(studentId => {
+                addRequests.push(fetch(`${SERVER_URL}api/campgroup/${classroom.id}/student/${studentId}`, {
+                    method: 'PUT',
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                }));
+            });
+
+            studentsToRemove.forEach(studentId => {
+                deleteRequests.push(fetch(`${SERVER_URL}api/campgroup/${classroom.id}/student/${studentId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                }));
+            });
+        });
+
+        Promise.all([...addRequests, ...deleteRequests])
+            .then(responses => {
+                console.log('All operations completed');
+                setInitialClassrooms(classrooms); // Update initial classrooms after changes
+            })
+            .catch(err => console.error('Error with updating students:', err));
+    };
 
     return (
         <DndContext onDragEnd={handleDragEnd}>
@@ -83,12 +172,17 @@ function Rooms() {
                 </Droppable>
 
                 <div className="spacer"></div>
+                <div className="button-container">
+                    <button onClick={updateRoomStudents}>Commit Changes to Database</button>
+                </div>
+                <div className="spacer"></div>
                 
                 {/* Rows of classrooms below the unassigned area */}
                 {classrooms.map((classroom) => (
                     <Droppable key={classroom.id} id={classroom.id} className="classroom">
                         <div className="droppable-area">
                             <h4>{classroom.name}</h4>
+                            <h5>Leader: {classroom.leader}</h5>
                             {classroom.students.map(student => (
                                 <Draggable key={student.id} id={student.id.toString()}>
                                     <StudentClassroomCard person={student} />
@@ -98,6 +192,7 @@ function Rooms() {
                         </div>
                     </Droppable>
                 ))}
+                
             </div>
         </DndContext>
     );
