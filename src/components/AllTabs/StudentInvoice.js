@@ -244,8 +244,8 @@ function StudentInvoice(props) {
       <div className="student-details-container">
         <div><strong>{student.studentName} {student.studentSurname}</strong></div>
         <div>Student ID: {student.mtRef}</div>
-        <div>Check in: {selectedStay.arrivalDate}</div>
-        <div>Check out: {selectedStay.departureDate}</div>
+        <div>Check in: {selectedStay && selectedStay.arrivalDate ? selectedStay.arrivalDate : 'Not available'}</div>
+        <div>Check out: {selectedStay && selectedStay.departureDate ? selectedStay.departureDate : 'Not available'}</div>
       </div>
       <div style={{ textAlign: 'right' }}>
         <p>Date: {invoiceDate}</p>
