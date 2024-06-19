@@ -41,6 +41,14 @@ export const CAMPUSES = [
       {value: 'GROUPS/ROOMS', label: 'GROUPS/ROOMS'},
     ]
 
-    export const CUTOFF_DATE = '2023-08-15'; // Format: YYYY-MM-DD
-    
+    export const CUTOFF_DATE = '2023-08-15';
+
+    export const WEEKS = [
+      { week: '1: 30/06/24-06/07/24', startDate: '2024-06-30', endDate: '2024-07-06' },
+      { week: '2: 07/07/24-13/07/24', startDate: '2024-07-07', endDate: '2024-07-13' },
+      { week: '3: 14/07/24-20/07/24', startDate: '2024-07-14', endDate: '2024-07-20' },
+      { week: '4: 21/07/24-27/07/24', startDate: '2024-07-21', endDate: '2024-07-27' },
+      { week: '5: 28/07/24-03/08/24', startDate: '2024-07-28', endDate: '2024-08-03' },
+      { week: '6: 04/08/24-10/08/24', startDate: '2024-08-04', endDate: '2024-08-10' },
+    ];
     

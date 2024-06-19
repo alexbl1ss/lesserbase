@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { DndContext } from '@dnd-kit/core';
 import { SERVER_URL } from '../constants.js';
+import { WEEKS } from '../constants.js';
 
 import Draggable from './Draggable';
 import Droppable from './Droppable';
@@ -8,26 +9,31 @@ import StudentClassroomCard from './StudentClassroomCard';
 
 function Rooms() {
     const [students, setStudents] = useState([]);
+    const [filteredStudents, setFilteredStudents] = useState([]);
     const [classrooms, setClassrooms] = useState([]);
     const [initialClassrooms, setInitialClassrooms] = useState([]);
-    
-    const fetchStudents = () => {
+    const [selectedWeek, setSelectedWeek] = useState(WEEKS[0]); // Default to the first week
+    const [selectedCampus, setSelectedCampus] = useState(''); // State for selected campus
+    const [selectedEnglishLevel, setSelectedEnglishLevel] = useState(''); // State for selected English level
+
+    const fetchStudents = (startDate, endDate) => {
         const token = sessionStorage.getItem('bearer');
-        fetch(`${SERVER_URL}api/studentsBasic`, {
-          headers: { Authorization: `Bearer ${token}` },
+        fetch(`${SERVER_URL}api/rolebyweek/${startDate}/${endDate}`, {
+            headers: { Authorization: `Bearer ${token}` },
         })
         .then((response) => {
-          if (response.status === 204) {
-            return [];
-          } else if (response.ok) {
-            return response.json();
-          } else {
-            throw new Error('Failed to fetch students');
-          }
+            if (response.status === 204) {
+                return [];
+            } else if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error('Failed to fetch students');
+            }
         })
         .then((data) => {
-          sessionStorage.setItem('students', JSON.stringify(data));
-          setStudents(data);
+            sessionStorage.setItem('students', JSON.stringify(data));
+            setStudents(data);
+            setFilteredStudents(data);
         })
         .catch((err) => console.error(err));
     };
@@ -50,58 +56,86 @@ function Rooms() {
             }));
             setClassrooms(groups);
             setInitialClassrooms(groups);
-            
         })
         .catch(err => console.error(err));
     }, []);
 
     useEffect(() => {
         console.log('Component mounted or updated');
-        fetchStudents();
+        fetchStudents(selectedWeek.startDate, selectedWeek.endDate);
         fetchGroups();
-    }, [fetchGroups]);
-    
+    }, [fetchGroups, selectedWeek]);
+
     useEffect(() => {
-        if (students.length > 0 && classrooms.length > 0) {
-            const updatedClassrooms = classrooms.map(classroom => ({
+        if (students.length > 0) {
+            const updatedClassrooms = initialClassrooms.map(classroom => ({
                 ...classroom,
-                students: classroom.studentIds.map(id => students.find(student => student.id === id))
+                students: classroom.studentIds.map(studentId => students.find(student => student && student.studentId === studentId)).filter(student => student !== undefined)
             }));
             setClassrooms(updatedClassrooms);
-            if (initialClassrooms.length === 0) {
-                setInitialClassrooms(updatedClassrooms);
-            }
+            setInitialClassrooms(updatedClassrooms);
         }
     }, [students]);
+
+    useEffect(() => {
+        filterStudents();
+    }, [selectedCampus, selectedEnglishLevel]);
+
+    const handleWeekChange = (event) => {
+        const selectedWeek = WEEKS.find(week => week.week === event.target.value);
+        setSelectedWeek(selectedWeek);
+    };
+
+    const handleCampusChange = (event) => {
+        setSelectedCampus(event.target.value);
+    };
+
+    const handleEnglishLevelChange = (event) => {
+        setSelectedEnglishLevel(event.target.value);
+    };
+
+    const filterStudents = () => {
+        let filtered = students;
+
+        if (selectedCampus) {
+            filtered = filtered.filter(student => student.stay_campus === selectedCampus);
+        }
+
+        if (selectedEnglishLevel) {
+            filtered = filtered.filter(student => student.englishLevel === selectedEnglishLevel);
+        }
+
+        setFilteredStudents(filtered);
+    };
 
     function handleDragEnd(event) {
         const { active, over } = event;
         if (!over) return;
-    
+
         const draggedId = parseInt(active.id);
-        const fromClassroom = classrooms.find(room => room.students.some(s => s.id === draggedId));
+        const fromClassroom = classrooms.find(room => room.students.some(s => s && s.studentId === draggedId));
         const toClassroom = over.id === "unassigned" ? null : classrooms.find(room => room.id === over.id);
-    
+
         if (fromClassroom === toClassroom) {
             return; // No move needed if it's the same room
         }
-    
+
         let updatedClassrooms = [...classrooms];
         if (fromClassroom) {
             // Remove student from current classroom
             updatedClassrooms = updatedClassrooms.map(room => {
                 if (room.id === fromClassroom.id) {
-                    return { ...room, students: room.students.filter(s => s.id !== draggedId) };
+                    return { ...room, students: room.students.filter(s => s && s.studentId !== draggedId) };
                 }
                 return room;
             });
         }
-    
+
         if (toClassroom) {
             // Add student to new classroom
             updatedClassrooms = updatedClassrooms.map(room => {
                 if (room.id === toClassroom.id) {
-                    const student = students.find(s => s.id === draggedId);
+                    const student = students.find(s => s && s.studentId === draggedId);
                     return { ...room, students: [...room.students, student] };
                 }
                 return room;
@@ -118,8 +152,8 @@ function Rooms() {
 
         classrooms.forEach(classroom => {
             const initialClassroom = initialClassrooms.find(ic => ic.id === classroom.id);
-            const initialStudentIds = initialClassroom.students.map(s => s.id);
-            const currentStudentIds = classroom.students.map(s => s.id);
+            const initialStudentIds = initialClassroom.students.map(s => s.studentId);
+            const currentStudentIds = classroom.students.map(s => s.studentId);
 
             const studentsToAdd = currentStudentIds.filter(id => !initialStudentIds.includes(id));
             const studentsToRemove = initialStudentIds.filter(id => !currentStudentIds.includes(id));
@@ -153,18 +187,56 @@ function Rooms() {
             .catch(err => console.error('Error with updating students:', err));
     };
 
+    // Get unique campuses and English levels for the dropdown options
+    const campuses = Array.from(new Set(students.map(student => student.stay_campus)));
+    const englishLevels = Array.from(new Set(students.map(student => student.englishLevel)));
+
     return (
         <DndContext onDragEnd={handleDragEnd}>
             <div className="classrooms-container">
-                
+                <div className="filter-container">
+                    <div className="filter">
+                        <label htmlFor="week-select">Select Week: </label>
+                        <select id="week-select" value={selectedWeek.week} onChange={handleWeekChange}>
+                            {WEEKS.map(week => (
+                                <option key={week.week} value={week.week}>
+                                    {week.week}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    <div className="filter">
+                        <label htmlFor="campus-select">Select Campus: </label>
+                        <select id="campus-select" value={selectedCampus} onChange={handleCampusChange}>
+                            <option value="">All Campuses</option>
+                            {campuses.map(campus => (
+                                <option key={campus} value={campus}>
+                                    {campus}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    <div className="filter">
+                        <label htmlFor="english-level-select">Select English Level: </label>
+                        <select id="english-level-select" value={selectedEnglishLevel} onChange={handleEnglishLevelChange}>
+                            <option value="">All Levels</option>
+                            {englishLevels.map(level => (
+                                <option key={level} value={level}>
+                                    {level}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                </div>
+
                 {/* Separate area for unassigned students, make sure it's styled distinctly */}
                 <Droppable key="unassigned" id="unassigned" className="classroom unassigned-students">
                     <div className="droppable-area">
                         <h3>Unassigned Students</h3>
-                        {students.filter(student => 
-                            !classrooms.some(room => room.students.some(s => s.id === student.id))
+                        {filteredStudents.filter(student => 
+                            !classrooms.some(room => room.students.some(s => s && s.studentId === student.studentId))
                         ).map(student => (
-                            <Draggable key={student.id} id={student.id.toString()}>
+                            <Draggable key={student.studentId} id={student.studentId.toString()}>
                                 <StudentClassroomCard person={student} />
                             </Draggable>
                         ))}
@@ -184,7 +256,7 @@ function Rooms() {
                             <h4>{classroom.name}</h4>
                             <h5>Leader: {classroom.leader}</h5>
                             {classroom.students.map(student => (
-                                <Draggable key={student.id} id={student.id.toString()}>
+                                <Draggable key={student.studentId} id={student.studentId.toString()}>
                                     <StudentClassroomCard person={student} />
                                 </Draggable>
                             ))}
@@ -196,9 +268,6 @@ function Rooms() {
             </div>
         </DndContext>
     );
-    
-    
-    
 }
 
 export default Rooms;
