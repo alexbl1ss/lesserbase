@@ -74,7 +74,7 @@ function App() {
                     setShowPlanner(false)
                   }}
                 >
-                  Rooms
+                  Classrooms
                 </Button>
                 <Button
                   color="inherit"
@@ -97,7 +97,7 @@ function App() {
                     setShowPlanner(true)
                   }}
                 >
-                  New Planner
+                  Scheduler
                 </Button>
                 <Button
                   color="inherit"

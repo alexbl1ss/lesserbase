@@ -215,9 +215,10 @@ ul.nav li.active {
   width: 100%;
 }
 
-
-
-
-
-
-
+@media (max-width: 600px) {
+  .date-picker-container {
+      width: 100%;
+      position: absolute;
+      bottom: 0; /* Adjust based on your layout */
+  }
+}

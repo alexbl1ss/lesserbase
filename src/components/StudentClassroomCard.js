@@ -2,7 +2,7 @@ import React from 'react';
 
 function StudentClassroomCard({person, onClick}) {
   let imgPath;
-  if (person.studentGender === 'male') {
+  if (person.studentGender === 'Male') {
     const maleImgPaths = [
       "/assets/img/1.png",
       "/assets/img/3.png",
@@ -25,8 +25,8 @@ function StudentClassroomCard({person, onClick}) {
       <div>
         <h2>{person.studentName}</h2>
         <p>Level: {person.englishLevel}</p>
-        <p>Age: {person.studentAge}</p>
-        <p>{person.studentNationality}</p>
+        <p>Age: {person.age}</p>
+        <p>{person.nationality}</p>
       </div>
     </div>
   );
