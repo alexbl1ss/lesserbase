@@ -10,53 +10,50 @@ import StudentClassroomCard from './StudentClassroomCard';
 function Rooms() {
     const [students, setStudents] = useState([]);
     const [filteredStudents, setFilteredStudents] = useState([]);
-    const [classrooms, setClassrooms] = useState([]);
-    const [initialClassrooms, setInitialClassrooms] = useState([]);
-    const [selectedWeek, setSelectedWeek] = useState(WEEKS[0]); // Default to the first week
-    const [selectedCampus, setSelectedCampus] = useState(''); // State for selected campus
-    const [selectedEnglishLevel, setSelectedEnglishLevel] = useState(''); // State for selected English level
+    const [databaseState, setDatabaseState] = useState({ classrooms: [], students: [] });
+    const [displayState, setDisplayState] = useState({ classrooms: [], students: [] });
+    const [selectedWeek, setSelectedWeek] = useState(WEEKS[0]);
+    const [selectedCampus, setSelectedCampus] = useState('');
+    const [selectedEnglishLevel, setSelectedEnglishLevel] = useState('');
 
-    const fetchStudents = (startDate, endDate) => {
+    const fetchStudents = useCallback((startDate, endDate) => {
         const token = sessionStorage.getItem('bearer');
         fetch(`${SERVER_URL}api/rolebyweek/${startDate}/${endDate}`, {
             headers: { Authorization: `Bearer ${token}` },
         })
-        .then((response) => {
-            if (response.status === 204) {
-                return [];
-            } else if (response.ok) {
-                return response.json();
-            } else {
-                throw new Error('Failed to fetch students');
-            }
-        })
+        .then((response) => response.ok ? response.json() : [])
         .then((data) => {
-            sessionStorage.setItem('students', JSON.stringify(data));
             setStudents(data);
             setFilteredStudents(data);
+            setDatabaseState(prevState => ({
+                ...prevState,
+                students: data
+            }));
+            setDisplayState(prevState => ({
+                ...prevState,
+                students: data
+            }));
         })
         .catch((err) => console.error(err));
-    };
+    }, []);
 
-    const filterGroupsByWeekAndCampus = (groups, startDate, endDate, campus) => {
-        return groups.filter(group => 
+    const filterGroupsByWeekAndCampus = useCallback((groups, startDate, endDate, campus) => {
+        return groups.filter(group =>
             (!campus || group.campus === campus) &&
             group.groupDates.some(date => {
                 const groupDate = new Date(date);
                 return groupDate >= new Date(startDate) && groupDate <= new Date(endDate);
             })
         );
-    };
+    }, []);
 
     const fetchGroups = useCallback((startDate, endDate, campus) => {
-        console.log('Fetching groups...');
         const token = sessionStorage.getItem('bearer');
         fetch(`${SERVER_URL}api/campgroups/type/CLASS`, {
             headers: { Authorization: `Bearer ${token}` },
         })
         .then(response => response.json())
         .then(data => {
-            sessionStorage.setItem('campgroups', JSON.stringify(data));
             const filteredGroups = filterGroupsByWeekAndCampus(data, startDate, endDate, campus);
             const groups = filteredGroups.map(group => ({
                 id: group.id,
@@ -67,32 +64,26 @@ function Rooms() {
                 campus: group.campus,
                 groupDates: group.groupDates
             }));
-            setClassrooms(groups);
-            setInitialClassrooms(groups);
+            setDatabaseState(prevState => ({
+                ...prevState,
+                classrooms: groups
+            }));
+            // Initialize displayState with students populated based on studentIds
+            setDisplayState(prevState => ({
+                ...prevState,
+                classrooms: groups.map(group => ({
+                    ...group,
+                    students: group.studentIds.map(studentId => prevState.students.find(student => student.studentId === studentId)).filter(student => student !== undefined)
+                }))
+            }));
         })
         .catch(err => console.error(err));
-    }, []);
+    }, [filterGroupsByWeekAndCampus]);
 
     useEffect(() => {
-        console.log('Component mounted or updated');
         fetchStudents(selectedWeek.startDate, selectedWeek.endDate);
         fetchGroups(selectedWeek.startDate, selectedWeek.endDate, selectedCampus);
-    }, [fetchGroups, selectedWeek, selectedCampus]);
-
-    useEffect(() => {
-        if (students.length > 0) {
-            const updatedClassrooms = initialClassrooms.map(classroom => ({
-                ...classroom,
-                students: classroom.studentIds.map(studentId => students.find(student => student && student.studentId === studentId)).filter(student => student !== undefined)
-            }));
-            setClassrooms(updatedClassrooms);
-            setInitialClassrooms(updatedClassrooms);
-        }
-    }, [students]);
-
-    useEffect(() => {
-        filterStudents();
-    }, [selectedCampus, selectedEnglishLevel]);
+    }, [fetchStudents, fetchGroups, selectedWeek, selectedCampus]);
 
     const handleWeekChange = (event) => {
         const selectedWeek = WEEKS.find(week => week.week === event.target.value);
@@ -107,7 +98,7 @@ function Rooms() {
         setSelectedEnglishLevel(event.target.value);
     };
 
-    const filterStudents = () => {
+    const filterStudents = useCallback(() => {
         let filtered = students;
 
         if (selectedCampus) {
@@ -119,23 +110,27 @@ function Rooms() {
         }
 
         setFilteredStudents(filtered);
-    };
+    }, [students, selectedCampus, selectedEnglishLevel]);
 
-    function handleDragEnd(event) {
+    useEffect(() => {
+        filterStudents();
+    }, [selectedCampus, selectedEnglishLevel, filterStudents]);
+
+    const handleDragEnd = (event) => {
         const { active, over } = event;
         if (!over) return;
 
         const draggedId = parseInt(active.id);
-        const fromClassroom = classrooms.find(room => room.students.some(s => s && s.studentId === draggedId));
-        const toClassroom = over.id === "unassigned" ? null : classrooms.find(room => room.id === over.id);
+        const fromClassroom = displayState.classrooms.find(room => room.students.some(s => s && s.studentId === draggedId));
+        const toClassroom = over.id === "unassigned" ? null : displayState.classrooms.find(room => room.id === over.id);
 
         if (fromClassroom === toClassroom) {
-            return; // No move needed if it's the same room
+            return;
         }
 
-        let updatedClassrooms = [...classrooms];
+        let updatedClassrooms = [...displayState.classrooms];
+
         if (fromClassroom) {
-            // Remove student from current classroom
             updatedClassrooms = updatedClassrooms.map(room => {
                 if (room.id === fromClassroom.id) {
                     return { ...room, students: room.students.filter(s => s && s.studentId !== draggedId) };
@@ -145,7 +140,6 @@ function Rooms() {
         }
 
         if (toClassroom) {
-            // Add student to new classroom
             updatedClassrooms = updatedClassrooms.map(room => {
                 if (room.id === toClassroom.id) {
                     const student = students.find(s => s && s.studentId === draggedId);
@@ -153,23 +147,26 @@ function Rooms() {
                 }
                 return room;
             });
-        } 
-    
-        setClassrooms(updatedClassrooms);
-    }
-    
+        }
+
+        setDisplayState(prevState => ({
+            ...prevState,
+            classrooms: updatedClassrooms
+        }));
+    };
+
     const updateRoomStudents = () => {
         const token = sessionStorage.getItem('bearer');
         const addRequests = [];
         const deleteRequests = [];
 
-        classrooms.forEach(classroom => {
-            const initialClassroom = initialClassrooms.find(ic => ic.id === classroom.id);
-            const initialStudentIds = initialClassroom.students.map(s => s.studentId);
+        displayState.classrooms.forEach(classroom => {
+            const databaseClassroom = databaseState.classrooms.find(ic => ic.id === classroom.id);
+            const databaseStudentIds = databaseClassroom.studentIds;
             const currentStudentIds = classroom.students.map(s => s.studentId);
 
-            const studentsToAdd = currentStudentIds.filter(id => !initialStudentIds.includes(id));
-            const studentsToRemove = initialStudentIds.filter(id => !currentStudentIds.includes(id));
+            const studentsToAdd = currentStudentIds.filter(id => !databaseStudentIds.includes(id));
+            const studentsToRemove = databaseStudentIds.filter(id => !currentStudentIds.includes(id));
 
             studentsToAdd.forEach(studentId => {
                 addRequests.push(fetch(`${SERVER_URL}api/campgroup/${classroom.id}/student/${studentId}`, {
@@ -193,14 +190,14 @@ function Rooms() {
         });
 
         Promise.all([...addRequests, ...deleteRequests])
-            .then(responses => {
+            .then(() => {
                 console.log('All operations completed');
-                setInitialClassrooms(classrooms); // Update initial classrooms after changes
+                fetchStudents(selectedWeek.startDate, selectedWeek.endDate);
+                fetchGroups(selectedWeek.startDate, selectedWeek.endDate, selectedCampus);
             })
             .catch(err => console.error('Error with updating students:', err));
     };
 
-    // Get unique campuses and English levels for the dropdown options
     const campuses = Array.from(new Set(students.map(student => student.stay_campus)));
     const englishLevels = Array.from(new Set(students.map(student => student.englishLevel)));
 
@@ -242,12 +239,11 @@ function Rooms() {
                     </div>
                 </div>
 
-                {/* Separate area for unassigned students, make sure it's styled distinctly */}
                 <Droppable key="unassigned" id="unassigned" className="classroom unassigned-students">
                     <div className="droppable-area">
                         <h3>Unassigned Students</h3>
-                        {filteredStudents.filter(student => 
-                            !classrooms.some(room => room.students.some(s => s && s.studentId === student.studentId))
+                        {filteredStudents.filter(student =>
+                            !displayState.classrooms.some(room => room.students.some(s => s && s.studentId === student.studentId))
                         ).map(student => (
                             <Draggable key={student.studentId} id={student.studentId.toString()}>
                                 <StudentClassroomCard person={student} />
@@ -261,9 +257,8 @@ function Rooms() {
                     <button onClick={updateRoomStudents}>Commit Changes to Database</button>
                 </div>
                 <div className="spacer"></div>
-                
-                {/* Rows of classrooms below the unassigned area */}
-                {classrooms.map((classroom) => (
+
+                {displayState.classrooms.map((classroom) => (
                     <Droppable key={classroom.id} id={classroom.id} className="classroom">
                         <div className="droppable-area">
                             <h4>{classroom.name}</h4>
@@ -277,7 +272,6 @@ function Rooms() {
                         </div>
                     </Droppable>
                 ))}
-                
             </div>
         </DndContext>
     );

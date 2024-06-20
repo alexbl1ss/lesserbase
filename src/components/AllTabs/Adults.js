@@ -12,13 +12,12 @@ import IconButton from '@mui/material/IconButton';
 import EditAdultStay from '../AddsEdits/EditAdultStay.js';
 import AddAdultStay from '../AddsEdits/AddAdultStay.js';
 
-
 function Adults(props) {
     const [selectedCampus, setSelectedCampus] = useState('');
     const [filteredItems, setFilteredItems] = useState([]);
     const [selectedItem, setSelectedItem] = useState(null);
     const [selectedRole, setSelectedRole] = useState('');
-    const [selectedAdultStays, setSelectedAdultStays] = useState(null);
+    const [selectedAdultStays, setSelectedAdultStays] = useState([]);
     const [selectedStay, setSelectedStay] = useState(null);
     const [editOpen, setEditOpen] = useState(false);
   
@@ -46,17 +45,27 @@ function Adults(props) {
             fetch(`${SERVER_URL}api/adult/${selectedItem.id}/stays`, {
                 headers: { Authorization: `Bearer ${token}` }
             })
-            .then(response => response.json())
+            .then(response => {
+                if (response.ok) {
+                    return response.text().then(text => text ? JSON.parse(text) : []);
+                } else {
+                    throw new Error('Failed to fetch');
+                }
+            })
             .then(data => {
                 setSelectedAdultStays(data);
                 sessionStorage.setItem('adultStays', JSON.stringify(data));
             })
-            .catch(err => console.error('Failed to fetch adult stays', err));
+            .catch(err => {
+                console.error('Failed to fetch adult stays', err);
+                setSelectedAdultStays([]); // Ensure we reset the stays list on error
+            });
         } else {
             console.log('No selected item, not fetching stays');
-            setSelectedAdultStays(null);
+            setSelectedAdultStays([]);
         }
     }, [selectedItem]);
+    
 
     useEffect(() => {
         console.log('Component mounted or updated');
@@ -66,6 +75,10 @@ function Adults(props) {
     useEffect(() => {
         fetchCampStays();
     },[selectedItem, fetchCampStays]);
+
+    useEffect(() => {
+        filterItems(selectedRole);
+    }, [adults, selectedRole]);
 
     const filterItems = (type) => {
         let filtered = adults.filter(adult => (!type || adult.role === type));
@@ -87,19 +100,11 @@ function Adults(props) {
     };
 
     const handleSelectItem = (adult) => {
-        if (selectedItem && selectedItem.id === adult.id) {
-            setSelectedItem(null);
-        } else {
-            setSelectedItem(adult);
-        }
-    };   
-    
+        setSelectedItem(prevSelectedItem => (prevSelectedItem && prevSelectedItem.id === adult.id ? null : adult));
+    };
+
     const handleSelectStay = (stay) => {
-        if (selectedItem && selectedItem.id === stay.stayId) {
-            setSelectedStay(null);
-        } else {
-            setSelectedStay(stay);
-        }
+        setSelectedStay(prevSelectedStay => (prevSelectedStay && prevSelectedStay.stayId === stay.stayId ? null : stay));
     }; 
     
     const addAdult = adult => {
@@ -315,41 +320,41 @@ function Adults(props) {
                     </tr>
                 </thead>
                 <tbody>
-                {selectedAdultStays && selectedAdultStays.map(stay => (
-                        <tr key={stay.stayId}>
-                            <td>{stay.stayId}</td>
-                            <td>{stay.campus}</td>
-                            <td>{stay.arrivalDate}</td>
-                            <td>{stay.departureDate}</td>
-                            <td>{stay.residential}</td>
-                            <td>
-                            <IconButton onClick={() => handleEditClick(stay)} color="primary">
+                {selectedAdultStays.map(stay => (
+                            <tr key={stay.stayId}>
+                                <td>{stay.stayId}</td>
+                                <td>{stay.campus}</td>
+                                <td>{stay.arrivalDate}</td>
+                                <td>{stay.departureDate}</td>
+                                <td>{stay.residential}</td>
+                                <td>
+                                    <IconButton onClick={() => handleEditClick(stay)} color="primary">
                                         <EditIcon />
                                     </IconButton>
-                            </td>
-                            <td>
-                                <IconButton onClick={(event) => deleteAdultStay(event, stay.stayId)}><Delete color="primary"/></IconButton>
-                            </td>
-                            <td>
-                            <input
-                                type="checkbox"
-                                checked={selectedStay && selectedStay.stayId === stay.id}
-                                onChange={() => handleSelectStay(stay)}
-                            />
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
+                                </td>
+                                <td>
+                                    <IconButton onClick={(event) => deleteAdultStay(event, stay.stayId)}><Delete color="primary" /></IconButton>
+                                </td>
+                                <td>
+                                    <input
+                                        type="checkbox"
+                                        checked={selectedStay && selectedStay.stayId === stay.stayId}
+                                        onChange={() => handleSelectStay(stay)}
+                                    />
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
                 </table>
             </div>
             <EditAdultStay
-                                    adultId={selectedItem}
-                                    adultStayToEdit={selectedStay}
-                                    updateAdultStay={updateAdultStay}
-                                    open={editOpen}
-                                    onClose={() => setEditOpen(false)}
-                                    editStay={(stay) => EditAdultStay(selectedStay, updateAdultStay, selectedItem.id, selectedStay.stayId)}
-                                />
+                adultId={selectedItem}
+                adultStayToEdit={selectedStay}
+                updateAdultStay={updateAdultStay}
+                open={editOpen}
+                onClose={() => setEditOpen(false)}
+                editStay={(stay) => EditAdultStay(selectedStay, updateAdultStay, selectedItem.id, selectedStay.stayId)}
+            />
             <AddAdultStay
                 adultId={selectedItem}
                 addStay={addStay}

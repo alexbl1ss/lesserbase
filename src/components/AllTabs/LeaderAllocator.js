@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { SERVER_URL, CAMPUSES, GROUPTYPES } from '../../constants.js'
+import { SERVER_URL, CAMPUSES, GROUPTYPES } from '../../constants.js';
 import '../BookingCard.css';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
@@ -7,14 +7,14 @@ import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 
 function LeaderAllocator(props) {
-    const [allAdults, setAllAdults] = useState([]);
-    const [filteredAdults, setFilteredAdults] = useState([]);
-    const [allGroups, setAllGroups] = useState([]);  // All groups fetched from the server
-    const [filteredGroups, setFilteredGroups] = useState([]); // Groups filtered based on campus and group type
-    const [selectedLeader, setSelectedLeader] = useState('');
-    const [selectedGroup, setSelectedGroup] = useState('');
-    const [selectedCampus, setSelectedCampus] = useState('');
-    const [selectedGroupType, setSelectedGroupType] = useState('');
+  const [allAdults, setAllAdults] = useState([]);
+  const [filteredAdults, setFilteredAdults] = useState([]);
+  const [allGroups, setAllGroups] = useState([]);
+  const [filteredGroups, setFilteredGroups] = useState([]);
+  const [selectedLeader, setSelectedLeader] = useState('');
+  const [selectedGroup, setSelectedGroup] = useState(null);
+  const [selectedCampus, setSelectedCampus] = useState('');
+  const [selectedGroupType, setSelectedGroupType] = useState('');
 
 
     const fetchleaders = useCallback(() => {
@@ -48,38 +48,31 @@ function LeaderAllocator(props) {
       .then((data) => {
         sessionStorage.setItem('campgroups', JSON.stringify(data));
         setAllGroups(data);
-        setFilteredGroups(data);  // Initially no filter, so show all groups
+        applyFilters(data, selectedCampus, selectedGroupType);
       })
       .catch((err) => console.error(err));
-  }, []);
+  }, [selectedCampus, selectedGroupType]);
 
   useEffect(() => {
     fetchleaders();
     fetchGroups();
-  }, []);
+  }, [selectedCampus, selectedGroupType]);
 
   const handleGroupSelect = (group) => {
-    // Log the current state before changing it
-    console.log("Current selectedGroup:", selectedGroup);
-    console.log("Attempting to select/deselect group:", group);
-
-    // Toggle logic based on the current state
     if (selectedGroup && selectedGroup.id === group.id) {
-        console.log("Deselecting group");
-        setSelectedGroup({});  // Clear selection if the same group is clicked again
+        setSelectedGroup(null); 
     } else {
-        console.log("Selecting group");
-        setSelectedGroup(group);  // Set the new group
+        setSelectedGroup(group);
     }
-};
+  };
 
-const filterGroups = (campus, groupType) => {
-  const filtered = allGroups.filter(group => {
-      return (!campus || group.campus === campus) && (!groupType || group.groupType === groupType);
-  });
-  setFilteredGroups(filtered);
-};
-
+  const applyFilters = (groups, campus, groupType) => {
+    const filtered = groups.filter(group => {
+        return (!campus || group.campus === campus) && (!groupType || group.groupType === groupType);
+    });
+    setFilteredGroups(filtered);
+  };
+  
 const filterAdults = (campus, groupType) => {
   //Placeholder for future adult filtering by campus and role
   
@@ -92,16 +85,17 @@ const filterAdults = (campus, groupType) => {
 const handleCampusChange = (event) => {
   const campus = event.target.value;
   setSelectedCampus(campus);
-  filterAdults(campus, selectedGroupType);
+  applyFilters(allGroups, campus, selectedGroupType);
 };
 
 const handleGroupTypeChange = (event) => {
   const groupType = event.target.value;
   setSelectedGroupType(groupType);
-  filterGroups(selectedCampus, groupType);
+  applyFilters(allGroups, selectedCampus, groupType);
 };
   
   const handleAllocate = async () => {
+    console.log(filteredGroups);
     if (!selectedGroup.id || !selectedLeader.id) {
         alert('Please select a group and a leader before allocating.');
         return;
@@ -130,11 +124,11 @@ const handleGroupTypeChange = (event) => {
         const result = await response.json();
         console.log('Group updated successfully:', result);
 
-        // Refresh your groups list here if the UI needs to reflect the change
         fetchGroups();
     } catch (error) {
         console.error('Error updating group leader:', error);
     }
+    console.log(filteredGroups);
   };
 
 const handleDeallocate = async () => {
