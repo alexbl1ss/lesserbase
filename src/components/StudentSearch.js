@@ -15,6 +15,9 @@ function StudentSearch(props) {
   const [incompleteBookings, setIncompleteBookings] = useState([]);
   const [incompleteActivities, setIncompleteActivities] = useState([]);
   const [studentsWithoutStays, setStudentsWithoutStays] = useState([]);
+  const [bookingsOutsideStays, setBookingsOutsideStays] = useState([]);
+  const [missingTransfers, setMissingTransfers] = useState([]);
+  const [outstandingBalances, setOutstandingBalances] = useState([]);
 
   const filteredPersons = students.filter(
     (person) =>
@@ -46,9 +49,12 @@ function StudentSearch(props) {
 
   const fetchData = () => {
     fetchStudents();
+    fetchBookingsOutsideStay();
     fetchIncompleteBookings();
     fetchIncompleteActivities();
     fetchStudentsWithoutStays();
+    fetchMissingTransfers();
+    fetchOutstandingBalances();
   };
 
 
@@ -142,11 +148,53 @@ function StudentSearch(props) {
     .catch((err) => console.error(err));
   };
 
+  const fetchBookingsOutsideStay = () => {
+    const token = sessionStorage.getItem('bearer');
+    fetch(`${SERVER_URL}api/bookingsOutsideStay`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      //console.log("Fetched students without stays:", data);
+      setBookingsOutsideStays(data.length > 0 ? [...data] : []); // Ensure a new array reference
+    })
+    .catch((err) => console.error(err));
+  };
+
+  const fetchMissingTransfers = () => {
+    const token = sessionStorage.getItem('bearer');
+    fetch(`${SERVER_URL}api/missingTransfers`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      //console.log("Fetched students without stays:", data);
+      setMissingTransfers(data.length > 0 ? [...data] : []); // Ensure a new array reference
+    })
+    .catch((err) => console.error(err));
+  };
+  
+  const fetchOutstandingBalances = () => {
+    const token = sessionStorage.getItem('bearer');
+    fetch(`${SERVER_URL}api/outstandingBalances`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      //console.log("Fetched students without stays:", data);
+      setOutstandingBalances(data.length > 0 ? [...data] : []); // Ensure a new array reference
+    })
+    .catch((err) => console.error(err));
+  };
+
   useEffect(() => {
     fetchStudents();
     fetchIncompleteBookings();
     fetchIncompleteActivities();
     fetchStudentsWithoutStays();
+    fetchBookingsOutsideStay();
+    fetchMissingTransfers();
+    fetchOutstandingBalances();
   }, []);
 
   const handleChange = (e) => {
@@ -214,6 +262,9 @@ function StudentSearch(props) {
           </p>
         </div>
         <CollapsibleStudentTable incompleteStudents={studentsWithoutStays} onSelectStudent={handleSelectStudent} title="Students without Stay details" />
+        <CollapsibleStudentTable incompleteStudents={bookingsOutsideStays} onSelectStudent={handleSelectStudent} title="Students with Bookings outside Stay" />
+        <CollapsibleStudentTable incompleteStudents={missingTransfers} onSelectStudent={handleSelectStudent} title="Students with missingTransfers" />
+        <CollapsibleStudentTable incompleteStudents={outstandingBalances} onSelectStudent={handleSelectStudent} title="Students with Outstanding Balances" />
         <CollapsibleTable incompleteBookings={incompleteBookings} onSelectStudent={handleSelectStudent} title="Incomplete Bookings" />
         <CollapsibleTable incompleteBookings={incompleteActivities} onSelectStudent={handleSelectStudent} title="Incomplete Activities" />
       </form>
