@@ -15,6 +15,7 @@ function Rooms() {
     const [selectedWeek, setSelectedWeek] = useState(WEEKS[0]);
     const [selectedCampus, setSelectedCampus] = useState('');
     const [selectedEnglishLevel, setSelectedEnglishLevel] = useState('');
+    const [selectedAge, setSelectedAge] = useState('');
 
     const fetchStudents = useCallback((startDate, endDate) => {
         const token = sessionStorage.getItem('bearer');
@@ -98,6 +99,10 @@ function Rooms() {
         setSelectedEnglishLevel(event.target.value);
     };
 
+    const handleAgeChange = (event) => {
+        setSelectedAge(event.target.value);
+    };
+
     const filterStudents = useCallback(() => {
         let filtered = students;
 
@@ -109,8 +114,11 @@ function Rooms() {
             filtered = filtered.filter(student => student.englishLevel === selectedEnglishLevel);
         }
 
+        if (selectedAge) {
+            filtered = filtered.filter(student => student.age === parseInt(selectedAge, 10));
+        }
         setFilteredStudents(filtered);
-    }, [students, selectedCampus, selectedEnglishLevel]);
+    }, [students, selectedCampus, selectedEnglishLevel, selectedAge]);
 
     useEffect(() => {
         filterStudents();
@@ -200,6 +208,7 @@ function Rooms() {
 
     const campuses = Array.from(new Set(students.map(student => student.stay_campus)));
     const englishLevels = Array.from(new Set(students.map(student => student.englishLevel)));
+    const ages = Array.from(new Set(students.map(student => student.age)));
 
     return (
         <DndContext onDragEnd={handleDragEnd}>
@@ -233,6 +242,17 @@ function Rooms() {
                             {englishLevels.map(level => (
                                 <option key={level} value={level}>
                                     {level}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    <div className="filter">
+                        <label htmlFor="english-level-select">Select age: </label>
+                        <select id="english-level-select" value={selectedAge} onChange={handleAgeChange}>
+                            <option value="">All Ages</option>
+                            {ages.map(age => (
+                                <option key={age} value={age}>
+                                    {age}
                                 </option>
                             ))}
                         </select>

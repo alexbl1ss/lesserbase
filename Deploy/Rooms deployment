@@ -1,0 +1,36 @@
+Blidd database actions:
+
+Merge Audit to Main
+
+In main 
+update connections in application.properties to connect to the prod database
+
+Merge Main to Prod
+watch Heroku logs for build
+
+Run this SQL
+ALTER TABLE Audit MODIFY action TEXT;
+add stored proc getUserForAudit
+
+Bliss Bill View:
+No changes
+
+Test
+Create a student
+Edit a student
+Add stay to a student
+Edit student Stay
+add bookings
+edit booking
+remove booking
+
+from postman
+create agent
+update agent
+add student to agent
+remove student from agent
+delete agent
+create transfer
+edit transfer
+delete transfer
+delete student

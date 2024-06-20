@@ -263,8 +263,10 @@ function StudentSearch(props) {
         </div>
         <CollapsibleStudentTable incompleteStudents={studentsWithoutStays} onSelectStudent={handleSelectStudent} title="Students without Stay details" />
         <CollapsibleStudentTable incompleteStudents={bookingsOutsideStays} onSelectStudent={handleSelectStudent} title="Students with Bookings outside Stay" />
-        <CollapsibleStudentTable incompleteStudents={missingTransfers} onSelectStudent={handleSelectStudent} title="Students with missingTransfers" />
-        <CollapsibleStudentTable incompleteStudents={outstandingBalances} onSelectStudent={handleSelectStudent} title="Students with Outstanding Balances" />
+        <CollapsibleStudentTable incompleteStudents={missingTransfers} onSelectStudent={handleSelectStudent} title="Students with missing Flights" />
+        {props.showFinancials && (
+                <CollapsibleStudentTable incompleteStudents={outstandingBalances} onSelectStudent={handleSelectStudent} title="Students with Outstanding Balances" />
+            )}
         <CollapsibleTable incompleteBookings={incompleteBookings} onSelectStudent={handleSelectStudent} title="Incomplete Bookings" />
         <CollapsibleTable incompleteBookings={incompleteActivities} onSelectStudent={handleSelectStudent} title="Incomplete Activities" />
       </form>
