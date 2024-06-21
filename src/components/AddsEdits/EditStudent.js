@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Dialog, DialogActions, DialogContent, DialogTitle, Button, IconButton, TextField, Grid, Typography, FormControlLabel, Checkbox, Box } from '@mui/material';
+import { Dialog, DialogActions, DialogContent, DialogTitle, Button, IconButton, TextField, Grid, Typography, FormControlLabel, Checkbox, Box, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from '@mui/material/styles';
 
 function EditStudent(props) {
   const [open, setOpen] = useState(false);
@@ -123,32 +126,8 @@ function EditStudent(props) {
         <DialogTitle>Edit Student</DialogTitle>
         <DialogContent>
         <LocalizationProvider dateAdapter={AdapterDateFns}>
-          <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }} sx={{ mt: 2 }}>
-          <Grid item xs={6} sx={{ display: 'flex', alignItems: 'center' }}>
-            <DatePicker
-              label="Date Added"
-              value={student.dateAdded}
-              onChange={(date) => handleDateChange(date, 'dateAdded')}
-              renderInput={(params) => (
-                <TextField
-                {...params}
-                fullWidth
-                sx={{ mb: 0, mt: 0 }}
-              />
-              )}
-            />
-          </Grid>
-          <Grid item xs={6} sx={{ display: 'flex', alignItems: 'center' }}>
-            <TextField
-            label="Master Tracker ID"
-            value={student.mtRef || ''}
-            onChange={handleChange}
-            fullWidth
-            name="mtRef"
-            sx={{ mb: 0, mt: 0 }}
-            />
-          </Grid>
-          <Grid item xs={6} sx={{ display: 'flex', alignItems: 'center' }}>
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={6}>
             <TextField
             label="Name"
             value={student.studentName || ''}
@@ -158,7 +137,7 @@ function EditStudent(props) {
             sx={{ mb: 0, mt: 0 }}
             />
           </Grid>
-          <Grid item xs={6} sx={{ display: 'flex', alignItems: 'center' }}>
+          <Grid item xs={12} sm={6}>
             <TextField
             label="Surname"
             value={student.studentSurname || ''}
@@ -168,7 +147,7 @@ function EditStudent(props) {
             sx={{ mb: 0, mt: 0 }}
             />
           </Grid>
-          <Grid item xs={6} sx={{ display: 'flex', alignItems: 'center' }}>
+          <Grid item xs={12} sm={6}>
             <DatePicker
               label="Student Date Of Birth"
               value={student.studentDob}
@@ -182,7 +161,7 @@ function EditStudent(props) {
               )}
             />
           </Grid>
-          <Grid item xs={6} sx={{ display: 'flex', alignItems: 'center' }}>
+          <Grid item xs={12} sm={6}>
             <TextField
             label="Gender"
             value={student.studentGender || ''}
@@ -192,7 +171,7 @@ function EditStudent(props) {
             sx={{ mb: 0, mt: 0 }}
             />
           </Grid>
-          <Grid item xs={6} sx={{ display: 'flex', alignItems: 'center' }}>
+          <Grid item xs={12} sm={6}>
             <TextField
             label="Nationality"
             value={student.studentNationality || ''}
@@ -202,7 +181,7 @@ function EditStudent(props) {
             sx={{ mb: 0, mt: 0 }}
             />
           </Grid>
-          <Grid item xs={6} sx={{ display: 'flex', alignItems: 'center' }}>
+          <Grid item xs={12} sm={6}>
             <TextField
             label="English Level"
             value={student.englishLevel || ''}
@@ -212,7 +191,7 @@ function EditStudent(props) {
             sx={{ mb: 0, mt: 0 }}
             />
           </Grid>
-          <Grid item xs={6} sx={{ display: 'flex', alignItems: 'center' }}>
+          <Grid item xs={12} sm={6}>
             <TextField
             label="Room Requirements"
             value={student.roomRequirements || ''}
@@ -222,7 +201,7 @@ function EditStudent(props) {
             sx={{ mb: 0, mt: 0 }}
             />
           </Grid>
-          <Grid item xs={6} sx={{ display: 'flex', alignItems: 'center' }}>
+          <Grid item xs={12} sm={6}>
             <TextField
             label="Class Requirements"
             value={student.classRequirements || ''}
@@ -232,7 +211,7 @@ function EditStudent(props) {
             sx={{ mb: 0, mt: 0 }}
             />
           </Grid>
-          <Grid item xs={6} sx={{ display: 'flex', alignItems: 'center' }}>
+          <Grid item xs={12} sm={6}>
             <TextField
             label="Allergies"
             value={student.allergies || ''}
@@ -242,7 +221,7 @@ function EditStudent(props) {
             sx={{ mb: 0, mt: 0 }}
             />
           </Grid>
-          <Grid item xs={6} sx={{ display: 'flex', alignItems: 'center' }}>
+          <Grid item xs={12} sm={6}>
             <TextField
             label="Notes"
             value={student.notes || ''}
@@ -252,112 +231,37 @@ function EditStudent(props) {
             sx={{ mb: 0, mt: 0 }}
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid item xs={12} sm={6}>
             <Box sx={{ width: '100%', borderTop: '1px solid #e0e0e0', my: 2 }} />
           </Grid>
-          <Grid item xs={8}>
-            <Typography sx={{ mb: 0, mt: 0 }}>
-              Permissions
-            </Typography>
-          </Grid>
-          <Grid item xs={4}>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={student.hasAllPermission}
-                  onChange={handleChange}
-                  name="hasAllPermission"
-                />
-              }
-              label="All"
-            />
-          </Grid>
-          <Grid item xs={4}>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={student.hasPoolPermission}
-                  onChange={handleChange}
-                  name="hasPoolPermission"
-                />
-              }
-              label="Swimming Pool"
-            />
-          </Grid>
-          <Grid item xs={4}>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={student.hasPhotoPermission}
-                  onChange={handleChange}
-                  name="hasPhotoPermission"
-                />
-              }
-              label="Photography"
-            />
-          </Grid>
-          <Grid item xs={4}>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={student.hasMedicalPermission}
-                  onChange={handleChange}
-                  name="hasMedicalPermission"
-                />
-              }
-              label="Medical"
-            />
-          </Grid>
-          <Grid item xs={4}>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={student.hasHospitalPermission}
-                  onChange={handleChange}
-                  name="hasHospitalPermission"
-                />
-              }
-              label="Hospital"
-            />
-          </Grid>
-          <Grid item xs={4}>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={student.hasExcursionPermission}
-                  onChange={handleChange}
-                  name="hasExcursionPermission"
-                />
-              }
-              label="Excursions"
-            />
-          </Grid>
-          <Grid item xs={4}>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={student.hasActivityPermission}
-                  onChange={handleChange}
-                  name="hasActivityPermission"
-                />
-              }
-              label="Activity"
-            />
-          </Grid>
-          <Grid item xs={4}>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={student.hasSupervisionPermission}
-                  onChange={handleChange}
-                  name="hasSupervisionPermission"
-                />
-              }
-              label="Supervision"
-            />
-          </Grid>
-        </Grid>
-        </LocalizationProvider>
+          <Accordion sx={{ width: '100%' }}>
+                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                  <Typography>Permissions</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Grid container spacing={2}>
+                    {[
+                      { label: "All", name: "hasAllPermission" },
+                      { label: "Swimming Pool", name: "hasPoolPermission" },
+                      { label: "Photography", name: "hasPhotoPermission" },
+                      { label: "Medical", name: "hasMedicalPermission" },
+                      { label: "Hospital", name: "hasHospitalPermission" },
+                      { label: "Excursions", name: "hasExcursionPermission" },
+                      { label: "Activity", name: "hasActivityPermission" },
+                      { label: "Supervision", name: "hasSupervisionPermission" },
+                    ].map((item, index) => (
+                      <Grid item xs={12} sm={6} md={4} key={index}>
+                        <FormControlLabel
+                          control={<Checkbox checked={student[item.name]} onChange={handleChange} name={item.name} />}
+                          label={item.label}
+                        />
+                      </Grid>
+                    ))}
+                  </Grid>
+                </AccordionDetails>
+              </Accordion>
+              </Grid>
+          </LocalizationProvider>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
