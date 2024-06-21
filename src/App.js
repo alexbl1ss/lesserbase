@@ -7,24 +7,16 @@ import Box from '@mui/material/Box';
 import Login from './components/Login';
 import StudentSearch from './components/StudentSearch';
 import WhoIsDoing from './components/WhoIsDoing';
-import Transfers from './components/Transfers';
 import { SERVER_URL } from './constants.js';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import 'dayjs/locale/en-gb';
-import Rent from './components/Rent';
-import Rooms from './components/rooms.js'
-import Planner from './components/Planner.js'
 
 
 function App() {
   const [isAuthenticated, setAuth] = useState(false);
   const [showWhoIsDoing, setShowWhoIsDoing] = useState(false);
-  const [showPlanner, setShowPlanner] = useState(false);
   const [showFinancials, setShowFinancials] = useState(false);
-  const [showRentPage, setShowRentPage] = useState(false);
-  const [showTransfers, setShowTransfers] = useState(false);
-  const [showRooms, setShowRooms] = useState(false);
 
   const onLoginSuccess = (role) => {
     setShowFinancials(role === 'ADMIN');
@@ -57,74 +49,18 @@ function App() {
                   color="inherit"
                   onClick={() => {
                     setShowWhoIsDoing(false);
-                    setShowRentPage(false);
-                    setShowTransfers(false);
-                    setShowRooms(false);
-                    setShowPlanner(false)
                   }}
                 >
-                  Students
-                </Button><Button
-                  color="inherit"
-                  onClick={() => {
-                    setShowWhoIsDoing(false);
-                    setShowRentPage(false);
-                    setShowTransfers(false);
-                    setShowRooms(true);
-                    setShowPlanner(false)
-                  }}
-                >
-                  Classrooms
+                  Search
                 </Button>
                 <Button
                   color="inherit"
                   onClick={() => {
                     setShowWhoIsDoing(true);
-                    setShowRentPage(false);
-                    setShowTransfers(false);
-                    setShowRooms(false);
-                    setShowPlanner(false)
                   }}
                 >
-                  Planner
-                </Button><Button
-                  color="inherit"
-                  onClick={() => {
-                    setShowWhoIsDoing(false);
-                    setShowRentPage(false);
-                    setShowTransfers(false);
-                    setShowRooms(false);
-                    setShowPlanner(true)
-                  }}
-                >
-                  Scheduler
+                  My Groups
                 </Button>
-                <Button
-                  color="inherit"
-                  onClick={() => {
-                    setShowWhoIsDoing(false);
-                    setShowRentPage(false);
-                    setShowTransfers(true);
-                    setShowRooms(false);
-                    setShowPlanner(false)
-                  }}
-                >
-                  Transfers
-                </Button>
-                {showFinancials && (
-                  <Button
-                    color="inherit"
-                    onClick={() => {
-                      setShowWhoIsDoing(false);
-                      setShowRentPage(true);
-                      setShowTransfers(false);
-                      setShowRooms(false);
-                      setShowPlanner(false)
-                    }}
-                  >
-                    Costs
-                  </Button>
-                )}
                 <Button color="inherit" onClick={handleLogout}>
                   Logout
                 </Button>
@@ -135,14 +71,6 @@ function App() {
         {isAuthenticated ? (
           showWhoIsDoing ? (
             <WhoIsDoing />
-          ) : showRentPage ? (
-            <Rent />
-          ) : showTransfers ? (
-            <Transfers />
-          ) : showRooms ? (
-            <Rooms />
-          ) : showPlanner ? (
-            <Planner />
           ) : (
             <StudentSearch showFinancials={showFinancials} />
           )
