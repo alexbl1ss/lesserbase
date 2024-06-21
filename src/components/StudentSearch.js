@@ -3,6 +3,7 @@ import { SERVER_URL } from '../constants.js';
 import SearchList from './SearchList.js';
 import Scroll from './Scroll.js';
 import MyDay from './TabComponent/MyDay.js';
+import MyTabs from './TabComponent/MyTabs.js';
 
 function StudentSearch(props) {
   const [searchField, setSearchField] = useState("");
@@ -94,7 +95,7 @@ function StudentSearch(props) {
 
   const showTabs = () => {
     if (selectedPerson !== null) {
-      return <MyDay selectedPerson={selectedPerson} onClose={handleCloseTabs} showFinancials={props.showFinancials} />;
+      return <MyTabs selectedPerson={selectedPerson} onClose={handleCloseTabs} showFinancials={props.showFinancials} />;
     }
     return null;
   };

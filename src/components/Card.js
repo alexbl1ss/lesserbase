@@ -23,10 +23,7 @@ function Card({person, onClick}) {
     <div className="tc my-card dib br3 pa3 ma2 grow bw2 shadow-5" onClick={onClick}>
       <img className="br-100 h3 w3 dib" alt={person.id} src={imgPath} />
       <div>
-        <h2>{person.studentName}</h2>
-        <p>{person.studentSurname}</p>
-        <p>{person.id}</p>
-        <p>{person.studentNationality}</p>
+        <h2>{person.studentName} {person.studentSurname}</h2>
       </div>
     </div>
   );

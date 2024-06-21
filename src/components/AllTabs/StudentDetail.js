@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import EditStudent from '../AddsEdits/EditStudent';
 import { SERVER_URL } from '../../constants.js'
+import EditStudent from '../AddsEdits/EditStudent';
 
 function StudentDetail(props) {
   const { selectedPerson, selectedStay, setSelectedStay } = props;
@@ -118,67 +118,69 @@ function StudentDetail(props) {
     .catch(err => console.error(err))
   }
 
-  return (
-    <React.Fragment>
-      <div className="detail-card" style={{ padding: '20px 0' }}>
-        <table style={{ width: '80%', textAlign: 'left', margin: 'auto', borderCollapse: 'collapse' }}>
-          <tbody>
-            <tr>
-              <td rowSpan="2" style={{ textAlign: 'center' }}><img className="br-100 h3 w3 dib" alt={selectedPerson.id} src={imgPath} /></td>
-              <td>DB ref: {id}</td>
-              <td>Added: {dateAdded}</td>
-              <td>Master Tracker: {mtRef}</td>
-            </tr>
-            <tr>
-              <td>Nationality: {studentNationality}</td>
-              <td>Dob: {studentDob}</td>
-              <td>Gender: {studentGender}</td>
-            </tr>
-            <tr>
-              <td style={{ textAlign: 'center' }}>{studentName} {studentSurname}</td>
-              <td>English level: {englishLevel}</td>
-              <td colSpan="2"></td>
-            </tr>
-            <tr style={{ height: '50px' }}><td colSpan="4" > </td></tr>
-            <tr><td>Room Requirements: </td><td colSpan="3">{roomRequirements}</td></tr>
-            <tr><td>Class Requirements: </td><td colSpan="3">{classRequirements}</td></tr>
-            <tr><td>Allergies: </td><td colSpan="3">{allergies}</td></tr>
-            <tr><td>Notes: </td><td colSpan="3">{notes}</td></tr>
-            <tr>
-              <td colSpan="2">Permissions:</td>
-              <td>Photo:</td>
-              <td>{hasPhotoPermission ? 'Yes' : 'No'}</td>
-            </tr>
-            <tr>
-              <td>Medical:</td>
-              <td>{hasMedicalPermission ? 'Yes' : 'No'}</td>
-              <td>Hospital:</td>
-              <td>{hasHospitalPermission ? 'Yes' : 'No'}</td>
-            </tr>
-            <tr>
-              <td>Excursion:</td>
-              <td>{hasExcursionPermission ? 'Yes' : 'No'}</td>
-              <td>Activity:</td>
-              <td>{hasActivityPermission ? 'Yes' : 'No'}</td>
-            </tr>
-            <tr>
-              <td>Supervision:</td>
-              <td>{hasSupervisionPermission ? 'Yes' : 'No'}</td>
-              <td>Pool:</td>
-              <td>{hasPoolPermission ? 'Yes' : 'No'}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div>
-        <div style={{ color: '#999999', fontSize: '10px' }}>Student: {selectedPerson.id}
+  const allPermissionsGranted = hasPhotoPermission && hasMedicalPermission && hasHospitalPermission && 
+  hasExcursionPermission && hasActivityPermission && hasSupervisionPermission && 
+  hasPoolPermission;
+
+return (
+<React.Fragment>
+<div className="detail-card" style={{ padding: '20px 0' }}>
+<table style={{ width: '80%', textAlign: 'left', margin: 'auto', borderCollapse: 'collapse' }}>
+<tbody>
+<tr>
+<td rowSpan="4" style={{ textAlign: 'center' }}><img className="br-100 h3 w3 dib" alt={selectedPerson.id} src={imgPath} /></td>
+<td>Number: {id}</td>
+</tr>
+<tr>
+<td>{studentName} {studentSurname}</td>
+</tr>
+<tr>
+<td>Nationality: {studentNationality}</td>
+</tr>
+<tr>
+<td>Date of Birth: {studentDob}</td>
+</tr>
+<tr>
+<td>Gender: {studentGender}</td>
+<td>English Level: {englishLevel}</td>
+</tr>
+<tr>
+<td>Allergies: </td>
+<td>{allergies}</td>
+</tr>
+<tr>
+<td>Notes: </td>
+<td>{notes}</td>
+</tr>
+<tr style={{ height: '50px' }}><td colSpan="2" > </td></tr>
+{allPermissionsGranted ? (
+<tr>
+<td colSpan="2">All Permissions Granted</td>
+</tr>
+) : (
+<>
+{!hasPhotoPermission && <tr><td colSpan="2">No Photos</td></tr>}
+{!hasMedicalPermission && <tr><td colSpan="2">No Medical</td></tr>}
+{!hasHospitalPermission && <tr><td colSpan="2">No Hospital</td></tr>}
+{!hasExcursionPermission && <tr><td colSpan="2">No Excursions</td></tr>}
+{!hasActivityPermission && <tr><td colSpan="2">No Activities</td></tr>}
+{!hasSupervisionPermission && <tr><td colSpan="2">No Supervision</td></tr>}
+{!hasPoolPermission && <tr><td colSpan="2">No Pool</td></tr>}
+</>
+)}
+</tbody>
+</table>
+</div>
+<div>
+<div style={{ color: '#999999', fontSize: '10px' }}>Student: {selectedPerson.id}
           <EditStudent passedStudent={student} editStudent={editStudent} />
         </div>
         <p style={{ color: '#999999', fontSize: '10px' }}>Selected Stay: {selectedStay ? selectedStay.stayId : 'None'}</p>
-        <div style={{ color: '#999999', fontSize: '10px' }}>Is authenticated: {sessionStorage.getItem('isAuthenticated') ? 'Yes' : 'No'}</div>
-      </div>
-    </React.Fragment>
-  );
+<div style={{ color: '#999999', fontSize: '10px' }}>Is authenticated: {sessionStorage.getItem('isAuthenticated') ? 'Yes' : 'No'}</div>
+</div>
+</React.Fragment>
+);
+
 }
 
 export default StudentDetail;

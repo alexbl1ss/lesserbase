@@ -1,13 +1,7 @@
 import React, { useState } from "react";
 import StudentDetail from "../AllTabs/StudentDetail";
-import StudentAgents from "../AllTabs/StudentAgents";
 import StudentBookings from "../AllTabs/StudentBookings";
-import StudentPayments from "../AllTabs/StudentPayments";
-import StudentInvoice from "../AllTabs/StudentInvoice";
-import BookingCreator from "../AllTabs/BookingCreator";
-import StudentTransfers from "../AllTabs/StudentTransfers";
-import StudentSummary from "../AllTabs/StudentSummary";
-import StudentStays from "../AllTabs/StudentStays"
+import StudentGroups from "../AllTabs/StudentGroups";
 
 const MyTabs = (props) => {
 
@@ -18,31 +12,12 @@ const MyTabs = (props) => {
     const handledetails = () => {
         setActiveTab("details");
     };
-    const handleagents = () => {
-        setActiveTab("agents");
-    };
-    const handlestays = () => {
-        setActiveTab("stays");
-    };
-    const handletransfers = () => {
-        setActiveTab("transfers");
-    };
     const handlebookings = () => {
         setActiveTab("bookings");
     };
-    const handlebookingcreator = () => {
-        setActiveTab("bookingcreator");
+    const handleGroups = () => {
+        setActiveTab("groups");
     };
-    const handlepayments = () => {
-        setActiveTab("payments");
-    };
-    const handleinvoice = () => {
-        setActiveTab("invoice");
-    };
-    const handleSummary = () => {
-        setActiveTab("summary");
-    };
-  
     const handleClose = () => {
         if (onClose) {
             onClose();
@@ -59,50 +34,16 @@ const MyTabs = (props) => {
                 Details
                 </li>
                 <li
-                    className={activeTab === "stays" ? "active" : ""}
-                    onClick={handlestays}>
-                Stays
-                </li>
-                {/* <li
-                    className={activeTab === "agents" ? "active" : ""}
-                    onClick={handleagents}>
-                Agents
-                </li> */}
-                <li
-                    className={activeTab === "bookingcreator" ? "active" : ""}
-                    onClick={handlebookingcreator}>
-                Booker
-                </li>
-                <li
                     className={activeTab === "bookings" ? "active" : ""}
                     onClick={handlebookings}>
                 Bookings
                 </li>
                 <li
-                    className={activeTab === "transfers" ? "active" : ""}
-                    onClick={handletransfers}>
-                Flights
+                    className={activeTab === "groups" ? "active" : ""}
+                    onClick={handleGroups}>
+                    Today
                 </li>
-                {props.showFinancials && (
                 <li
-                    className={activeTab === "payments" ? "active" : ""}
-                    onClick={handlepayments}>
-                    Payments
-                    </li>
-                )}
-                {props.showFinancials && (
-                <li
-                    className={activeTab === "invoice" ? "active" : ""}
-                    onClick={handleinvoice}>
-                    Invoice/Receipt
-                </li>
-               )}
-                <li
-                    className={activeTab === "summary" ? "active" : ""}
-                    onClick={handleSummary}>
-                    Booking Summary
-                </li>
-               <li
                     className="close-tab"
                     onClick={handleClose}>
                 Close
@@ -110,14 +51,8 @@ const MyTabs = (props) => {
             </ul>
             <div className="outlet">
                 {activeTab === "details" ? <StudentDetail selectedPerson={selectedPerson} selectedStay={selectedStay} setSelectedStay={setSelectedStay} /> : null}
-                {activeTab === "stays" && <StudentStays selectedPerson={selectedPerson} selectedStay={selectedStay} setSelectedStay={setSelectedStay} />}
-                {activeTab === "bookingcreator" && <BookingCreator selectedPerson={selectedPerson} selectedStay={selectedStay} showFinancials={props.showFinancials}/>}
                 {activeTab === "bookings" ? <StudentBookings selectedPerson={selectedPerson} showFinancials={props.showFinancials} selectedStay={selectedStay} /> : null}
-                {activeTab === "agents" ? <StudentAgents selectedPerson={selectedPerson}/> : null}
-                {activeTab === "transfers" ? <StudentTransfers selectedPerson={selectedPerson}/> : null}
-                {activeTab === "payments" ? <StudentPayments selectedPerson={selectedPerson}/> : null}
-                {activeTab === "invoice" ? <StudentInvoice selectedPerson={selectedPerson} selectedStay={selectedStay}/> : null}
-                {activeTab === "summary" ? <StudentSummary selectedPerson={selectedPerson} selectedStay={selectedStay}/> : null}
+                {activeTab === "groups" ? <StudentGroups selectedPerson={selectedPerson}/> : null}
             </div>
         </div>
   );
