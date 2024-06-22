@@ -12,7 +12,6 @@ function WhoIsDoing({username}) {
   const [formattedDate, setFormattedDate] = useState(selectedDate.toISOString().split('T')[0]);
   const [groups, setGroups] = useState([]);
   const [checkedState, setCheckedState] = useState({});
-  const [isLoading, setIsLoading] = useState(true);
   const [loggedStudents, setLoggedStudents] = useState({});
 
   useEffect(() => {
@@ -51,7 +50,6 @@ function WhoIsDoing({username}) {
   
       setGroups(grouped);
       setCheckedState(newCheckedState);
-      setIsLoading(false);
   })
     .catch(err => console.error(err));
   }, [formattedDate]);
@@ -142,8 +140,6 @@ const logCheckedStudents = (groupName) => {
 
 return (
     <section className="garamond">
-        {isLoading ? <p>Loading...</p> : (
-            <>
                 <div className="date-picker-container">
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '10px' }}>
@@ -197,8 +193,6 @@ return (
                         </div>
                     ))}
                 </div>
-            </>
-        )}
     </section>
 );
 
