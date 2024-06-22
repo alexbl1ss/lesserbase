@@ -165,10 +165,9 @@ body, table, td, a {
             
             .table-responsive {
                 overflow-x: auto;  /* Allows table to scroll horizontally on smaller screens */
-                margin: 20px 10px; /* Adds top and bottom margin of 20px, and left-right margin of 10px */
-                max-width: 90%;    /* Sets the maximum width of the table to 90% of its container */
+                margin: 20px; /* Adds top and bottom margin of 20px, and left-right margin of 10px */
+                max-width: 95%;    /* Sets the maximum width of the table to 90% of its container */
                 width: 100%;       /* Ensures the table width is responsive and fills its container */
-                box-shadow: 0 0 10px rgba(0,0,0,0.1);  /* Optional: Adds a subtle shadow for depth (remove if not desired) */
             }
 
             .date-picker-container {
@@ -176,6 +175,7 @@ body, table, td, a {
                 justify-content: center;
                 flex-wrap: wrap;
                 gap: 10px;
+                margin-top: 20px;
                 margin-bottom: 20px; /* Add some space below the date picker */
               }
               

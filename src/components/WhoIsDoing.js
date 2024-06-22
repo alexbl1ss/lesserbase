@@ -127,9 +127,8 @@ return (
                             <table style={{ width: '100%', minWidth: '320px', borderCollapse: 'collapse', textAlign: 'left' }}>
                                 <thead>
                                     <tr>
-                                        <th>Student ID</th>
-                                        <th>Student Name</th>
-                                        <th>Student Surname</th>
+                                        <th>ID</th>
+                                        <th>Name</th>
                                         <th></th>
                                     </tr>
                                 </thead>
@@ -137,8 +136,7 @@ return (
                                     {members.map((student) => (
                                         <tr key={student.studentId}>
                                             <td>{student.studentId}</td>
-                                            <td>{student.studentName}</td>
-                                            <td>{student.studentSurname}</td>
+                                            <td>{student.studentName} {student.studentSurname}</td>
                                             <td>
                                                 <input
                                                     type="checkbox"
