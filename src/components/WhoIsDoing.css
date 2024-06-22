@@ -171,28 +171,24 @@ body, table, td, a {
                 box-shadow: 0 0 10px rgba(0,0,0,0.1);  /* Optional: Adds a subtle shadow for depth (remove if not desired) */
             }
 
-/* Spacing below the date picker */
-.date-picker-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 20px;
-    gap: 10px;
-    margin-bottom: 20px; /* Adds space below the date picker */
-}
-
-/* Spacing below each group title */
-.group-title {
-    margin-bottom: 10px; /* Adds space below the group title */
-}
-
-/* Responsive table container for better mobile viewing */
-.table-responsive {
-    overflow-x: auto;
-    margin-bottom: 20px; /* Space below each table */
-}
-
-.log-button {
-    margin-top: 20px; /* Adjust this value based on your design preference */
-}
+            .date-picker-container {
+                display: flex;
+                justify-content: center;
+                flex-wrap: wrap;
+                gap: 10px;
+                margin-bottom: 20px; /* Add some space below the date picker */
+              }
+              
+              .table-responsive {
+                overflow-x: auto; /* Allows table to scroll horizontally on small screens */
+              }
+              
+              .group-title {
+                margin-top: 20px; /* Adds space between groups */
+              }
+              
+              .log-button {
+                margin-top: 10px; /* Space between the table and the log button */
+              }
+              
 

@@ -102,13 +102,13 @@ const logCheckedStudents = (groupName) => {
 
 
 
-  return (
+return (
     <section className="garamond">
         {isLoading ? <p>Loading...</p> : (
             <>
                 <div className="date-picker-container">
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '10px' }}>
                             <Button variant="outlined" onClick={() => changeDate(-1)}>Prev</Button>
                             <DatePicker
                                 label="Select Date"
@@ -120,7 +120,7 @@ const logCheckedStudents = (groupName) => {
                         </div>
                     </LocalizationProvider>
                 </div>
-                <div style={{ marginLeft: '50px' }}>
+                <div style={{ margin: '0 auto', maxWidth: '100%' }}>
                     {Object.entries(groups).map(([groupName, members]) => (
                         <div key={groupName} className="table-responsive">
                             <h3 className="group-title">{groupName}</h3>
@@ -140,25 +140,24 @@ const logCheckedStudents = (groupName) => {
                                             <td>{student.studentName}</td>
                                             <td>{student.studentSurname}</td>
                                             <td>
-    <input
-        type="checkbox"
-        checked={checkedState[groupName]?.[student.studentId] || false}
-        onChange={() => handleCheckboxChange(groupName, student.studentId)}
-    />
-    {loggedStudents[student.studentId] === "checked" ? <span style={{ color: 'green' }}>✔</span> : null}
-    {loggedStudents[student.studentId] === "unchecked" ? <span style={{ color: 'red' }}>✖</span> : null}
-</td>
-
+                                                <input
+                                                    type="checkbox"
+                                                    checked={checkedState[groupName]?.[student.studentId] || false}
+                                                    onChange={() => handleCheckboxChange(groupName, student.studentId)}
+                                                />
+                                                {loggedStudents[student.studentId] === "checked" ? <span style={{ color: 'green' }}>✔</span> : null}
+                                                {loggedStudents[student.studentId] === "unchecked" ? <span style={{ color: 'red' }}>✖</span> : null}
+                                            </td>
                                         </tr>
                                     ))}
                                 </tbody>
                             </table>
                             <button
-    className="log-button"
-    onClick={() => logCheckedStudents(groupName)}
->
-    Log Checked
-</button>
+                                className="log-button"
+                                onClick={() => logCheckedStudents(groupName)}
+                            >
+                                Log Checked
+                            </button>
                         </div>
                     ))}
                 </div>
@@ -166,6 +165,7 @@ const logCheckedStudents = (groupName) => {
         )}
     </section>
 );
+
 
 
 }
