@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { SERVER_URL } from '../constants.js';
 import SearchList from './SearchList.js';
 import Scroll from './Scroll.js';
-import MyDay from './TabComponent/MyDay.js';
 import MyTabs from './TabComponent/MyTabs.js';
 
 function StudentSearch(props) {

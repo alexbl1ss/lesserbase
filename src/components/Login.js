@@ -10,15 +10,11 @@ function Login(props) {
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState('');
   const [isError, setIsError] = useState(false);
+  const [user, setUser] = useState({ email: '', password: '' });
 
-  const [user, setUser] = useState({
-    email: '', 
-    password: ''
-  });
-  
   const handleChange = (event) => {
-    setUser({...user, [event.target.name] : event.target.value});
-  }
+    setUser({ ...user, [event.target.name]: event.target.value });
+  };
       
   const login = () => {
     fetch(SERVER_URL + 'api/v1/auth/authenticate', {
@@ -34,7 +30,7 @@ function Login(props) {
         setMessage('Login successful!');
         setIsError(false);
         setOpen(true);
-        props.onLoginSuccess(data.role, data.username);
+        props.onLoginSuccess(user.email, data.role);;
       } else {
         setMessage('Login failed: Check your username and password');
         setIsError(true);

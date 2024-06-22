@@ -17,8 +17,10 @@ function App() {
   const [isAuthenticated, setAuth] = useState(false);
   const [showWhoIsDoing, setShowWhoIsDoing] = useState(false);
   const [showFinancials, setShowFinancials] = useState(false);
+  const [username, setUsername] = useState("");
 
-  const onLoginSuccess = (role) => {
+  const onLoginSuccess = (username, role) => {
+    setUsername(username); 
     setShowFinancials(role === 'ADMIN');
     setAuth(true);
   };
