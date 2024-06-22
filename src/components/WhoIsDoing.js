@@ -99,8 +99,16 @@ const logCheckedStudents = (groupName) => {
         action: actionString
     };
 
+    // Log the attendance state for each student
+    const newLoggedStudents = { ...loggedStudents };
+    Object.entries(checkedState[groupName]).forEach(([studentId, isChecked]) => {
+        newLoggedStudents[studentId] = isChecked ? "checked" : "unchecked";
+    });
+
+    setLoggedStudents(newLoggedStudents); // Update the loggedStudents state
     sendAttendanceData(postData);
 };
+
 
 
   const sendAttendanceData = (postData) => {
