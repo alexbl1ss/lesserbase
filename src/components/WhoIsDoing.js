@@ -90,14 +90,44 @@ const changeDate = (increment) => {
 };
 
 const logCheckedStudents = (groupName) => {
-  console.log('Checked students for ', groupName, ': ', checkedState[groupName]);
-  const newLoggedStudents = { ...loggedStudents };
-  Object.keys(checkedState[groupName]).forEach(studentId => {
-      // Set as 'checked' or 'unchecked' based on the checkbox state
-      newLoggedStudents[studentId] = checkedState[groupName][studentId] ? "checked" : "unchecked";
-  });
-  setLoggedStudents(newLoggedStudents);
-  resetCheckboxes();
+    const actionString = Object.entries(checkedState[groupName]).map(([studentId, isChecked]) => {
+        return `${studentId}:${isChecked ? "present" : "absent"}`;
+    }).join(", ");
+
+    const postData = {
+        email: username,
+        action: actionString
+    };
+
+    sendAttendanceData(postData);
+};
+
+
+  const sendAttendanceData = (postData) => {
+    const token = sessionStorage.getItem('bearer');
+    fetch(`${SERVER_URL}api/group/attendance`, {  // Ensure the URL is correctly pointing to the attendance API
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`  // Correctly format the headers object
+        },
+        body: JSON.stringify(postData)
+    })
+    .then(response => {
+        if (response.ok) {
+            return response.json();  // Ensure to return the JSON response to handle it properly
+        } else {
+            throw new Error('Failed to log attendance, server responded with status: ' + response.status);
+        }
+    })
+    .then(data => {
+        console.log('Attendance logged successfully:', data);  // Log successful data or perform actions as needed
+        resetCheckboxes();  // Reset checkboxes only on successful post
+    })
+    .catch(err => {
+        console.error('Error logging attendance:', err);
+        alert('Error logging attendance: ' + err.message);
+    });
 };
 
 

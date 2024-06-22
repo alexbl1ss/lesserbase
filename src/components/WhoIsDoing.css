@@ -166,7 +166,7 @@ body, table, td, a {
             .table-responsive {
                 overflow-x: auto;  /* Allows table to scroll horizontally on smaller screens */
                 margin: 20px; /* Adds top and bottom margin of 20px, and left-right margin of 10px */
-                max-width: 95%;    /* Sets the maximum width of the table to 90% of its container */
+                max-width: 90%;    /* Sets the maximum width of the table to 90% of its container */
                 width: 100%;       /* Ensures the table width is responsive and fills its container */
             }
 
