@@ -72,7 +72,7 @@ function App() {
         </AppBar>
         {isAuthenticated ? (
           showWhoIsDoing ? (
-            <WhoIsDoing />
+            <WhoIsDoing username={username} /> 
           ) : (
             <StudentSearch showFinancials={showFinancials} />
           )

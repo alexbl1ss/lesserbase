@@ -1,22 +1,19 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useProps } from 'react';
 import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import { SERVER_URL } from '../constants.js';
 import './WhoIsDoing.css';
-import Button from '@mui/material/Button';
 
-
-
-function WhoIsDoing() {
+function WhoIsDoing({username}) {
   const [selectedDate, setSelectedDate] = useState(dayjs());
   const [formattedDate, setFormattedDate] = useState(selectedDate.toISOString().split('T')[0]);
   const [groups, setGroups] = useState([]);
   const [checkedState, setCheckedState] = useState({});
   const [isLoading, setIsLoading] = useState(true);
-
-
+  const [loggedStudents, setLoggedStudents] = useState({});
 
   useEffect(() => {
     const newFormattedDate = selectedDate.toISOString().split('T')[0];
@@ -27,7 +24,7 @@ function WhoIsDoing() {
 
   const fetchGroups = useCallback(() => {
     const token = sessionStorage.getItem('bearer');
-    fetch(`${SERVER_URL}api/mygroupsregister/alex.brown@bliss.com/2024-07-01`, {
+    fetch(`${SERVER_URL}api/mygroupsregister/${username}/2024-07-01`, {
         headers: { Authorization: `Bearer ${token}` },
     })
     .then(response => response.json())
@@ -52,7 +49,6 @@ function WhoIsDoing() {
           return acc;
       }, {});
   
-      console.log(grouped, newCheckedState);  // Confirm that the state is correctly set
       setGroups(grouped);
       setCheckedState(newCheckedState);
       setIsLoading(false);
@@ -93,6 +89,18 @@ const changeDate = (increment) => {
     setCheckedState(resetState);  // Update the state with the reset values
 };
 
+const logCheckedStudents = (groupName) => {
+  console.log('Checked students for ', groupName, ': ', checkedState[groupName]);
+  const newLoggedStudents = { ...loggedStudents };
+  Object.keys(checkedState[groupName]).forEach(studentId => {
+      // Set as 'checked' or 'unchecked' based on the checkbox state
+      newLoggedStudents[studentId] = checkedState[groupName][studentId] ? "checked" : "unchecked";
+  });
+  setLoggedStudents(newLoggedStudents);
+  resetCheckboxes();
+};
+
+
 
   return (
     <section className="garamond">
@@ -132,22 +140,22 @@ const changeDate = (increment) => {
                                             <td>{student.studentName}</td>
                                             <td>{student.studentSurname}</td>
                                             <td>
-                                                <input
-                                                    type="checkbox"
-                                                    checked={checkedState[groupName]?.[student.studentId] || false}
-                                                    onChange={() => handleCheckboxChange(groupName, student.studentId)}
-                                                />
-                                            </td>
+    <input
+        type="checkbox"
+        checked={checkedState[groupName]?.[student.studentId] || false}
+        onChange={() => handleCheckboxChange(groupName, student.studentId)}
+    />
+    {loggedStudents[student.studentId] === "checked" ? <span style={{ color: 'green' }}>✔</span> : null}
+    {loggedStudents[student.studentId] === "unchecked" ? <span style={{ color: 'red' }}>✖</span> : null}
+</td>
+
                                         </tr>
                                     ))}
                                 </tbody>
                             </table>
                             <button
     className="log-button"
-    onClick={() => {
-        console.log('Checked students for ', groupName, ': ', checkedState[groupName]);
-        resetCheckboxes();  // Call the reset function after logging
-    }}
+    onClick={() => logCheckedStudents(groupName)}
 >
     Log Checked
 </button>

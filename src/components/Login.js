@@ -30,7 +30,7 @@ function Login(props) {
         setMessage('Login successful!');
         setIsError(false);
         setOpen(true);
-        props.onLoginSuccess(user.email, data.role);;
+        props.onLoginSuccess(user.email, data.role);
       } else {
         setMessage('Login failed: Check your username and password');
         setIsError(true);
