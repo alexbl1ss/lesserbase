@@ -6,7 +6,7 @@ import StudentGroups from "../AllTabs/StudentGroups";
 const MyTabs = (props) => {
 
     const { selectedPerson, onClose } = props;
-    const [activeTab, setActiveTab] = useState("details");
+    const [activeTab, setActiveTab] = useState("groups");
     const [selectedStay, setSelectedStay] = useState(null);
 
     const handledetails = () => {
