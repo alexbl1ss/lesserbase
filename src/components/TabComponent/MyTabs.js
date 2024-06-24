@@ -29,6 +29,11 @@ const MyTabs = (props) => {
             {/* Tab nav */}
             <ul className="nav">
                 <li
+                    className={activeTab === "groups" ? "active" : ""}
+                    onClick={handleGroups}>
+                    Today
+                </li>
+                <li
                     className={activeTab === "details" ? "active" : ""}
                     onClick={handledetails}>
                 Details
@@ -38,11 +43,7 @@ const MyTabs = (props) => {
                     onClick={handlebookings}>
                 Bookings
                 </li>
-                <li
-                    className={activeTab === "groups" ? "active" : ""}
-                    onClick={handleGroups}>
-                    Today
-                </li>
+                
                 <li
                     className="close-tab"
                     onClick={handleClose}>

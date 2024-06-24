@@ -27,14 +27,18 @@ a[x-apple-data-detectors] {
 }
 
 .date-picker-container {
-    order: 2; /* This will push the date picker below the table in the flex container */
+    order: 1;
     margin-top: 20px; /* Space between table and date picker */
     width: 100%; /* Adjust width as needed */
 }
+.tables-container {
+    order: 2;
+    width: 100%;
+}
 
 .table-responsive {
-    order: 1; /* Ensures table comes first in the flow */
     width: 96%; /* Your existing width */
+    margin-left:2%;
     margin-bottom: 20px; /* Ensure spacing */
     max-height: 500px; /* Adjust based on your preference */
     overflow-y: auto; /* Enables vertical scrolling */

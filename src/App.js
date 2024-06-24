@@ -6,7 +6,7 @@ import Button from '@mui/material/Button';
 import Box from '@mui/material/Box'; 
 import Login from './components/Login';
 import StudentSearch from './components/StudentSearch';
-import WhoIsDoing from './components/WhoIsDoing';
+import GroupSchedule from './components/GroupSchedule.js';
 import { SERVER_URL } from './constants.js';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -72,7 +72,7 @@ function App() {
         </AppBar>
         {isAuthenticated ? (
           showWhoIsDoing ? (
-            <WhoIsDoing username={username} /> 
+            <GroupSchedule username={username} /> 
           ) : (
             <StudentSearch showFinancials={showFinancials} />
           )

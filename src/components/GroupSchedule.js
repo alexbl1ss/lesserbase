@@ -5,9 +5,9 @@ import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import { SERVER_URL } from '../constants.js';
-import './WhoIsDoing.css';
+import './GroupSchedule.css';
 
-function WhoIsDoing({username}) {
+function GroupSchedule({username}) {
   const [selectedDate, setSelectedDate] = useState(dayjs());
   const [formattedDate, setFormattedDate] = useState(selectedDate.toISOString().split('T')[0]);
   const [groups, setGroups] = useState([]);
@@ -139,7 +139,7 @@ const logCheckedStudents = (groupName) => {
 
 
 return (
-    <section className="garamond">
+    <section className="section-container">
                 <div className="date-picker-container">
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '10px' }}>
@@ -154,7 +154,7 @@ return (
                         </div>
                     </LocalizationProvider>
                 </div>
-                <div style={{ margin: '0 auto', maxWidth: '100%' }}>
+                <div className="tables-container">
                     {Object.entries(groups).map(([groupName, members]) => (
                         <div key={groupName} className="table-responsive">
                             <h3 className="group-title">{groupName}</h3>
@@ -200,4 +200,4 @@ return (
 
 }
 
-export default WhoIsDoing;
+export default GroupSchedule;
