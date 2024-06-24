@@ -18,30 +18,47 @@ a[x-apple-data-detectors] {
     text-decoration: none !important;
 }
 
-/* Responsive tables and general layout */
-.table-responsive, .date-picker-container {
-    overflow-x: auto;
-    width: 96%;
-    margin-top: 20px;
-    margin-bottom: 20px;
-    margin-left: 2%;
+.section-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    margin: 0 auto;
 }
 
+.date-picker-container {
+    order: 2; /* This will push the date picker below the table in the flex container */
+    margin-top: 20px; /* Space between table and date picker */
+    width: 100%; /* Adjust width as needed */
+}
+
+.table-responsive {
+    order: 1; /* Ensures table comes first in the flow */
+    width: 96%; /* Your existing width */
+    margin-bottom: 20px; /* Ensure spacing */
+    max-height: 500px; /* Adjust based on your preference */
+    overflow-y: auto; /* Enables vertical scrolling */
+}
 .table-responsive table {
-    width: 100%; /* Ensures the table uses the full width of its container */
-    table-layout: fixed; /* Helps enforce column widths */
+    padding: 10px 15px;
+    width: 100%;
+    table-layout: fixed;
 }
 
 .table-responsive th.id, .table-responsive td.id {
-    width: 15%; /* Adjusts width to 15% for the ID column */
+    height: 30px;
+    width: 15%;
+    padding-left: 2px;
 }
 
 .table-responsive th.name, .table-responsive td.name {
-    width: 75%; /* Adjusts width to 50% for the Name column */
+    width: 75%;
+    padding-left: 2px;
 }
 
 .table-responsive th.checkbox, .table-responsive td.checkbox {
-    width: 10%; /* Adjusts width to 35% for the Checkbox column */
+    width: 10%;
+    text-align: center; /* Centers content horizontally in the cell */
 }
 
 /* Group titles and buttons */
