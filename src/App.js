@@ -41,7 +41,7 @@ function App() {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale='en-gb'>
       <div className="App">
-        <title>SBC</title>
+        <title>LOCATORBASE</title>
         <AppBar position="static">
           <Toolbar>
             {/* ... existing code ... */}

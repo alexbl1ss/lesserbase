@@ -1,194 +1,80 @@
 @import "https://use.fontawesome.com/releases/v5.1.0/css/all.css";
 
-body, table, td, a {
+/* Base Styles */
+body, table, td, a, img {
     -webkit-text-size-adjust: 100%;
     -ms-text-size-adjust: 100%;
+    border-collapse: collapse !important;
+    line-height: 100%;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: auto;
 }
 
-            body {
-                height: 100% !important;
-                margin: 0 !important;
-                padding: 0 !important;
-                width: 100% !important;
-            }
+/* Link adjustments */
+a[x-apple-data-detectors] {
+    color: inherit !important;
+    text-decoration: none !important;
+}
 
-            /* Removes spacing between tables in Outlook 2007+ */
-            table, td {
-                mso-table-lspace: 0pt;
-                mso-table-rspace: 0pt;
-            }
+/* Responsive tables and general layout */
+.table-responsive, .date-picker-container {
+    overflow-x: auto;
+    width: 96%;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    margin-left: 2%;
+}
 
-            img {
-                border: 0;
-                line-height: 100%;
-                text-decoration: none;
-                -ms-interpolation-mode: bicubic;
-                /* Smoother rendering in IE */
-            }
+.table-responsive table {
+    width: 100%; /* Ensures the table uses the full width of its container */
+    table-layout: fixed; /* Helps enforce column widths */
+}
 
-            table {
-                border-collapse: collapse !important;
-            }
+.table-responsive th.id, .table-responsive td.id {
+    width: 15%; /* Adjusts width to 15% for the ID column */
+}
 
-            /* iOS Blue Links */
-            a[x-apple-data-detectors] {
-                color: inherit !important;
-                text-decoration: none !important;
-                font-size: inherit !important;
-                font-family: inherit !important;
-                font-weight: inherit !important;
-                line-height: inherit !important;
-            }
+.table-responsive th.name, .table-responsive td.name {
+    width: 75%; /* Adjusts width to 50% for the Name column */
+}
 
-            /* Table fix for Outlook */
-            table {
-                border-collapse: separate;
-            }
+.table-responsive th.checkbox, .table-responsive td.checkbox {
+    width: 10%; /* Adjusts width to 35% for the Checkbox column */
+}
 
-            .ExternalClass p, .ExternalClass span, .ExternalClass font, .ExternalClass td {
-                line-height: 100%;
-            }
+/* Group titles and buttons */
+.group-title, .log-button {
+    margin-top: 20px;
+}
 
-            .ExternalClass {
-                width: 100%;
-            }
+/* Desktop Styles */
+@media screen and (max-width: 1350px) {
+    .wrapper, .table-max {
+        max-width: 1000px;
+    }
+}
 
-            .collapsibleSection {
-                cursor: pointer;
-                transition: 0.4s;
-            }
+/* Mobile Styles */
+@media screen and (max-width: 525px) {
+    .wrapper {
+        max-width: 100% !important;
+    }
 
-            .collapsibleAssessment {
-                cursor: pointer;
-                transition: 0.4s;
-            }
+    .hide-element {
+        display: none !important;
+    }
 
-            .collapsibleDetails {
-                cursor: pointer;
-                transition: 0.4s;
-            }
+    .mobile-btn-container, .mobile-btn {
+        width: 100% !important;
+        padding: 15px !important;
+    }
+}
 
-            /* Desktop */
-            @media screen {
-                .wrapper {
-                    max-width: 1100px;
-                }
-
-                .table-max {
-                    max-width: 1100px;
-                }
-
-                .table-max-assessments {
-                    max-width: 985px !important;
-                }
-            }
-
-            /* Desktop */
-            @media screen and (max-width: 1350px) {
-                .wrapper {
-                    max-width: 1000px;
-                }
-
-                .table-max {
-                    max-width: 1000px;
-                }
-
-                .table-max-assessments {
-                    max-width: 885px;
-                }
-            }
-
-            /* Mobile Styling */
-            @media screen and (max-width: 525px) {
-                .wrapper {
-                    width: 100% !important;
-                    max-width: 100% !important;
-                }
-
-                .hide-element {
-                    display: none !important;
-                }
-
-                .no-padding {
-                    padding: 0 !important;
-                }
-
-                .img-max {
-                    max-width: 100% !important;
-                    width: 100% !important;
-                    height: auto !important;
-                }
-
-                .table-max {
-                    width: 100% !important;
-                }
-
-                .mobile-btn-container {
-                    margin: 0 auto;
-                    width: 100% !important;
-                }
-
-                .mobile-btn {
-                    padding: 15px !important;
-                    border: 0 !important;
-                    font-size: 16px !important;
-                    display: block !important;
-                }
-            }
-
-            /* iPads (landscape) Styling */
-            @media handheld, all and (device-width: 768px) and (device-height: 1024px) and (orientation: landscape) {
-                .wrapper-ipad {
-                    max-width: 280px !important;
-                }
-
-                .table-max-assessments {
-                    max-width: 465px !important;
-                }
-            }
-
-            /* iPads (portrait) Styling */
-            @media handheld, all and (device-width: 768px) and (device-height: 1024px) and (orientation: portrait) {
-                .wrapper-ipad {
-                    max-width: 280px !important;
-                }
-
-                .table-max-assessments {
-                    max-width: 465px !important;
-                }
-            }
-
-            .cellPadding {
-                padding: 5px;
-            }
-
-            
-            .table-responsive {
-                overflow-x: auto;  /* Allows table to scroll horizontally on smaller screens */
-                margin: 20px; /* Adds top and bottom margin of 20px, and left-right margin of 10px */
-                max-width: 90%;    /* Sets the maximum width of the table to 90% of its container */
-                width: 100%;       /* Ensures the table width is responsive and fills its container */
-            }
-
-            .date-picker-container {
-                display: flex;
-                justify-content: center;
-                flex-wrap: wrap;
-                gap: 10px;
-                margin-top: 20px;
-                margin-bottom: 20px; /* Add some space below the date picker */
-              }
-              
-              .table-responsive {
-                overflow-x: auto; /* Allows table to scroll horizontally on small screens */
-              }
-              
-              .group-title {
-                margin-top: 20px; /* Adds space between groups */
-              }
-              
-              .log-button {
-                margin-top: 10px; /* Space between the table and the log button */
-              }
-              
-
+/* iPad Styles */
+@media handheld, all and (device-width: 768px) and (device-height: 1024px) {
+    .wrapper-ipad, .table-max-assessments {
+        max-width: 465px !important;
+    }
+}

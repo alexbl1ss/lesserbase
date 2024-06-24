@@ -161,17 +161,17 @@ return (
                             <table style={{ width: '100%', minWidth: '320px', borderCollapse: 'collapse', textAlign: 'left' }}>
                                 <thead>
                                     <tr>
-                                        <th>ID</th>
-                                        <th>Name</th>
-                                        <th></th>
+                                        <th className="id">ID</th>
+                                        <th className="name">Name</th>
+                                        <th className="checkbox"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {members.map((student) => (
                                         <tr key={student.studentId}>
-                                            <td>{student.studentId}</td>
-                                            <td>{student.studentName} {student.studentSurname}</td>
-                                            <td>
+                                            <td className="id">{student.studentId}</td>
+                                            <td className="name">{student.studentName} {student.studentSurname}</td>
+                                            <td className="checkbox">
                                                 <input
                                                     type="checkbox"
                                                     checked={checkedState[groupName]?.[student.studentId] || false}
