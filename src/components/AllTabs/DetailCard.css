@@ -1,0 +1,15 @@
+@import "https://use.fontawesome.com/releases/v5.1.0/css/all.css";
+
+.detail-card table {
+    width: 100%;
+    table-layout: fixed;
+}
+
+.detail-card th, .detail-card td {
+    width: 25%;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 5px;
+    padding-right: 5px;
+    border-collapse: collapse;
+}

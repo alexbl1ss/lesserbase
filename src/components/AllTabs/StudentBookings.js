@@ -31,18 +31,26 @@ function StudentBookings(props) {
       <div className="booking-card" style={{ padding: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         {bookings.map((booking) => (
           <div key={booking.bookingId} style={{ margin: '10px', padding: '10px', border: '1px solid #ccc', borderRadius: '5px', width: '90%' }}>
-            <p><strong>Product:</strong> {booking.productName}</p>
-            <p><strong>Start Date:</strong> {booking.startDate}</p>
-            <p><strong>End Date:</strong> {booking.endDate}</p>
+            <p><strong>{booking.productName}</strong></p>
+            {booking.endDate !== booking.startDate ? (
+              <React.Fragment>
+                <p><strong>Start Date:</strong> {booking.startDate}</p>
+                <p><strong>End Date:</strong> {booking.endDate}</p>
+              </React.Fragment>
+            ) : (
+              <p><strong>Date:</strong> {booking.startDate}</p>
+            )}
           </div>
         ))}
       </div>
       <div>
         <p style={{ color: '#999', fontSize: '12px' }}>Student ID: {selectedPerson.id}</p>
-        <p style={{ color: '#999', fontSize: '12px' }}>Is authenticated: {sessionStorage.getItem('isAuthenticated').toString()}</p>
+        <p style={{ color: '#999', fontSize: '12px' }}>Is authenticated: {sessionStorage.getItem('isAuthenticated') ? 'Yes' : 'No'}</p>
       </div>
     </React.Fragment>
-  );
+);
+
+
 }
 
 export default StudentBookings;

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { SERVER_URL } from '../../constants.js'
 import EditStudent from '../AddsEdits/EditStudent';
+import DetailCard from './DetailCard.css'
 
 function StudentDetail(props) {
   const { selectedPerson, selectedStay, setSelectedStay } = props;
@@ -124,7 +125,7 @@ function StudentDetail(props) {
 
 return (
 <React.Fragment>
-<div className="detail-card" style={{ padding: '20px 0' }}>
+<div className="detail-card">
 <table style={{ width: '80%', textAlign: 'left', margin: 'auto', borderCollapse: 'collapse' }}>
 <tbody>
 <tr>
