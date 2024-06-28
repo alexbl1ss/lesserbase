@@ -19,7 +19,7 @@ function StudentGroups(props) {
   };
 
   // Use today's date
-  const today = formatDate(new Date('2024-07-01'));
+  const today = formatDate(new Date());
 
 
   const fetchGroups = useCallback(() => {
@@ -106,9 +106,13 @@ function StudentGroups(props) {
             ) : (
               afternoonBookings.length > 0 ? (
                 afternoonBookings.map(booking =>
-                  <p key={booking.id}>Activity: {booking.groupName} - type: {booking.groupType}</p>
+                  <p key={booking.id}>
+                    Activity: {booking.groupName} 
+                    {booking.groupType === "EXTERNAL" ? ` - ${booking.groupType}` : ""}
+                  </p>
                 )
-              ) : <p>None</p>
+              ) : <p>NONE</p>
+              
             )}
           </section>
         </>
