@@ -23,7 +23,7 @@ function GroupSchedule({ username }) {
 
   const fetchGroups = useCallback(() => {
     const token = sessionStorage.getItem('bearer');
-    fetch(`${SERVER_URL}api/mygroupsregister/${username}/${formattedDate}`, {
+    fetch(`${SERVER_URL}api/mygroupsregister/${encodeURIComponent(username)}/${formattedDate}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then(response => response.json())
