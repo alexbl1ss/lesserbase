@@ -44,9 +44,8 @@ function App() {
         <title>LOCATORBASE</title>
         <AppBar position="static">
           <Toolbar>
-            {/* ... existing code ... */}
             {isAuthenticated && (
-              <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'flex-end' }}>
+              <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center' }}>
                 <Button
                   color="inherit"
                   onClick={() => {

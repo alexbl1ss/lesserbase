@@ -1,14 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { SERVER_URL } from '../constants.js';
 import SearchList from './SearchList.js';
 import Scroll from './Scroll.js';
 import MyTabs from './TabComponent/MyTabs.js';
+
+
 
 function StudentSearch(props) {
   const [searchField, setSearchField] = useState("");
   const [searchShow, setSearchShow] = useState(false);
   const [selectedPerson, setSelectedPerson] = useState(null);
   const [students, setStudents] = useState([]);
+  const selectedYear = 2025;
   
   const filteredPersons = students.filter(
     (person) =>
@@ -22,14 +25,6 @@ function StudentSearch(props) {
   const handleCardClick = (person) => {
     setSelectedPerson(person);
     setSearchShow(false);
-  };
-
-  const handleSelectStudent = (studentId) => {
-    const student = students.find((s) => s.id === studentId);
-    if (student) {
-      setSelectedPerson(student);
-      setSearchShow(false);
-    }
   };
 
   const handleCloseTabs = () => {
@@ -57,11 +52,12 @@ function StudentSearch(props) {
     }
   };
 
-  const fetchStudents = () => {
-    const token = sessionStorage.getItem('bearer');
-    fetch(`${SERVER_URL}api/studentsBasic`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
+  const fetchStudents = useCallback(() => {
+  setStudents([]); // Clear the existing students data first
+  const token = sessionStorage.getItem('bearer');
+  fetch(`${SERVER_URL}api/studentsBasicYear/${selectedYear}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  })
     .then((response) => {
       if (response.status === 204) {
         return [];
@@ -76,11 +72,12 @@ function StudentSearch(props) {
       setStudents(data);
     })
     .catch((err) => console.error(err));
-  };
+}, []);
+
 
   useEffect(() => {
     fetchStudents();
-  }, []);
+  }, [fetchStudents]);
 
   const handleChange = (e) => {
     setSearchField(e.target.value);
