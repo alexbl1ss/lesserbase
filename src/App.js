@@ -11,12 +11,16 @@ import { SERVER_URL } from './constants.js';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import 'dayjs/locale/en-gb';
+import MyProfile from './components/MyProfile.js';
+
 
 
 function App() {
   const [isAuthenticated, setAuth] = useState(false);
   const [showWhoIsDoing, setShowWhoIsDoing] = useState(false);
   const [showFinancials, setShowFinancials] = useState(false);
+  const [showProfile, setShowProfile] = useState(false);
+  const [activeTab, setActiveTab] = useState('search');
   const [username, setUsername] = useState("");
 
   const onLoginSuccess = (username, role) => {
@@ -46,22 +50,9 @@ function App() {
           <Toolbar>
             {isAuthenticated && (
               <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center' }}>
-                <Button
-                  color="inherit"
-                  onClick={() => {
-                    setShowWhoIsDoing(false);
-                  }}
-                >
-                  Search
-                </Button>
-                <Button
-                  color="inherit"
-                  onClick={() => {
-                    setShowWhoIsDoing(true);
-                  }}
-                >
-                  My Groups
-                </Button>
+                <Button color="inherit" onClick={() => setActiveTab('search')}>Search</Button>
+<Button color="inherit" onClick={() => setActiveTab('groups')}>My Groups</Button>
+<Button color="inherit" onClick={() => setActiveTab('profile')}>My Profile</Button>
                 <Button color="inherit" onClick={handleLogout}>
                   Logout
                 </Button>
@@ -70,14 +61,16 @@ function App() {
           </Toolbar>
         </AppBar>
         {isAuthenticated ? (
-          showWhoIsDoing ? (
-            <GroupSchedule username={username} /> 
-          ) : (
-            <StudentSearch showFinancials={showFinancials} />
-          )
-        ) : (
-          <Login onLoginSuccess={onLoginSuccess} />
-        )}
+  activeTab === 'profile' ? (
+    <MyProfile />
+  ) : activeTab === 'groups' ? (
+    <GroupSchedule username={username} />
+  ) : (
+    <StudentSearch showFinancials={showFinancials} />
+  )
+) : (
+  <Login onLoginSuccess={onLoginSuccess} />
+)}
       </div>
     </LocalizationProvider>
   );
