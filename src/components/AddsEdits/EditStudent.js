@@ -23,6 +23,8 @@ function EditStudent(props) {
     classRequirements: '',
     allergies: '',
     notes: '',
+    emergencyContact: '',
+  mobilePhoneOptOut: false,
     hasAllPermission: false,
     hasPoolPermission: false,
     hasPhotoPermission: false,
@@ -54,6 +56,8 @@ function EditStudent(props) {
         classRequirements: props.passedStudent.classRequirements || '',
         allergies: props.passedStudent.allergies || '',
         notes: props.passedStudent.notes || '',
+        emergencyContact: props.passedStudent.emergencyContact || '',
+mobilePhoneOptOut: props.passedStudent.mobilePhoneOptOut || false,
         hasAllPermission: props.passedStudent.hasAllPermission || false,
         hasPoolPermission: props.passedStudent.hasPoolPermission || false,
         hasPhotoPermission: props.passedStudent.hasPhotoPermission || false,
@@ -231,6 +235,30 @@ function EditStudent(props) {
             sx={{ mb: 0, mt: 0 }}
             />
           </Grid>
+          <Grid item xs={12} sm={6}>
+  <TextField
+    label="Emergency Contact"
+    value={student.emergencyContact || ''}
+    onChange={handleChange}
+    fullWidth
+    name="emergencyContact"
+    sx={{ mb: 0, mt: 0 }}
+  />
+</Grid>
+
+<Grid item xs={12} sm={6}>
+  <FormControlLabel
+    control={
+      <Checkbox
+        checked={student.mobilePhoneOptOut}
+        onChange={handleChange}
+        name="mobilePhoneOptOut"
+      />
+    }
+    label="Mobile Phone Opt-Out"
+  />
+</Grid>
+
           <Grid item xs={12} sm={6}>
             <Box sx={{ width: '100%', borderTop: '1px solid #e0e0e0', my: 2 }} />
           </Grid>

@@ -95,7 +95,9 @@ function StudentDetail(props) {
     hasHospitalPermission,
     hasExcursionPermission,
     hasActivityPermission,
-    hasSupervisionPermission
+    hasSupervisionPermission,
+    emergencyContact,
+    mobilePhoneOptOut
   } = student || {};
 
   const editStudent = (student, id) => {
@@ -152,6 +154,14 @@ return (
 <tr>
 <td>Notes: </td>
 <td>{notes}</td>
+</tr>
+<tr>
+  <td>Emergency Contact: </td>
+  <td>{emergencyContact || 'N/A'}</td>
+</tr>
+<tr>
+  <td>Mobile Phone Opt-Out:</td>
+  <td>{mobilePhoneOptOut ? 'Yes' : 'No'}</td>
 </tr>
 <tr style={{ height: '50px' }}><td colSpan="2" > </td></tr>
 {allPermissionsGranted ? (
