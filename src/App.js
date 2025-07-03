@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './App.css';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
@@ -22,6 +22,9 @@ function App() {
   const [showProfile, setShowProfile] = useState(false);
   const [activeTab, setActiveTab] = useState('search');
   const [username, setUsername] = useState("");
+  useEffect(() => {
+  document.title = 'LOCATORBASE';
+}, []);
 
   const onLoginSuccess = (username, role) => {
     setUsername(username); 
@@ -45,7 +48,6 @@ function App() {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale='en-gb'>
       <div className="App">
-        <title>LOCATORBASE</title>
         <AppBar position="static">
           <Toolbar>
             {isAuthenticated && (
