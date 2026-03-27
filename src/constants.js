@@ -1,9 +1,5 @@
-export const SERVER_URL='https://blissdatabase-trial-97a165e7193e.herokuapp.com/';
-//export const SERVER_URL='https://blissdb.herokuapp.com/';
-//export const SERVER_URL='https://blissdbtest.herokuapp.com/';
-//export const SERVER_URL='http://localhost:8080/'
-//export const SERVER_URL='https://blissalex.herokuapp.com/';
-//export const SERVER_URL='https://greaterbase-6dd42b867f9c.herokuapp.com/';
+//export const SERVER_URL='https://blissdatabase-trial-97a165e7193e.herokuapp.com/';
+export const SERVER_URL='https://greaterbase-6dd42b867f9c.herokuapp.com/';
 
 export const CAMPUSES = [
   { value: 'Kilgraston', label: 'Kilgraston' },
