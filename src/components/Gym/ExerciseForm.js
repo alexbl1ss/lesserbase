@@ -61,7 +61,7 @@ export default function ExerciseForm({ open, onClose, onSave, exercise, saving }
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle>{editing ? "Edit Exercise" : "Log Exercise"}</DialogTitle>
+      <DialogTitle>{editing ? "Edit Exercise" : "Plan Exercise"}</DialogTitle>
       <DialogContent>
         <Stack spacing={2} sx={{ mt: 1 }}>
           <TextField
@@ -119,7 +119,7 @@ export default function ExerciseForm({ open, onClose, onSave, exercise, saving }
       <DialogActions>
         <Button onClick={onClose} disabled={saving}>Cancel</Button>
         <Button variant="contained" onClick={handleSave} disabled={!canSave}>
-          {saving ? "Saving..." : editing ? "Save" : "Log it"}
+          {saving ? "Saving..." : "Save"}
         </Button>
       </DialogActions>
     </Dialog>

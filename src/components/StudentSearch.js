@@ -53,7 +53,6 @@ function StudentSearch(props) {
   };
 
   const fetchStudents = useCallback(() => {
-  setStudents([]); // Clear the existing students data first
   const token = sessionStorage.getItem('bearer');
   fetch(`${SERVER_URL}api/studentsBasicYear/${selectedYear}`, {
     headers: { Authorization: `Bearer ${token}` },
@@ -68,12 +67,11 @@ function StudentSearch(props) {
       }
     })
     .then((data) => {
-      sessionStorage.setItem('students', JSON.stringify(data));
-      setStudents(data);
+      const seen = new Set();
+      setStudents(data.filter((s) => seen.has(s.id) ? false : seen.add(s.id)));
     })
     .catch((err) => console.error(err));
 }, []);
-
 
   useEffect(() => {
     fetchStudents();

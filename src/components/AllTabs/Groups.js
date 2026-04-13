@@ -16,7 +16,6 @@ function Groups() {
         })
         .then(response => response.json())
     .then(data => {
-        sessionStorage.setItem('campgroups', JSON.stringify(data));
         setCampGroups(data);
     })
     .catch(err => console.error(err));

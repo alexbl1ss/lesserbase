@@ -15,11 +15,8 @@ function GroupSchedule({ username }) {
   const [loggedStudents, setLoggedStudents] = useState({});
 
   useEffect(() => {
-    const newFormattedDate = selectedDate.toISOString().split('T')[0];
-    if (newFormattedDate !== formattedDate) {
-      setFormattedDate(newFormattedDate);
-    }
-  }, [selectedDate, formattedDate]);
+    setFormattedDate(selectedDate.toISOString().split('T')[0]);
+  }, [selectedDate]);
 
   const fetchGroups = useCallback(() => {
     const token = sessionStorage.getItem('bearer');

@@ -76,7 +76,6 @@ function StudentGroups(props) {
       return text ? JSON.parse(text) : [];
     })
     .then(data => {
-      sessionStorage.setItem('payments', JSON.stringify(data));
       setTransfers(data);
       const todayTransfers = data.filter(transfer => formatDate(new Date(transfer.transferDate)) === selectedDate);
       setTodayTransfers(todayTransfers);

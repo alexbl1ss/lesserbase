@@ -54,13 +54,10 @@ function App() {
         <AppBar position="static">
           <Toolbar>
             {isAuthenticated && (
-              <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 1 }}>
+              <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <IconButton color="inherit" onClick={() => setActiveTab('landing')}>
                   <HomeIcon />
                 </IconButton>
-                <Button color="inherit" onClick={() => setActiveTab('search')}>Search</Button>
-                <Button color="inherit" onClick={() => setActiveTab('groups')}>My Groups</Button>
-                <Button color="inherit" onClick={() => setActiveTab('profile')}>My Profile</Button>
                 <Button color="inherit" onClick={handleLogout}>Logout</Button>
               </Box>
             )}

@@ -22,14 +22,12 @@ function StudentDetail(props) {
         }
       })
       .then((data) => {
-        // Automatically select the most recent stay if none is currently selected
-        if (!selectedStay && data.length > 0) {
-          setSelectedStay(data[data.length - 1]);  // Set to the most recent stay
-          //console.log(selectedStay);
+        if (data.length > 0) {
+          setSelectedStay((prev) => prev || data[data.length - 1]);
         }
       })
       .catch((err) => console.error(err));
-  }, [selectedPerson.id, selectedStay, setSelectedStay]);
+  }, [selectedPerson.id, setSelectedStay]);
 
   const fetchStudent = useCallback(() => {
     const token = sessionStorage.getItem('bearer');

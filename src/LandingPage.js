@@ -1,6 +1,7 @@
+import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import {
   Box,
-  Grid,
+  Button,
   Card,
   CardActionArea,
   CardContent,
@@ -8,6 +9,180 @@ import {
   useTheme,
   useMediaQuery,
 } from "@mui/material";
+import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
+import CloseIcon from "@mui/icons-material/Close";
+import AddIcon from "@mui/icons-material/Add";
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+  rectSortingStrategy,
+  useSortable,
+  arrayMove,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import { SERVER_URL } from "./constants";
+
+const APP_NAME = "locatorbase";
+const STORAGE_KEY = "locatorbase_tile_order";
+const DEFAULT_ORDER = ["search", "groups", "profile", "gym"];
+
+function loadCachedOrder() {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (!stored) return [...DEFAULT_ORDER];
+    const parsed = JSON.parse(stored);
+    if (!Array.isArray(parsed)) return [...DEFAULT_ORDER];
+    return parsed.filter((k) => DEFAULT_ORDER.includes(k));
+  } catch {
+    return [...DEFAULT_ORDER];
+  }
+}
+
+function cacheOrder(order) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(order));
+}
+
+function fetchOrder() {
+  const token = sessionStorage.getItem("bearer");
+  return fetch(`${SERVER_URL}api/my-preferences/${APP_NAME}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  })
+    .then((res) => (res.ok ? res.json() : null))
+    .then((data) => {
+      if (data?.tileOrder && Array.isArray(data.tileOrder)) {
+        const valid = data.tileOrder.filter((k) => DEFAULT_ORDER.includes(k));
+        return valid.length > 0 ? valid : null;
+      }
+      return null;
+    })
+    .catch(() => null);
+}
+
+function saveOrder(order) {
+  cacheOrder(order);
+  const token = sessionStorage.getItem("bearer");
+  fetch(`${SERVER_URL}api/my-preferences/${APP_NAME}`, {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ tileOrder: order }),
+  }).catch(() => {});
+}
+
+function SortableTile({ tile, tileMinHeight, iconSize, fontSize, onSelect, reordering, onRemove }) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: tile.key });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  return (
+    <Box ref={setNodeRef} style={style} sx={{ width: "100%" }}>
+      <Card
+        sx={{
+          minHeight: tileMinHeight,
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          position: "relative",
+        }}
+      >
+        {reordering && (
+          <Box
+            onClick={(e) => { e.stopPropagation(); onRemove(tile.key); }}
+            sx={{
+              position: "absolute",
+              top: 6,
+              right: 6,
+              width: 24,
+              height: 24,
+              borderRadius: "50%",
+              bgcolor: "error.main",
+              color: "white",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+              zIndex: 2,
+              "&:hover": { bgcolor: "error.dark" },
+            }}
+          >
+            <CloseIcon sx={{ fontSize: 16 }} />
+          </Box>
+        )}
+        {reordering && (
+          <Box
+            {...attributes}
+            {...listeners}
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              px: 1,
+              cursor: "grab",
+              touchAction: "none",
+              color: "grey.400",
+              "&:hover": { color: "grey.600" },
+            }}
+          >
+            <DragIndicatorIcon />
+          </Box>
+        )}
+        <CardActionArea
+          onClick={() => onSelect(tile.key)}
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            height: "100%",
+            p: 2,
+            flex: 1,
+          }}
+        >
+          <Box
+            component="img"
+            src={tile.src}
+            alt={tile.label}
+            sx={{
+              width: iconSize,
+              height: iconSize,
+              objectFit: "contain",
+              mb: 1,
+            }}
+          />
+          <CardContent sx={{ p: 0, "&:last-child": { pb: 0 } }}>
+            <Typography
+              variant="body2"
+              align="center"
+              sx={{ fontSize, fontWeight: 600 }}
+            >
+              {tile.label}
+            </Typography>
+          </CardContent>
+        </CardActionArea>
+      </Card>
+    </Box>
+  );
+}
 
 export default function LandingPage({ onSelect }) {
   const publicUrl = process.env.PUBLIC_URL || "";
@@ -16,32 +191,81 @@ export default function LandingPage({ onSelect }) {
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const isTablet = useMediaQuery(theme.breakpoints.between("sm", "lg"));
 
-  const tileMinHeight = isMobile ? 90 : isTablet ? 120 : 160;
-  const iconSize = isMobile ? 32 : isTablet ? 48 : 64;
-  const fontSize = isMobile ? "0.75rem" : isTablet ? "0.9rem" : "1rem";
+  const tileMinHeight = isMobile ? 140 : isTablet ? 160 : 180;
+  const iconSize = isMobile ? 64 : isTablet ? 72 : 80;
+  const fontSize = isMobile ? "1rem" : isTablet ? "1.1rem" : "1.2rem";
 
-  const tiles = [
-    {
-      label: "Student Search",
-      src: `${publicUrl}/assets/students.png`,
-      key: "search",
-    },
-    {
-      label: "Groups",
-      src: `${publicUrl}/assets/groups.png`,
-      key: "groups",
-    },
-    {
-      label: "My Info",
-      src: `${publicUrl}/assets/myinfo.png`,
-      key: "profile",
-    },
-    {
-      label: "Gym",
-      src: `${publicUrl}/assets/gym.png`,
-      key: "gym",
-    },
-  ];
+  const tileMap = {
+    search: { label: "Student Search", src: `${publicUrl}/assets/students.png`, key: "search" },
+    groups: { label: "My Registers", src: `${publicUrl}/assets/groups.png`, key: "groups" },
+    profile: { label: "My Info", src: `${publicUrl}/assets/myinfo.png`, key: "profile" },
+    gym: { label: "Gym", src: `${publicUrl}/assets/gym.png`, key: "gym" },
+  };
+
+  const [order, setOrder] = useState(loadCachedOrder);
+  const [reordering, setReordering] = useState(false);
+  const longPressTimer = useRef(null);
+
+  useEffect(() => {
+    fetchOrder().then((remote) => {
+      if (remote) {
+        setOrder(remote);
+        cacheOrder(remote);
+      }
+    });
+  }, []);
+
+  const handleTilePointerDown = useCallback(() => {
+    longPressTimer.current = setTimeout(() => {
+      setReordering(true);
+    }, 600);
+  }, []);
+
+  const handleTilePointerUp = useCallback(() => {
+    clearTimeout(longPressTimer.current);
+  }, []);
+
+  const hiddenTiles = useMemo(
+    () => DEFAULT_ORDER.filter((k) => !order.includes(k)).map((k) => tileMap[k]).filter(Boolean),
+    [order]
+  );
+
+  const handleRemoveTile = useCallback((key) => {
+    setOrder((prev) => {
+      const next = prev.filter((k) => k !== key);
+      saveOrder(next);
+      return next;
+    });
+  }, []);
+
+  const handleAddTile = useCallback((key) => {
+    setOrder((prev) => {
+      const next = [...prev, key];
+      saveOrder(next);
+      return next;
+    });
+  }, []);
+
+  const tiles = useMemo(
+    () => order.map((key) => tileMap[key]).filter(Boolean),
+    [order]
+  );
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 200, tolerance: 5 } })
+  );
+
+  const handleDragEnd = (event) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    const oldIndex = order.indexOf(active.id);
+    const newIndex = order.indexOf(over.id);
+    const newOrder = arrayMove(order, oldIndex, newIndex);
+    setOrder(newOrder);
+    saveOrder(newOrder);
+  };
 
   return (
     <Box
@@ -55,59 +279,126 @@ export default function LandingPage({ onSelect }) {
         px: 2,
       }}
     >
-      <Grid
-        container
-        spacing={2}
-        justifyContent="center"
-        sx={{ maxWidth: 600 }}
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handleDragEnd}
       >
-        {tiles.map((tile) => (
-          <Grid item xs={6} sm={3} key={tile.key}>
-            <Card
-              sx={{
-                minHeight: tileMinHeight,
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <CardActionArea
-                onClick={() => onSelect(tile.key)}
+        <SortableContext
+          items={order}
+          strategy={isMobile ? verticalListSortingStrategy : rectSortingStrategy}
+        >
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: {
+                xs: "1fr",
+                sm: "1fr 1fr",
+                md: "1fr 1fr 1fr 1fr",
+              },
+              gap: 2,
+              maxWidth: 700,
+              width: "100%",
+            }}
+          >
+            {tiles.map((tile) => (
+              <Box
+                key={tile.key}
+                onPointerDown={handleTilePointerDown}
+                onPointerUp={handleTilePointerUp}
+                onPointerLeave={handleTilePointerUp}
+              >
+                <SortableTile
+                  tile={tile}
+                  tileMinHeight={tileMinHeight}
+                  iconSize={iconSize}
+                  fontSize={fontSize}
+                  onSelect={reordering ? () => {} : onSelect}
+                  reordering={reordering}
+                  onRemove={handleRemoveTile}
+                />
+              </Box>
+            ))}
+          </Box>
+        </SortableContext>
+      </DndContext>
+
+      {reordering && hiddenTiles.length > 0 && (
+        <Box sx={{ mt: 3, maxWidth: 700, width: "100%" }}>
+          <Typography variant="body2" sx={{ mb: 1, color: "text.secondary", fontWeight: 600 }}>
+            Hidden tiles
+          </Typography>
+          <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
+            {hiddenTiles.map((tile) => (
+              <Card
+                key={tile.key}
                 sx={{
+                  minHeight: 80,
+                  minWidth: 140,
+                  flex: "1 1 140px",
                   display: "flex",
-                  flexDirection: "column",
+                  flexDirection: "row",
                   alignItems: "center",
-                  justifyContent: "center",
-                  height: "100%",
-                  p: 2,
+                  opacity: 0.6,
+                  position: "relative",
                 }}
               >
                 <Box
-                  component="img"
-                  src={tile.src}
-                  alt={tile.label}
+                  onClick={() => handleAddTile(tile.key)}
                   sx={{
-                    width: iconSize,
-                    height: iconSize,
-                    objectFit: "contain",
-                    mb: 1,
+                    position: "absolute",
+                    top: 6,
+                    right: 6,
+                    width: 24,
+                    height: 24,
+                    borderRadius: "50%",
+                    bgcolor: "success.main",
+                    color: "white",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    cursor: "pointer",
+                    zIndex: 2,
+                    "&:hover": { bgcolor: "success.dark" },
                   }}
-                />
-                <CardContent sx={{ p: 0, "&:last-child": { pb: 0 } }}>
-                  <Typography
-                    variant="body2"
-                    align="center"
-                    sx={{ fontSize, fontWeight: 600 }}
-                  >
+                >
+                  <AddIcon sx={{ fontSize: 16 }} />
+                </Box>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    width: "100%",
+                    p: 2,
+                  }}
+                >
+                  <Box
+                    component="img"
+                    src={tile.src}
+                    alt={tile.label}
+                    sx={{ width: 40, height: 40, objectFit: "contain", mb: 0.5 }}
+                  />
+                  <Typography variant="body2" align="center" sx={{ fontSize: "0.85rem", fontWeight: 600 }}>
                     {tile.label}
                   </Typography>
-                </CardContent>
-              </CardActionArea>
-            </Card>
-          </Grid>
-        ))}
-      </Grid>
+                </Box>
+              </Card>
+            ))}
+          </Box>
+        </Box>
+      )}
+
+      {reordering && (
+        <Button
+          variant="contained"
+          onClick={() => setReordering(false)}
+          sx={{ mt: 3 }}
+        >
+          Done
+        </Button>
+      )}
     </Box>
   );
 }
