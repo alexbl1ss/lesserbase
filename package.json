@@ -33,8 +33,9 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "prebuild": "node scripts/write-version.js",
     "build": "react-scripts build",
-    "build:trial": "env-cmd -f .env.trial react-scripts build",
+    "build:trial": "node scripts/write-version.js && env-cmd -f .env.trial react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

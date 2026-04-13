@@ -16,6 +16,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import 'dayjs/locale/en-gb';
 import MyProfile from './components/MyProfile.js';
 import GymTracker from './components/Gym/GymTracker';
+import VersionChecker from './VersionChecker';
 
 function App() {
   const [isAuthenticated, setAuth] = useState(false);
@@ -79,6 +80,7 @@ function App() {
         ) : (
           <Login onLoginSuccess={onLoginSuccess} />
         )}
+        <VersionChecker />
       </div>
     </LocalizationProvider>
   );
