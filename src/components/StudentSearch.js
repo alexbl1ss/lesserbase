@@ -11,7 +11,7 @@ function StudentSearch(props) {
   const [searchShow, setSearchShow] = useState(false);
   const [selectedPerson, setSelectedPerson] = useState(null);
   const [students, setStudents] = useState([]);
-  const selectedYear = 2025;
+  const selectedYear = new Date().getFullYear();
   
   const filteredPersons = students.filter(
     (person) =>
