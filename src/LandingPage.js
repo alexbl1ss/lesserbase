@@ -79,7 +79,7 @@ function saveOrder(order) {
   }).catch(() => {});
 }
 
-function SortableTile({ tile, tileMinHeight, iconSize, fontSize, onSelect, reordering, onRemove }) {
+function SortableTile({ tile, tileMinHeight, iconSize, fontSize, onSelect, reordering, canRemove, onRemove }) {
   const {
     attributes,
     listeners,
@@ -106,7 +106,7 @@ function SortableTile({ tile, tileMinHeight, iconSize, fontSize, onSelect, reord
           position: "relative",
         }}
       >
-        {reordering && (
+        {reordering && canRemove && (
           <Box
             onClick={(e) => { e.stopPropagation(); onRemove(tile.key); }}
             sx={{
@@ -315,6 +315,7 @@ export default function LandingPage({ onSelect }) {
                   fontSize={fontSize}
                   onSelect={reordering ? () => {} : onSelect}
                   reordering={reordering}
+                  canRemove={tiles.length > 1}
                   onRemove={handleRemoveTile}
                 />
               </Box>
