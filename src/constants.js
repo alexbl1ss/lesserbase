@@ -1,5 +1,5 @@
-//export const SERVER_URL='https://blissdatabase-trial-97a165e7193e.herokuapp.com/';
-export const SERVER_URL='https://greaterbase-6dd42b867f9c.herokuapp.com/';
+export const SERVER_URL = process.env.REACT_APP_SERVER_URL;
+
 
 export const CAMPUSES = [
   { value: 'Kilgraston', label: 'Kilgraston' },
