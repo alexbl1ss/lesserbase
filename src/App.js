@@ -16,6 +16,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import 'dayjs/locale/en-gb';
 import MyProfile from './components/MyProfile.js';
 import GymTracker from './components/Gym/GymTracker';
+import DailySummary from './components/DailySummary/DailySummary';
 import VersionChecker from './VersionChecker';
 
 function App() {
@@ -74,6 +75,8 @@ function App() {
             <GroupSchedule username={username} />
           ) : activeTab === 'gym' ? (
             <GymTracker />
+          ) : activeTab === 'summary' ? (
+            <DailySummary />
           ) : (
             <StudentSearch showFinancials={showFinancials} />
           )

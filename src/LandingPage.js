@@ -31,25 +31,16 @@ import { CSS } from "@dnd-kit/utilities";
 import { SERVER_URL } from "./constants";
 
 const APP_NAME = "locatorbase";
-const STORAGE_KEY = "locatorbase_tile_order";
-const DEFAULT_ORDER = ["search", "groups", "profile", "gym"];
+// Every tile that exists (used to validate saved orders and to populate the
+// "hidden tiles" restore tray).
+const ALL_TILES = ["summary", "groups", "search", "profile", "gym"];
+// Default layout for anyone who hasn't customised — gym starts hidden but is
+// still restorable from the tray.
+const DEFAULT_ORDER = ["summary", "groups", "search", "profile"];
 
-function loadCachedOrder() {
-  try {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (!stored) return [...DEFAULT_ORDER];
-    const parsed = JSON.parse(stored);
-    if (!Array.isArray(parsed)) return [...DEFAULT_ORDER];
-    return parsed.filter((k) => DEFAULT_ORDER.includes(k));
-  } catch {
-    return [...DEFAULT_ORDER];
-  }
-}
-
-function cacheOrder(order) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(order));
-}
-
+// The per-user tile order lives in the database (user_preferences table), keyed
+// by the logged-in user via their bearer token. No local cache — the DB is the
+// single source of truth so a layout can't leak between users on one device.
 function fetchOrder() {
   const token = sessionStorage.getItem("bearer");
   return fetch(`${SERVER_URL}api/my-preferences/${APP_NAME}`, {
@@ -58,7 +49,7 @@ function fetchOrder() {
     .then((res) => (res.ok ? res.json() : null))
     .then((data) => {
       if (data?.tileOrder && Array.isArray(data.tileOrder)) {
-        const valid = data.tileOrder.filter((k) => DEFAULT_ORDER.includes(k));
+        const valid = data.tileOrder.filter((k) => ALL_TILES.includes(k));
         return valid.length > 0 ? valid : null;
       }
       return null;
@@ -67,7 +58,6 @@ function fetchOrder() {
 }
 
 function saveOrder(order) {
-  cacheOrder(order);
   const token = sessionStorage.getItem("bearer");
   fetch(`${SERVER_URL}api/my-preferences/${APP_NAME}`, {
     method: "PUT",
@@ -198,20 +188,20 @@ export default function LandingPage({ onSelect }) {
   const tileMap = {
     search: { label: "Student Search", src: `${publicUrl}/assets/students.png`, key: "search" },
     groups: { label: "My Registers", src: `${publicUrl}/assets/groups.png`, key: "groups" },
+    summary: { label: "Daily Summary", src: `${publicUrl}/assets/playbook.png`, key: "summary" },
     profile: { label: "My Info", src: `${publicUrl}/assets/myinfo.png`, key: "profile" },
     gym: { label: "Gym", src: `${publicUrl}/assets/gym.png`, key: "gym" },
   };
 
-  const [order, setOrder] = useState(loadCachedOrder);
+  // null = not loaded yet; falls back to DEFAULT_ORDER when the user has no
+  // saved preference row in the database.
+  const [order, setOrder] = useState(null);
   const [reordering, setReordering] = useState(false);
   const longPressTimer = useRef(null);
 
   useEffect(() => {
     fetchOrder().then((remote) => {
-      if (remote) {
-        setOrder(remote);
-        cacheOrder(remote);
-      }
+      setOrder(remote || [...DEFAULT_ORDER]);
     });
   }, []);
 
@@ -226,7 +216,7 @@ export default function LandingPage({ onSelect }) {
   }, []);
 
   const hiddenTiles = useMemo(
-    () => DEFAULT_ORDER.filter((k) => !order.includes(k)).map((k) => tileMap[k]).filter(Boolean),
+    () => ALL_TILES.filter((k) => !(order || []).includes(k)).map((k) => tileMap[k]).filter(Boolean),
     [order]
   );
 
@@ -247,7 +237,7 @@ export default function LandingPage({ onSelect }) {
   }, []);
 
   const tiles = useMemo(
-    () => order.map((key) => tileMap[key]).filter(Boolean),
+    () => (order || []).map((key) => tileMap[key]).filter(Boolean),
     [order]
   );
 
@@ -266,6 +256,10 @@ export default function LandingPage({ onSelect }) {
     setOrder(newOrder);
     saveOrder(newOrder);
   };
+
+  // Wait for the database fetch before painting tiles — avoids a flash of the
+  // wrong layout.
+  if (order === null) return null;
 
   return (
     <Box
