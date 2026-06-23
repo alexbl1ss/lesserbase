@@ -8,7 +8,7 @@ import Typography from '@mui/material/Typography';
 import { SERVER_URL } from '../constants.js';
 
 const RESET_GUIDANCE =
-  "There's no automated reset — contact Alex or another Admin to have it reset.";
+  'If you have forgotten your login details contact Alex or another Admin.';
 
 function Login(props) {
   const [open, setOpen] = useState(false);
