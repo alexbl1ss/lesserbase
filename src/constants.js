@@ -1,5 +1,9 @@
 export const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 
+// Break-glass recovery account. Its self-service "Change password" menu item is
+// hidden in the UI so it stays a stable admin-managed fallback login.
+export const RECOVERY_USER_EMAIL = 'recovery@bliss.com';
+
 
 export const CAMPUSES = [
   { value: 'Kilgraston', label: 'Kilgraston' },

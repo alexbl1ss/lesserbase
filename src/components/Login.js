@@ -3,8 +3,12 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Stack from '@mui/material/Stack';
 import Snackbar from '@mui/material/Snackbar';
+import Typography from '@mui/material/Typography';
 
 import { SERVER_URL } from '../constants.js';
+
+const RESET_GUIDANCE =
+  "There's no automated reset — contact Alex or another Admin to have it reset.";
 
 function Login(props) {
   const [open, setOpen] = useState(false);
@@ -32,7 +36,7 @@ function Login(props) {
         setOpen(true);
         props.onLoginSuccess(user.email, data.role);
       } else {
-        setMessage('Login failed: Check your username and password');
+        setMessage(`Login failed: check your username and password. ${RESET_GUIDANCE}`);
         setIsError(true);
         setOpen(true);
           }
@@ -50,6 +54,9 @@ function Login(props) {
           label="Password"
           onChange={handleChange}
         />
+        <Typography variant="caption" color="text.secondary">
+          {RESET_GUIDANCE}
+        </Typography>
         <Button variant="outlined" color="primary" onClick={login}>
           Login
         </Button>

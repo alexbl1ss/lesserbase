@@ -2,15 +2,16 @@ import { useState, useEffect } from 'react';
 import './App.css';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
-import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
-import { IconButton } from '@mui/material';
+import { IconButton, Menu, MenuItem, Divider } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import Login from './components/Login';
+import ChangePasswordDialog from './components/ChangePasswordDialog';
 import StudentSearch from './components/StudentSearch';
 import GroupSchedule from './components/GroupSchedule.js';
 import LandingPage from './LandingPage';
-import { SERVER_URL } from './constants.js';
+import { SERVER_URL, RECOVERY_USER_EMAIL } from './constants.js';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import 'dayjs/locale/en-gb';
@@ -24,6 +25,8 @@ function App() {
   const [showFinancials, setShowFinancials] = useState(false);
   const [activeTab, setActiveTab] = useState('landing');
   const [username, setUsername] = useState("");
+  const [accountMenuAnchor, setAccountMenuAnchor] = useState(null);
+  const [pwOpen, setPwOpen] = useState(false);
 
   useEffect(() => {
     document.title = 'LOCATORBASE';
@@ -42,8 +45,17 @@ function App() {
       headers: { Authorization: `Bearer ${token}` },
     }).catch((err) => console.error(err));
 
+    setAccountMenuAnchor(null);
     sessionStorage.removeItem('isAuthenticated');
+    sessionStorage.removeItem('bearer');
     setAuth(false);
+  };
+
+  const handlePasswordChanged = () => {
+    // The backend revoked all tokens, so the session is already invalid — sign
+    // out and route back to a fresh login with the new password.
+    setPwOpen(false);
+    handleLogout();
   };
 
   const handleLandingSelect = (key) => {
@@ -60,7 +72,30 @@ function App() {
                 <IconButton color="inherit" onClick={() => setActiveTab('landing')}>
                   <HomeIcon />
                 </IconButton>
-                <Button color="inherit" onClick={handleLogout}>Logout</Button>
+                <IconButton
+                  color="inherit"
+                  onClick={(e) => setAccountMenuAnchor(e.currentTarget)}
+                >
+                  <AccountCircleIcon />
+                </IconButton>
+                <Menu
+                  anchorEl={accountMenuAnchor}
+                  open={Boolean(accountMenuAnchor)}
+                  onClose={() => setAccountMenuAnchor(null)}
+                >
+                  {username !== RECOVERY_USER_EMAIL && (
+                    <MenuItem
+                      onClick={() => {
+                        setAccountMenuAnchor(null);
+                        setPwOpen(true);
+                      }}
+                    >
+                      Change password
+                    </MenuItem>
+                  )}
+                  {username !== RECOVERY_USER_EMAIL && <Divider />}
+                  <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                </Menu>
               </Box>
             )}
           </Toolbar>
@@ -83,6 +118,12 @@ function App() {
         ) : (
           <Login onLoginSuccess={onLoginSuccess} />
         )}
+        <ChangePasswordDialog
+          open={pwOpen}
+          onClose={() => setPwOpen(false)}
+          email={username}
+          onPasswordChanged={handlePasswordChanged}
+        />
         <VersionChecker />
       </div>
     </LocalizationProvider>
