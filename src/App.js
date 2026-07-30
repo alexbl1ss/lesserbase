@@ -18,6 +18,7 @@ import 'dayjs/locale/en-gb';
 import MyProfile from './components/MyProfile.js';
 import GymTracker from './components/Gym/GymTracker';
 import DailySummary from './components/DailySummary/DailySummary';
+import MySchedule from './components/MySchedule/MySchedule';
 import VersionChecker from './VersionChecker';
 
 function App() {
@@ -112,6 +113,8 @@ function App() {
             <GymTracker />
           ) : activeTab === 'summary' ? (
             <DailySummary />
+          ) : activeTab === 'schedule' ? (
+            <MySchedule username={username} />
           ) : (
             <StudentSearch showFinancials={showFinancials} />
           )

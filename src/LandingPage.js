@@ -33,10 +33,14 @@ import { SERVER_URL } from "./constants";
 const APP_NAME = "locatorbase";
 // Every tile that exists (used to validate saved orders and to populate the
 // "hidden tiles" restore tray).
-const ALL_TILES = ["summary", "groups", "search", "profile", "gym"];
+const ALL_TILES = ["schedule", "summary", "groups", "search", "profile", "gym"];
 // Default layout for anyone who hasn't customised — gym starts hidden but is
 // still restorable from the tray.
-const DEFAULT_ORDER = ["summary", "groups", "search", "profile"];
+const DEFAULT_ORDER = ["schedule", "summary", "groups", "search", "profile"];
+// Tiles that existed before we started recording `seenTiles`. A saved order from
+// that era can't distinguish "never offered this tile" from "hid it on purpose",
+// so we treat these as already-seen and only auto-surface tiles added since.
+const LEGACY_TILES = ["summary", "groups", "search", "profile", "gym"];
 
 // The per-user tile order lives in the database (user_preferences table), keyed
 // by the logged-in user via their bearer token. No local cache — the DB is the
@@ -50,14 +54,16 @@ function fetchOrder() {
     .then((data) => {
       if (data?.tileOrder && Array.isArray(data.tileOrder)) {
         const valid = data.tileOrder.filter((k) => ALL_TILES.includes(k));
-        return valid.length > 0 ? valid : null;
+        if (valid.length === 0) return null;
+        const seen = Array.isArray(data.seenTiles) ? data.seenTiles : LEGACY_TILES;
+        return { order: valid, seen };
       }
       return null;
     })
     .catch(() => null);
 }
 
-function saveOrder(order) {
+function savePrefs(order) {
   const token = sessionStorage.getItem("bearer");
   fetch(`${SERVER_URL}api/my-preferences/${APP_NAME}`, {
     method: "PUT",
@@ -65,7 +71,10 @@ function saveOrder(order) {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ tileOrder: order }),
+    // `seenTiles` records every tile this user has been offered, so a tile added
+    // in a later release surfaces once on their landing page instead of hiding
+    // in the restore tray — while a tile they removed stays removed.
+    body: JSON.stringify({ tileOrder: order, seenTiles: ALL_TILES }),
   }).catch(() => {});
 }
 
@@ -186,6 +195,8 @@ export default function LandingPage({ onSelect }) {
   const fontSize = isMobile ? "1rem" : isTablet ? "1.1rem" : "1.2rem";
 
   const tileMap = {
+    // Same artwork as Greaterbase's Daily Rota tile — the two read as one feature.
+    schedule: { label: "My Schedule", src: `${publicUrl}/assets/img/daily-routine_14991730.png`, key: "schedule" },
     search: { label: "Student Search", src: `${publicUrl}/assets/students.png`, key: "search" },
     groups: { label: "My Registers", src: `${publicUrl}/assets/groups.png`, key: "groups" },
     summary: { label: "Daily Summary", src: `${publicUrl}/assets/playbook.png`, key: "summary" },
@@ -201,7 +212,18 @@ export default function LandingPage({ onSelect }) {
 
   useEffect(() => {
     fetchOrder().then((remote) => {
-      setOrder(remote || [...DEFAULT_ORDER]);
+      if (!remote) {
+        setOrder([...DEFAULT_ORDER]);
+        return;
+      }
+      // Append any tile added since this user last saved — they've never had the
+      // chance to decide about it, so show it rather than bury it in the tray.
+      const unseen = DEFAULT_ORDER.filter(
+        (k) => !remote.seen.includes(k) && !remote.order.includes(k)
+      );
+      const next = unseen.length ? [...remote.order, ...unseen] : remote.order;
+      setOrder(next);
+      if (unseen.length) savePrefs(next);
     });
   }, []);
 
@@ -223,7 +245,7 @@ export default function LandingPage({ onSelect }) {
   const handleRemoveTile = useCallback((key) => {
     setOrder((prev) => {
       const next = prev.filter((k) => k !== key);
-      saveOrder(next);
+      savePrefs(next);
       return next;
     });
   }, []);
@@ -231,7 +253,7 @@ export default function LandingPage({ onSelect }) {
   const handleAddTile = useCallback((key) => {
     setOrder((prev) => {
       const next = [...prev, key];
-      saveOrder(next);
+      savePrefs(next);
       return next;
     });
   }, []);
@@ -254,7 +276,7 @@ export default function LandingPage({ onSelect }) {
     const newIndex = order.indexOf(over.id);
     const newOrder = arrayMove(order, oldIndex, newIndex);
     setOrder(newOrder);
-    saveOrder(newOrder);
+    savePrefs(newOrder);
   };
 
   // Wait for the database fetch before painting tiles — avoids a flash of the
