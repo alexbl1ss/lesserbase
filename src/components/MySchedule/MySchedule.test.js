@@ -589,3 +589,41 @@ it('says so and refreshes when a manager decided it first', async () => {
   await waitFor(() => expect(getMyOvertime).toHaveBeenCalledTimes(2));
   expect(await screen.findByText('Approved')).toBeInTheDocument();
 });
+
+// Overtime is agreed in advance as often as it's claimed after the fact, so a
+// future day is a legitimate entry, not a mistake to block.
+it('records overtime for a future day', async () => {
+  const nextWeek = dayjs().add(7, 'day').format('YYYY-MM-DD');
+  getMyRota.mockResolvedValue(rota([]));
+  getMyOvertime.mockResolvedValue([]);
+  recordOvertime.mockResolvedValue(
+    overtimeEntry({ id: 11, workDate: nextWeek, minutes: 120, reason: 'Pre-approved excursion' })
+  );
+
+  render(<MySchedule />);
+  await screen.findByText('No duties assigned.');
+
+  // Step the schedule forward a week, then record against the day on screen.
+  for (let i = 0; i < 7; i += 1) {
+    await userEvent.click(screen.getByLabelText('Next day'));
+  }
+  await waitFor(() => expect(getMyRota).toHaveBeenLastCalledWith(nextWeek, nextWeek));
+
+  await userEvent.click(screen.getByRole('button', { name: /record overtime/i }));
+  const dialog = await screen.findByRole('dialog');
+  await userEvent.type(within(dialog).getByLabelText(/minutes worked/i), '120');
+  await userEvent.type(within(dialog).getByLabelText(/what was it for/i), 'Pre-approved excursion');
+
+  // Nothing on the rota and no stay covering the day, so the campus is picked.
+  await userEvent.click(within(dialog).getByRole('combobox'));
+  await userEvent.click(await screen.findByRole('option', { name: 'Loretto' }));
+
+  await userEvent.click(within(dialog).getByRole('button', { name: 'Record overtime' }));
+
+  // The future day is sent as-is, not quietly snapped back to today.
+  await waitFor(() => expect(recordOvertime).toHaveBeenCalledWith(expect.objectContaining({
+    workDate: nextWeek,
+    minutes: 120,
+  })));
+  expect(await screen.findByText('Pre-approved excursion')).toBeInTheDocument();
+});

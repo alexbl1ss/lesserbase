@@ -73,19 +73,19 @@ export function totalMinutes(entries, status) {
 
 /**
  * Mirrors the backend's 400s: blank workDate/minutes/reason/campus, minutes
- * outside 1–1440, reason or note over 500 chars, workDate in the future.
+ * outside 1–1440, reason or note over 500 chars.
  *
- * `today` is passed in (YYYY-MM-DD) rather than read from the clock so the rule
- * is testable and so "future" means the same thing the caller already decided.
+ * Deliberately does NOT bar a future date. Overtime is agreed in advance as
+ * often as it's claimed after the fact, so the form allows it; if the backend
+ * still refuses future dates, its own message is what the user sees.
  *
  * Returns a { field: message } object — empty when the entry is good to send.
  */
-export function validateOvertime({ workDate, minutes, reason, campus, note }, today) {
+export function validateOvertime({ workDate, minutes, reason, campus, note }) {
   const errors = {};
   const mins = Number(minutes);
 
-  if (!workDate) errors.workDate = 'Pick the day you worked.';
-  else if (today && workDate > today) errors.workDate = "You can't record overtime for a future day.";
+  if (!workDate) errors.workDate = 'Pick the day.';
 
   if (!minutes && minutes !== 0) errors.minutes = 'How long did you work?';
   else if (!Number.isFinite(mins) || mins <= 0) errors.minutes = 'Enter more than 0 minutes.';
