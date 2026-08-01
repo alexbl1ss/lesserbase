@@ -47,12 +47,11 @@ export default function OvertimeDialog({
 }) {
   const amending = !!entry;
 
-  // A future day can't be recorded against, so those open on today instead.
-  const today = dayjs();
-  const [workDate, setWorkDate] = useState(() => {
-    if (amending) return dayjs(entry.workDate);
-    return date && date.isAfter(today, 'day') ? today : date || today;
-  });
+  // Whatever day is on screen, including a future one: overtime is agreed in
+  // advance as often as it's claimed afterwards.
+  const [workDate, setWorkDate] = useState(() =>
+    amending ? dayjs(entry.workDate) : date || dayjs()
+  );
   const [minutes, setMinutes] = useState(amending ? String(entry.minutes ?? '') : '');
   const [reason, setReason] = useState(amending ? entry.reason || '' : '');
   const [campusValue, setCampusValue] = useState(
@@ -82,7 +81,7 @@ export default function OvertimeDialog({
       note: note.trim(),
     };
 
-    const found = validateOvertime(payload, dayjs().format('YYYY-MM-DD'));
+    const found = validateOvertime(payload);
     setErrors(found);
     setFailure('');
     if (Object.keys(found).length) return;
@@ -115,11 +114,10 @@ export default function OvertimeDialog({
       <DialogContent>
         <Stack spacing={2} sx={{ mt: 1 }}>
           <DatePicker
-            label="Day worked"
+            label="Day"
             value={workDate}
             onChange={(d) => d && d.isValid() && setWorkDate(d)}
             format="ddd DD MMM YYYY"
-            disableFuture
             slotProps={{
               textField: {
                 fullWidth: true,
