@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import {
   Box,
   Button,
@@ -14,6 +14,10 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { DatePicker } from '@mui/x-date-pickers';
 import dayjs from 'dayjs';
 import useMySchedule from './useMySchedule.js';
+import useMyOvertime from './useMyOvertime.js';
+import useCampuses from './useCampuses.js';
+import OvertimeDialog from './OvertimeDialog.jsx';
+import WithdrawOvertimeDialog from './WithdrawOvertimeDialog.jsx';
 import {
   countsHours,
   displayTitle,
@@ -22,6 +26,9 @@ import {
   kindColors,
   totalCountingMins,
 } from './utils/scheduleModel.js';
+import { canChange, statusChip, totalMinutes } from './utils/overtimeModel.js';
+
+const OVERTIME_ICON = `${process.env.PUBLIC_URL || ''}/assets/overtime.png`;
 
 // Read-only personal rota. Everything here is scheduled in Greaterbase; this
 // view only renders what the backend composes for the logged-in user.
@@ -133,6 +140,118 @@ function BlockCard({ entry }) {
   );
 }
 
+// Recorded overtime. Deliberately not styled as a rota block: this is time the
+// person is claiming, not time they were assigned, and the status colour is the
+// thing to read at a glance.
+function OvertimeCard({ entry, onAmend, onWithdraw }) {
+  const theme = useTheme();
+  const { label, color } = statusChip(entry.status);
+  const accent = color === 'default' ? theme.palette.divider : theme.palette[color].main;
+  // Only while it's still yours to change — once decided the backend refuses.
+  const changeable = canChange(entry);
+
+  return (
+    <Box
+      sx={{
+        p: 1.5,
+        mb: 1,
+        borderRadius: 1.5,
+        border: '1px solid',
+        borderColor: 'divider',
+        borderLeft: `5px solid ${accent}`,
+        bgcolor: 'background.paper',
+      }}
+    >
+      <Stack direction="row" alignItems="center" sx={{ columnGap: 1, rowGap: 0.5, flexWrap: 'wrap' }}>
+        <Typography sx={{ fontWeight: 700, fontVariantNumeric: 'tabular-nums' }}>
+          {formatHours(Number(entry.minutes) || 0)}
+        </Typography>
+        <Chip size="small" label={label} color={color} variant="outlined" sx={{ height: 20, fontSize: '0.7rem' }} />
+      </Stack>
+      <Typography sx={{ fontWeight: 600, mt: 0.25 }}>{entry.reason}</Typography>
+      {entry.note && (
+        <Typography variant="body2" sx={{ mt: 0.25, color: 'text.secondary' }}>
+          {entry.note}
+        </Typography>
+      )}
+      {changeable && (
+        <Stack direction="row" spacing={1} sx={{ mt: 0.5, ml: -1 }}>
+          <Button size="small" onClick={() => onAmend(entry)}>
+            Amend
+          </Button>
+          <Button size="small" color="error" onClick={() => onWithdraw(entry)}>
+            Withdraw
+          </Button>
+        </Stack>
+      )}
+    </Box>
+  );
+}
+
+// The overtime strip under the day: what's already recorded, and the way to add
+// more. Rendered even on an empty day — extra time gets worked on days off too.
+function OvertimeSection({ entries, error, notice, onRecord, onAmend, onWithdraw }) {
+  const pending = entries.filter((e) => e.status === 'RECORDED').length;
+
+  return (
+    <Box sx={{ mt: 2 }}>
+      <Typography
+        variant="caption"
+        sx={{
+          display: 'block',
+          fontWeight: 700,
+          color: 'text.secondary',
+          textTransform: 'uppercase',
+          mb: 0.5,
+        }}
+      >
+        Overtime
+      </Typography>
+
+      {notice && (
+        <Typography variant="body2" sx={{ color: 'warning.main', mb: 1 }}>
+          {notice}
+        </Typography>
+      )}
+
+      {entries.map((e, i) => (
+        <OvertimeCard
+          key={e.id ?? `${e.workDate}-${e.minutes}-${i}`}
+          entry={e}
+          onAmend={onAmend}
+          onWithdraw={onWithdraw}
+        />
+      ))}
+
+      {/* Never claim the day is clear when we simply couldn't read it. */}
+      {entries.length === 0 && (
+        <Typography variant="body2" sx={{ color: error ? 'warning.main' : 'text.secondary', mb: 1 }}>
+          {error ? "Couldn't load your overtime." : 'Nothing recorded for this day.'}
+        </Typography>
+      )}
+
+      <Button
+        fullWidth
+        variant="outlined"
+        onClick={onRecord}
+        startIcon={
+          <Box component="img" src={OVERTIME_ICON} alt="" sx={{ width: 24, height: 24 }} />
+        }
+        sx={{ justifyContent: 'center', py: 1 }}
+      >
+        Record overtime
+      </Button>
+
+      {pending > 0 && (
+        <Typography variant="caption" sx={{ display: 'block', mt: 0.75, color: 'text.secondary' }}>
+          {pending} {pending === 1 ? 'entry is' : 'entries are'} awaiting approval and
+          {' '}{pending === 1 ? "isn't" : "aren't"} counted yet.
+        </Typography>
+      )}
+    </Box>
+  );
+}
+
 const Loading = () => (
   <Box sx={{ px: 1, pt: 2 }}>
     {[0, 1, 2].map((i) => (
@@ -164,6 +283,56 @@ export default function MySchedule({ username }) {
   const total = useMemo(
     () => (totalCountingMinutes == null ? totalCountingMins(entries) : totalCountingMinutes),
     [totalCountingMinutes, entries]
+  );
+
+  const overtime = useMyOvertime(dateStr);
+  const { options: campusOptions, myCampus } = useCampuses(dateStr);
+  // null = closed; { entry: null } = recording new; { entry } = amending it.
+  const [editing, setEditing] = useState(null);
+  const [withdrawing, setWithdrawing] = useState(null);
+  const [notice, setNotice] = useState('');
+
+  // Overtime is kept out of the assigned total: the rota's total is scheduled
+  // hours, and an entry only becomes real time once a manager approves it. Show
+  // approved overtime as its own line rather than folding it in.
+  const approvedOvertime = useMemo(
+    () => totalMinutes(overtime.entries, 'APPROVED'),
+    [overtime.entries]
+  );
+
+  // Overtime is usually recorded after the fact, so the dialog lets you pick an
+  // earlier day. Follow the entry to that day rather than saving it into a view
+  // that can't show it — otherwise a successful record looks like it vanished.
+  const { addEntry, replaceEntry, removeEntry, reload } = overtime;
+  const handleSaved = useCallback(
+    (saved) => {
+      setNotice('');
+      // The entry may have moved to another day, either because it was recorded
+      // for one or because an amend changed it. Follow it rather than dropping
+      // it into a view that can't show it.
+      if (saved?.workDate && saved.workDate !== dateStr) setDate(dayjs(saved.workDate));
+      else if (editing?.entry) replaceEntry(saved);
+      else addEntry(saved);
+    },
+    [dateStr, editing, addEntry, replaceEntry]
+  );
+
+  // A manager decided it while it was on screen: say so and re-ask, since what's
+  // displayed is out of date by definition.
+  const handleDecided = useCallback(
+    (message) => {
+      setNotice(message);
+      reload();
+    },
+    [reload]
+  );
+
+  const handleWithdrawn = useCallback(
+    (entry) => {
+      setNotice('');
+      removeEntry(entry);
+    },
+    [removeEntry]
   );
 
   // Normally one campus a day; if a day ever spans two, label each run.
@@ -256,30 +425,80 @@ export default function MySchedule({ username }) {
               ))
             )}
 
-            {entries.length > 0 && (
-              <Box
-                sx={{
-                  mt: 2,
-                  pt: 1.5,
-                  borderTop: '1px solid',
-                  borderColor: 'divider',
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'baseline',
-                }}
-              >
-                <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                  {entries.filter(countsHours).length} paid{' '}
-                  {entries.filter(countsHours).length === 1 ? 'block' : 'blocks'}
-                </Typography>
-                <Typography sx={{ fontWeight: 700, fontVariantNumeric: 'tabular-nums' }}>
-                  {formatHours(total)} assigned
-                </Typography>
+            {!overtime.unavailable && !overtime.loading && (
+              <OvertimeSection
+                entries={overtime.entries}
+                error={overtime.error}
+                notice={notice}
+                onRecord={() => setEditing({ entry: null })}
+                onAmend={(entry) => setEditing({ entry })}
+                onWithdraw={setWithdrawing}
+              />
+            )}
+
+            {(entries.length > 0 || approvedOvertime > 0) && (
+              <Box sx={{ mt: 2, pt: 1.5, borderTop: '1px solid', borderColor: 'divider' }}>
+                {entries.length > 0 && (
+                  <Box
+                    sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}
+                  >
+                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                      {entries.filter(countsHours).length} paid{' '}
+                      {entries.filter(countsHours).length === 1 ? 'block' : 'blocks'}
+                    </Typography>
+                    <Typography sx={{ fontWeight: 700, fontVariantNumeric: 'tabular-nums' }}>
+                      {formatHours(total)} assigned
+                    </Typography>
+                  </Box>
+                )}
+                {approvedOvertime > 0 && (
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'baseline',
+                      mt: entries.length > 0 ? 0.5 : 0,
+                    }}
+                  >
+                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                      Approved overtime
+                    </Typography>
+                    <Typography
+                      sx={{ fontWeight: 700, fontVariantNumeric: 'tabular-nums', color: 'success.main' }}
+                    >
+                      +{formatHours(approvedOvertime)}
+                    </Typography>
+                  </Box>
+                )}
               </Box>
             )}
           </>
         )}
       </Box>
+
+      {/* Mounted only while open so each open starts from a clean, prefilled form. */}
+      {editing && (
+        <OvertimeDialog
+          entry={editing.entry}
+          date={date}
+          // Where the person actually is: the day's own duties are the best
+          // evidence, their current stay covers days off with nothing on the rota.
+          campus={campuses[0] || myCampus}
+          campusOptions={campusOptions}
+          onClose={() => setEditing(null)}
+          onSaved={handleSaved}
+          onDecided={handleDecided}
+        />
+      )}
+
+      {withdrawing && (
+        <WithdrawOvertimeDialog
+          entry={withdrawing}
+          onClose={() => setWithdrawing(null)}
+          onWithdrawn={handleWithdrawn}
+          onDecided={handleDecided}
+        />
+      )}
     </Box>
   );
 }
