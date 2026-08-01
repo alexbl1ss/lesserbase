@@ -38,17 +38,21 @@ const day = (over = {}) => ({
   ...over,
 });
 
+// What the endpoint returns: the day's blocks plus its own hours total. Pass
+// null for the total to stand in for a response that carries no figure.
+const rota = (entries, totalCountingMinutes = null) => ({ entries, totalCountingMinutes });
+
 beforeEach(() => {
   jest.clearAllMocks();
   sessionStorage.clear();
 });
 
 it('lists the day in time order with a counting-hours total', async () => {
-  getMyRota.mockResolvedValue([
+  getMyRota.mockResolvedValue(rota([
     day({ title: 'Afternoon activities', kind: 'act', start: '14:00', end: '16:30', notes: 'football' }),
     day({ title: 'Breakfast', kind: 'meal', start: '08:00', end: '08:30', paid: 'no', countsHours: false }),
     day({ title: 'Airport Team', start: '09:00', end: '13:00' }),
-  ]);
+  ], 390));
 
   render(<MySchedule username="jo.bloggs@bliss.com" />);
 
@@ -64,7 +68,7 @@ it('lists the day in time order with a counting-hours total', async () => {
 });
 
 it('asks for the single selected day — from and to are the same date', async () => {
-  getMyRota.mockResolvedValue([]);
+  getMyRota.mockResolvedValue(rota([]));
   render(<MySchedule username="jo.bloggs@bliss.com" />);
 
   await waitFor(() => expect(getMyRota).toHaveBeenCalled());
@@ -72,7 +76,7 @@ it('asks for the single selected day — from and to are the same date', async (
 });
 
 it('sends no identifier for the user — only the dates', async () => {
-  getMyRota.mockResolvedValue([]);
+  getMyRota.mockResolvedValue(rota([]));
   render(<MySchedule username="jo.bloggs@bliss.com" />);
 
   await waitFor(() => expect(getMyRota).toHaveBeenCalled());
@@ -86,7 +90,7 @@ it('sends no identifier for the user — only the dates', async () => {
 // paid: null and notes: null, only the residential block is tagged unpaid.
 it('renders a real day off trial, agreeing with the backend hours total', async () => {
   const date = today();
-  getMyRota.mockResolvedValue([
+  getMyRota.mockResolvedValue(rota([
     { date, campus: 'Dollar', title: 'D0102', kind: 'class', start: '09:00', end: '12:30', paid: null, countsHours: true, notes: null },
     { date, campus: 'Dollar', title: 'Discovery', kind: 'act', start: '14:00', end: '16:00', paid: null, countsHours: true, notes: null },
     { date, campus: 'Dollar', title: 'Disco', kind: 'act', start: '19:00', end: '21:00', paid: null, countsHours: true, notes: null },
@@ -95,7 +99,7 @@ it('renders a real day off trial, agreeing with the backend hours total', async 
       start: '21:00', end: '22:00', paid: 'no', countsHours: false,
       notes: 'Pastoral availability within residential areas.',
     },
-  ]);
+  ], 450));
 
   render(<MySchedule username="jo.bloggs@bliss.com" />);
   // Bare class codes are labelled so "D0102" reads as a class.
@@ -114,8 +118,46 @@ it('renders a real day off trial, agreeing with the backend hours total', async 
   expect(screen.getByText('Dollar', { exact: false })).toBeInTheDocument();
 });
 
+// A real Tuesday from production: Tuck Shop 16:30–17:00 sits inside Supervision
+// 16:00–17:00. The backend pays that half-hour once (300 minutes); adding the
+// blocks up ourselves would count it twice and show 5h 30m.
+it('shows the backend total when duties overlap, not the sum of the blocks', async () => {
+  const date = today();
+  const at = (title, kind, start, end, countsHours) => ({
+    date, campus: 'Loretto', title, kind, start, end, paid: null, countsHours, notes: '',
+  });
+  getMyRota.mockResolvedValue(rota([
+    at('Breakfast', 'meal', '08:00', '08:45', false),
+    at('Lunch', 'meal', '12:30', '13:30', false),
+    at('Golf', 'act', '14:00', '16:00', true),
+    at('Supervision', 'custom', '16:00', '17:00', true),
+    at('Tuck Shop', 'custom', '16:30', '17:00', true),
+    at('Dinner', 'meal', '17:30', '18:30', false),
+    at('pool', 'act', '19:00', '21:00', true),
+  ], 300));
+
+  render(<MySchedule username="iain.page@bliss.com" />);
+  await screen.findByText('Tuck Shop');
+
+  expect(screen.getByText('5h assigned')).toBeInTheDocument();
+  expect(screen.queryByText('5h 30m assigned')).not.toBeInTheDocument();
+  expect(screen.getByText('4 paid blocks')).toBeInTheDocument();
+});
+
+// Only if a response arrives without a figure do we fall back to summing.
+it('falls back to summing the blocks when no total comes back', async () => {
+  getMyRota.mockResolvedValue(rota([
+    day({ title: 'Airport Team', start: '09:00', end: '13:00' }),
+    day({ title: 'Evening activities', kind: 'act', start: '19:00', end: '21:00' }),
+  ], null));
+
+  render(<MySchedule />);
+  await screen.findByText('Airport Team');
+  expect(screen.getByText('6h assigned')).toBeInTheDocument();
+});
+
 it('jumps straight to a date picked from the calendar', async () => {
-  getMyRota.mockResolvedValue([]);
+  getMyRota.mockResolvedValue(rota([]));
   render(<MySchedule />);
   await waitFor(() => expect(getMyRota).toHaveBeenCalled());
 
@@ -131,7 +173,7 @@ it('jumps straight to a date picked from the calendar', async () => {
 });
 
 it('shows a friendly empty state', async () => {
-  getMyRota.mockResolvedValue([]);
+  getMyRota.mockResolvedValue(rota([]));
   render(<MySchedule />);
   expect(await screen.findByText('No duties assigned.')).toBeInTheDocument();
 });
@@ -147,13 +189,13 @@ it('offers a retry when the fetch fails outright', async () => {
   render(<MySchedule />);
   expect(await screen.findByText('Could not load your schedule (500).')).toBeInTheDocument();
 
-  getMyRota.mockResolvedValue([day({ title: 'Airport Team' })]);
+  getMyRota.mockResolvedValue(rota([day({ title: 'Airport Team' })], 480));
   await userEvent.click(screen.getByRole('button', { name: 'Retry' }));
   expect(await screen.findByText('Airport Team')).toBeInTheDocument();
 });
 
 it('refetches for the new day on every date change', async () => {
-  getMyRota.mockResolvedValue([day({ title: 'Airport Team' })]);
+  getMyRota.mockResolvedValue(rota([day({ title: 'Airport Team' })], 480));
   render(<MySchedule />);
   await screen.findByText('Airport Team');
   expect(getMyRota).toHaveBeenCalledTimes(1);
@@ -161,7 +203,7 @@ it('refetches for the new day on every date change', async () => {
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
   const tomorrowStr = tomorrow.toISOString().slice(0, 10);
-  getMyRota.mockResolvedValue([]);
+  getMyRota.mockResolvedValue(rota([]));
 
   await userEvent.click(screen.getByLabelText('Next day'));
 
@@ -172,16 +214,16 @@ it('refetches for the new day on every date change', async () => {
 });
 
 it('repaints a revisited day from cache, then refreshes it', async () => {
-  getMyRota.mockResolvedValue([day({ title: 'Airport Team' })]);
+  getMyRota.mockResolvedValue(rota([day({ title: 'Airport Team' })], 480));
   render(<MySchedule />);
   await screen.findByText('Airport Team');
 
-  getMyRota.mockResolvedValue([]);
+  getMyRota.mockResolvedValue(rota([]));
   await userEvent.click(screen.getByLabelText('Next day'));
   await screen.findByText('No duties assigned.');
 
   // Back to today: the cached copy shows immediately, and we still re-ask.
-  getMyRota.mockResolvedValue([day({ title: 'Airport Team' })]);
+  getMyRota.mockResolvedValue(rota([day({ title: 'Airport Team' })], 480));
   await userEvent.click(screen.getByLabelText('Previous day'));
   expect(screen.getByText('Airport Team')).toBeInTheDocument();
   await waitFor(() => expect(getMyRota).toHaveBeenCalledTimes(3));
