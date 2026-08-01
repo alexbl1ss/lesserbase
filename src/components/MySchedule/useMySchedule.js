@@ -10,7 +10,10 @@ import { byStart } from './utils/scheduleModel.js';
 // localStorage) deliberately: it dies with the tab session, so one person's
 // schedule can't linger for the next user of a shared device — same reasoning
 // as the landing page's tile order.
-const CACHE_KEY = 'myschedule:days';
+// v2 caches each day as { entries, totalCountingMinutes } rather than a bare
+// array of entries; the key is versioned so a session that predates the change
+// doesn't read the old shape back.
+const CACHE_KEY = 'myschedule:days:v2';
 const CACHE_LIMIT = 30; // days; plenty for browsing, bounded for storage
 
 function readCache() {
@@ -59,10 +62,10 @@ export default function useMySchedule(dateStr) {
     setStale(false);
 
     getMyRota(dateStr, dateStr)
-      .then((entries) => {
+      .then((day) => {
         if (id !== reqId.current) return; // a later date-step won the race
         setDays((prev) => {
-          const next = { ...prev, [dateStr]: entries };
+          const next = { ...prev, [dateStr]: day };
           writeCache(next);
           return next;
         });
@@ -84,11 +87,13 @@ export default function useMySchedule(dateStr) {
   const retry = useCallback(() => setReloadToken((n) => n + 1), []);
 
   const cached = days[dateStr];
-  const hasCache = Array.isArray(cached);
-  const entries = hasCache ? cached.slice().sort(byStart) : [];
+  const hasCache = Array.isArray(cached?.entries);
+  const entries = hasCache ? cached.entries.slice().sort(byStart) : [];
 
   return {
     entries,
+    // The backend's own figure for the day, or null if it sent none.
+    totalCountingMinutes: hasCache ? cached.totalCountingMinutes ?? null : null,
     loading,
     error,
     unavailable,

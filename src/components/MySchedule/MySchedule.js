@@ -153,9 +153,18 @@ const Message = ({ children, action }) => (
 export default function MySchedule({ username }) {
   const [date, setDate] = useState(dayjs());
   const dateStr = useMemo(() => date.format('YYYY-MM-DD'), [date]);
-  const { entries, loading, error, unavailable, stale, hasCache, retry } = useMySchedule(dateStr);
+  const {
+    entries, totalCountingMinutes, loading, error, unavailable, stale, hasCache, retry,
+  } = useMySchedule(dateStr);
 
-  const total = useMemo(() => totalCountingMins(entries), [entries]);
+  // Hours come from the backend, which knows how overlapping duties resolve —
+  // an hour of supervision with a half-hour tuck shop inside it is 1h, not 1h30.
+  // Summing the blocks ourselves double-counts the overlap, so only do it if a
+  // response arrives without a total.
+  const total = useMemo(
+    () => (totalCountingMinutes == null ? totalCountingMins(entries) : totalCountingMinutes),
+    [totalCountingMinutes, entries]
+  );
 
   // Normally one campus a day; if a day ever spans two, label each run.
   const campuses = useMemo(
